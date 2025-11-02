@@ -15,12 +15,12 @@ import {
   Clock,
   RefreshCw
 } from 'lucide-react';
-import { useAdmin } from '../contexts/AdminContext';
+import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
 
 
 const AdminAnalytics = () => {
-  const { hasPermission, PERMISSIONS, generateReport } = useAdmin();
+  const { hasAdminPermission, ADMIN_PERMISSIONS } = useAdminAuth();
   const { addNotification } = useNotifications();
   
   const [timeRange, setTimeRange] = useState('last_30_days');
@@ -85,6 +85,16 @@ const AdminAnalytics = () => {
     }
   };
 
+  const generateReport = async (reportType, timeRange) => {
+    // Simulate report generation - replace with actual API call
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`Generating ${reportType} report for ${timeRange}`);
+        resolve();
+      }, 1000);
+    });
+  };
+
   const handleExportReport = async (reportType) => {
     try {
       setIsLoading(true);
@@ -139,7 +149,7 @@ const AdminAnalytics = () => {
     );
   };
 
-  if (!hasPermission(PERMISSIONS.ANALYTICS)) {
+  if (!hasAdminPermission(ADMIN_PERMISSIONS.ANALYTICS)) {
     return (
       <div className="min-h-screen p-6" style={{ backgroundColor: 'var(--color-background)' }}>
         <div className="max-w-md mx-auto mt-20">

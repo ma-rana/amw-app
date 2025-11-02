@@ -13,12 +13,12 @@ import {
   Alert,
   Badge
 } from '@aws-amplify/ui-react';
-import { useAdmin } from '../contexts/AdminContext';
+import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
 
 
 const AdminSettings = () => {
-  const { adminPermissions: _adminPermissions, hasPermission } = useAdmin();
+  const { hasAdminPermission, ADMIN_PERMISSIONS } = useAdminAuth();
   const { addNotification } = useNotifications();
   
   // Platform Settings State
@@ -113,7 +113,7 @@ const AdminSettings = () => {
   };
 
   const handleSaveSettings = async () => {
-    if (!hasPermission('manage_settings')) {
+    if (!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)) {
       addNotification('You do not have permission to modify settings', 'error');
       return;
     }
@@ -134,7 +134,7 @@ const AdminSettings = () => {
   };
 
   const handleResetSettings = async () => {
-    if (!hasPermission('manage_settings')) {
+    if (!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)) {
       addNotification('You do not have permission to reset settings', 'error');
       return;
     }
@@ -182,7 +182,7 @@ const AdminSettings = () => {
     setHasUnsavedChanges(true);
   };
 
-  if (!hasPermission('view_settings')) {
+  if (!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)) {
     return (
       <div className="admin-settings-access-denied">
         <Card className="access-denied-card">
@@ -216,7 +216,7 @@ const AdminSettings = () => {
             type="text"
             value={platformSettings.siteName}
             onChange={(e) => updatePlatformSetting('siteName', e.target.value)}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
@@ -227,7 +227,7 @@ const AdminSettings = () => {
           <textarea
             value={platformSettings.siteDescription}
             onChange={(e) => updatePlatformSetting('siteDescription', e.target.value)}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             rows={3}
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed resize-none"
           />
@@ -244,7 +244,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={platformSettings.maintenanceMode}
               onChange={(e) => updatePlatformSetting('maintenanceMode', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -262,7 +262,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={platformSettings.registrationEnabled}
               onChange={(e) => updatePlatformSetting('registrationEnabled', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -280,7 +280,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={platformSettings.emailVerificationRequired}
               onChange={(e) => updatePlatformSetting('emailVerificationRequired', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -294,7 +294,7 @@ const AdminSettings = () => {
             type="number"
             value={platformSettings.maxFileSize}
             onChange={(e) => updatePlatformSetting('maxFileSize', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             max="100"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -308,7 +308,7 @@ const AdminSettings = () => {
             type="text"
             value={platformSettings.allowedFileTypes}
             onChange={(e) => updatePlatformSetting('allowedFileTypes', e.target.value)}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             placeholder="jpg,jpeg,png,gif,mp4,mov"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -321,7 +321,7 @@ const AdminSettings = () => {
             type="number"
             value={platformSettings.maxMomentsPerUser}
             onChange={(e) => updatePlatformSetting('maxMomentsPerUser', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -334,7 +334,7 @@ const AdminSettings = () => {
             type="number"
             value={platformSettings.maxStoriesPerUser}
             onChange={(e) => updatePlatformSetting('maxStoriesPerUser', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -357,7 +357,7 @@ const AdminSettings = () => {
           <select
             value={privacySettings.defaultPrivacyLevel}
             onChange={(e) => updatePrivacySetting('defaultPrivacyLevel', e.target.value)}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <option value="private" className="bg-slate-800 text-white">Private</option>
@@ -373,7 +373,7 @@ const AdminSettings = () => {
             type="number"
             value={privacySettings.dataRetentionDays}
             onChange={(e) => updatePrivacySetting('dataRetentionDays', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -390,7 +390,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={privacySettings.allowPublicMoments}
               onChange={(e) => updatePrivacySetting('allowPublicMoments', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -408,7 +408,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={privacySettings.allowGuestViewing}
               onChange={(e) => updatePrivacySetting('allowGuestViewing', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -426,7 +426,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={privacySettings.enableDataExport}
               onChange={(e) => updatePrivacySetting('enableDataExport', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -444,7 +444,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={privacySettings.enableAccountDeletion}
               onChange={(e) => updatePrivacySetting('enableAccountDeletion', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -462,7 +462,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={privacySettings.cookieConsent}
               onChange={(e) => updatePrivacySetting('cookieConsent', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -480,7 +480,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={privacySettings.analyticsEnabled}
               onChange={(e) => updatePrivacySetting('analyticsEnabled', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -498,7 +498,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={privacySettings.thirdPartyIntegrations}
               onChange={(e) => updatePrivacySetting('thirdPartyIntegrations', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -527,7 +527,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={notificationSettings.emailNotifications}
               onChange={(e) => updateNotificationSetting('emailNotifications', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -545,7 +545,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={notificationSettings.pushNotifications}
               onChange={(e) => updateNotificationSetting('pushNotifications', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -563,7 +563,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={notificationSettings.smsNotifications}
               onChange={(e) => updateNotificationSetting('smsNotifications', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -581,7 +581,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={notificationSettings.weeklyDigest}
               onChange={(e) => updateNotificationSetting('weeklyDigest', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -599,7 +599,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={notificationSettings.systemAlerts}
               onChange={(e) => updateNotificationSetting('systemAlerts', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -617,7 +617,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={notificationSettings.marketingEmails}
               onChange={(e) => updateNotificationSetting('marketingEmails', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -631,7 +631,7 @@ const AdminSettings = () => {
             type="number"
             value={notificationSettings.notificationRetentionDays}
             onChange={(e) => updateNotificationSetting('notificationRetentionDays', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -644,7 +644,7 @@ const AdminSettings = () => {
             type="number"
             value={notificationSettings.maxNotificationsPerDay}
             onChange={(e) => updateNotificationSetting('maxNotificationsPerDay', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -672,7 +672,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={moderationSettings.autoModeration}
               onChange={(e) => updateModerationSetting('autoModeration', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -690,7 +690,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={moderationSettings.profanityFilter}
               onChange={(e) => updateModerationSetting('profanityFilter', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -708,7 +708,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={moderationSettings.spamDetection}
               onChange={(e) => updateModerationSetting('spamDetection', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -726,7 +726,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={moderationSettings.imageModeration}
               onChange={(e) => updateModerationSetting('imageModeration', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -744,7 +744,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={moderationSettings.requireApproval}
               onChange={(e) => updateModerationSetting('requireApproval', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -758,7 +758,7 @@ const AdminSettings = () => {
             type="number"
             value={moderationSettings.flagThreshold}
             onChange={(e) => updateModerationSetting('flagThreshold', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -771,7 +771,7 @@ const AdminSettings = () => {
             type="number"
             value={moderationSettings.autoDeleteThreshold}
             onChange={(e) => updateModerationSetting('autoDeleteThreshold', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -784,7 +784,7 @@ const AdminSettings = () => {
             type="number"
             value={moderationSettings.moderationQueueLimit}
             onChange={(e) => updateModerationSetting('moderationQueueLimit', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -807,7 +807,7 @@ const AdminSettings = () => {
           <select
             value={systemSettings.backupFrequency}
             onChange={(e) => updateSystemSetting('backupFrequency', e.target.value)}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <option value="hourly" className="bg-slate-800 text-white">Hourly</option>
@@ -823,7 +823,7 @@ const AdminSettings = () => {
             type="number"
             value={systemSettings.logRetentionDays}
             onChange={(e) => updateSystemSetting('logRetentionDays', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -836,7 +836,7 @@ const AdminSettings = () => {
             type="number"
             value={systemSettings.cacheExpiration}
             onChange={(e) => updateSystemSetting('cacheExpiration', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -849,7 +849,7 @@ const AdminSettings = () => {
             type="number"
             value={systemSettings.rateLimitRequests}
             onChange={(e) => updateSystemSetting('rateLimitRequests', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -862,7 +862,7 @@ const AdminSettings = () => {
             type="number"
             value={systemSettings.rateLimitWindow}
             onChange={(e) => updateSystemSetting('rateLimitWindow', parseInt(e.target.value))}
-            disabled={!hasPermission('manage_settings')}
+            disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -879,7 +879,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={systemSettings.enableApiLogging}
               onChange={(e) => updateSystemSetting('enableApiLogging', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -897,7 +897,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={systemSettings.enablePerformanceMonitoring}
               onChange={(e) => updateSystemSetting('enablePerformanceMonitoring', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -915,7 +915,7 @@ const AdminSettings = () => {
               type="checkbox"
               checked={systemSettings.enableErrorReporting}
               onChange={(e) => updateSystemSetting('enableErrorReporting', e.target.checked)}
-              disabled={!hasPermission('manage_settings')}
+              disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
@@ -971,7 +971,7 @@ const AdminSettings = () => {
               )}
               <button
                 onClick={handleResetSettings}
-                disabled={isLoading || !hasPermission('manage_settings')}
+                disabled={isLoading || !hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
                 className="px-4 py-2 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ color: 'var(--color-text-secondary)', backgroundColor: 'transparent' }}
                 onMouseEnter={(e) => {
@@ -987,7 +987,7 @@ const AdminSettings = () => {
               </button>
               <button
                 onClick={handleSaveSettings}
-                disabled={!hasUnsavedChanges || !hasPermission('manage_settings') || isLoading}
+                disabled={!hasUnsavedChanges || !hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS) || isLoading}
                 className="px-6 py-2 text-white font-semibold rounded-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
                 style={{ backgroundColor: 'var(--amw-primary)' }}
                 onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--amw-primary-dark)'}

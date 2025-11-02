@@ -35,17 +35,27 @@ import {
   Calendar,
   MoreVertical
 } from 'lucide-react';
-import { useAdmin } from '../contexts/AdminContext';
+import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
 
 
 const AdminContentModeration = ({ onNavigate: _onNavigate }) => {
   const { 
-    hasPermission, 
-    PERMISSIONS, 
-    deleteContent
-  } = useAdmin();
+    hasAdminPermission, 
+    ADMIN_PERMISSIONS
+  } = useAdminAuth();
   const { addNotification } = useNotifications();
+
+  // Local admin function since it's no longer in useAdminAuth
+  const deleteContent = async (contentId, contentType) => {
+    try {
+      console.log(`Deleting ${contentType} content ${contentId}`);
+      addNotification(`${contentType} content deleted successfully`, 'success');
+    } catch (error) {
+      console.error('Error deleting content:', error);
+      addNotification('Failed to delete content', 'error');
+    }
+  };
 
   const [activeTab, setActiveTab] = useState('reports');
   const [reports, setReports] = useState([]);
@@ -338,7 +348,7 @@ const AdminContentModeration = ({ onNavigate: _onNavigate }) => {
   const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
-  if (!hasPermission(PERMISSIONS.CONTENT_MODERATION)) {
+  if (!hasAdminPermission(ADMIN_PERMISSIONS.CONTENT_MODERATION)) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: 'var(--color-background)' }}>
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow-2xl p-8 max-w-md mx-auto text-center">

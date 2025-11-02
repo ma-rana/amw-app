@@ -9,7 +9,7 @@ import {
   Home,
   LogOut
 } from 'lucide-react';
-import { useAdmin, AdminProvider } from '../contexts/AdminContext';
+import { useAdminAuth } from '../contexts/AdminAuthContext';
 import AdminDashboard from './AdminDashboard';
 import AdminUserManagement from './AdminUserManagement';
 import AdminContentModeration from './AdminContentModeration';
@@ -18,7 +18,7 @@ import AdminAnalytics from './AdminAnalytics';
 
 
 const AdminAppContent = ({ onExit, adminUser, onAdminSignOut }) => {
-  const { hasPermission, PERMISSIONS, toggleAdminMode } = useAdmin();
+  const { hasAdminPermission, ADMIN_PERMISSIONS } = useAdminAuth();
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,25 +53,25 @@ const AdminAppContent = ({ onExit, adminUser, onAdminSignOut }) => {
       id: 'admin-user-management',
       label: 'User Management',
       icon: Users,
-      permission: PERMISSIONS.USER_MANAGEMENT
+      permission: ADMIN_PERMISSIONS.USER_MANAGEMENT
     },
     {
       id: 'admin-content-moderation',
       label: 'Content Moderation',
       icon: Flag,
-      permission: PERMISSIONS.CONTENT_MODERATION
+      permission: ADMIN_PERMISSIONS.CONTENT_MODERATION
     },
     {
       id: 'admin-settings',
       label: 'Settings',
       icon: Settings,
-      permission: PERMISSIONS.SYSTEM_SETTINGS
+      permission: ADMIN_PERMISSIONS.SYSTEM_SETTINGS
     },
     {
       id: 'admin-analytics',
       label: 'Analytics',
       icon: BarChart3,
-      permission: PERMISSIONS.ANALYTICS
+      permission: ADMIN_PERMISSIONS.ANALYTICS
     }
   ];
 
@@ -83,7 +83,7 @@ const AdminAppContent = ({ onExit, adminUser, onAdminSignOut }) => {
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'dashboard':
-        return <AdminDashboard onNavigate={handleNavigation} />;
+        return <AdminDashboard onNavigate={handleNavigation} adminUser={adminUser} />;
       case 'admin-user-management':
         return <AdminUserManagement onNavigate={handleNavigation} />;
       case 'admin-content-moderation':
@@ -97,37 +97,7 @@ const AdminAppContent = ({ onExit, adminUser, onAdminSignOut }) => {
     }
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: 'var(--color-background)' }}>
-        <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl border border-red-100 p-8">
-          <div className="text-center space-y-6">
-            <div className="relative">
-              <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center shadow-lg" style={{ backgroundColor: 'var(--amw-danger)', border: '1px solid var(--amw-danger)' }}>
-                <Shield size={40} className="text-white" />
-              </div>
-              <div className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-bold">!</span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-2xl font-bold text-gray-900">Access Denied</h3>
-              <p className="text-gray-600">You don't have administrator privileges to access this panel.</p>
-            </div>
-            <button 
-              onClick={onExit}
-              className="w-full px-6 py-3 text-white font-semibold rounded-xl transform hover:scale-105 transition-all duration-200 shadow-lg"
-              style={{ backgroundColor: 'var(--amw-primary)', border: '1px solid var(--amw-primary)' }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--amw-primary-dark)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--amw-primary)'}
-            >
-              Return to App
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+
 
   if (isLoading) {
     return (
@@ -200,7 +170,7 @@ const AdminAppContent = ({ onExit, adminUser, onAdminSignOut }) => {
               {navigationItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentPage === item.id;
-                const hasAccess = !item.permission || hasPermission(item.permission);
+                const hasAccess = !item.permission || hasAdminPermission(item.permission);
                 
                 return (
                   <li key={item.id}>
@@ -296,9 +266,7 @@ const AdminAppContent = ({ onExit, adminUser, onAdminSignOut }) => {
 
 const AdminApp = ({ onExit, adminUser, onAdminSignOut }) => {
   return (
-    <AdminProvider>
-      <AdminAppContent onExit={onExit} adminUser={adminUser} onAdminSignOut={onAdminSignOut} />
-    </AdminProvider>
+    <AdminAppContent onExit={onExit} adminUser={adminUser} onAdminSignOut={onAdminSignOut} />
   );
 };
 
