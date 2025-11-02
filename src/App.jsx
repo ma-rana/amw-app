@@ -28,6 +28,14 @@ import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { NotificationProvider } from './contexts/NotificationContext'
 import { ToastProvider, useToast } from './contexts/ToastContext'
 import { PrivacyProvider } from './contexts/PrivacyContext'
+// Import test utilities for real-time testing
+import './utils/testRealtime'
+// Import test utilities for authentication testing
+import './utils/testAuth'
+// Import quick authentication tests
+import './utils/quickAuthTest'
+// Import S3 file upload tests
+import './utils/testFileUpload'
 import { AdminProvider, useAdmin } from './contexts/AdminContext'
 import AdminApp from './pages/AdminApp'
 import API from './services/api'

@@ -38,6 +38,27 @@ export const NotificationProvider = ({ children }) => {
         setNotifications(notificationService.getNotifications());
         setUnreadCount(notificationService.getUnreadCount());
 
+        // Initialize real-time subscriptions for moments and stories
+        console.log('🔴 Initializing real-time subscriptions...');
+        
+        // Subscribe to moment notifications
+        notificationService.subscribeMomentNotifications({
+          onMomentClick: (moment) => {
+            console.log('🔴 Moment notification clicked:', moment);
+            // Handle moment click navigation
+          }
+        });
+
+        // Subscribe to story notifications  
+        notificationService.subscribeStoryNotifications({
+          onStoryClick: (story) => {
+            console.log('🔴 Story notification clicked:', story);
+            // Handle story click navigation
+          }
+        });
+
+        console.log('✅ Real-time subscriptions initialized');
+
         return unsubscribe;
       } catch (error) {
         console.error('Failed to initialize notifications:', error);
@@ -50,6 +71,10 @@ export const NotificationProvider = ({ children }) => {
       if (unsubscribe && typeof unsubscribe === 'function') {
         unsubscribe();
       }
+      
+      // Cleanup real-time subscriptions
+      console.log('🔴 Cleaning up real-time subscriptions...');
+      notificationService.unsubscribeAllRealtime();
     };
   }, []);
 
