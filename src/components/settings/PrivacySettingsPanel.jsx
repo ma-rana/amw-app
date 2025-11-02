@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { usePrivacy } from '../../contexts/PrivacyContext';
-import './SettingsStyles.css';
+import { Lock, Shield, Eye, EyeOff, Users, Mail, MessageSquare, MapPin, Database, Bell, AlertCircle, Clock, Key } from 'lucide-react';
 
 const PrivacySettingsPanel = () => {
   const { privacySettings, updatePrivacySettings } = usePrivacy();
@@ -252,97 +252,120 @@ const PrivacySettingsPanel = () => {
   const privacyLevel = getPrivacyLevel(privacyScore);
 
   return (
-    <div className="settings-container">
-      <div className="settings-header">
-        <h2>Privacy Settings</h2>
-        <p>Control your privacy and security preferences</p>
-      </div>
-
+    <div className="space-y-6 sm:space-y-8">
       {/* Privacy Score */}
-      <div className="settings-section">
-        <h3>Privacy Score</h3>
-        
-        <div className="privacy-score-card">
-          <div className="privacy-score-visual">
-            <div className="privacy-score-circle">
-              <span className="privacy-score-number">{privacyScore}</span>
-              <span className="privacy-score-percent">%</span>
-            </div>
-            <div className="privacy-score-info">
-              <div className="privacy-level" style={{ color: privacyLevel.color }}>
-                {privacyLevel.icon} {privacyLevel.level} Privacy
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 sm:p-6 border-2 border-gray-200">
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+          <Shield size={20} className="sm:w-6 sm:h-6 text-blue-600 flex-shrink-0" />
+          <h3 className="text-lg sm:text-xl md:text-2xl font-extrabold text-gray-900">Privacy Score</h3>
+        </div>
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-4">
+          <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
+            <div className="absolute inset-0 rounded-full border-4" style={{ borderColor: privacyLevel.color }}></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-2xl sm:text-3xl font-bold" style={{ color: privacyLevel.color }}>{privacyScore}</div>
+                <div className="text-xs sm:text-sm font-semibold text-gray-600">%</div>
               </div>
-              <p>Your current privacy protection level</p>
             </div>
           </div>
-          
-          <div className="privacy-score-bar">
-            <div 
-              className="privacy-score-fill" 
-              style={{ 
-                width: `${privacyScore}%`, 
-                backgroundColor: privacyLevel.color 
-              }}
-            ></div>
+          <div className="flex-1 text-center sm:text-left">
+            <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
+              <span className="text-xl sm:text-2xl">{privacyLevel.icon}</span>
+              <span className="text-lg sm:text-xl font-bold" style={{ color: privacyLevel.color }}>
+                {privacyLevel.level} Privacy
+              </span>
+            </div>
+            <p className="text-sm sm:text-base text-gray-600">Your current privacy protection level</p>
           </div>
+        </div>
+        <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+          <div 
+            className="h-full rounded-full transition-all duration-300"
+            style={{ 
+              width: `${privacyScore}%`, 
+              backgroundColor: privacyLevel.color 
+            }}
+          ></div>
         </div>
       </div>
 
       {/* Privacy Settings */}
-      {privacyOptions.map((category) => (
-        <div key={category.category} className="settings-section">
-          <h3>{category.category}</h3>
-          <p style={{ marginBottom: '20px', color: '#666' }}>{category.description}</p>
+      {privacyOptions.map((category) => {
+        const categoryIcons = {
+          'Profile Privacy': Eye,
+          'Data Privacy': Database,
+          'Communication Privacy': MessageSquare,
+          'Location Privacy': MapPin,
+          'Activity Privacy': Bell
+        };
+        const Icon = categoryIcons[category.category] || Lock;
+        
+        return (
+        <div key={category.category}>
+          <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+            <Icon size={20} className="sm:w-6 sm:h-6 text-red-600 flex-shrink-0" />
+            <h3 className="text-lg sm:text-xl md:text-2xl font-extrabold text-gray-900">{category.category}</h3>
+          </div>
+          <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 ml-7 sm:ml-9">{category.description}</p>
           
-          {category.settings.map((setting) => (
-            <div key={setting.key} className="setting-item">
-              <div className="setting-info">
-                <label>{setting.label}</label>
-                <p>{setting.description}</p>
-              </div>
-              <div className="setting-control">
-                {setting.type === 'toggle' ? (
-                  <label className="toggle-switch">
-                    <input
-                      type="checkbox"
-                      checked={localSettings[setting.key] || false}
-                      onChange={(e) => handleSettingChange(setting.key, e.target.checked)}
-                    />
-                    <span className="toggle-slider"></span>
+          <div className="space-y-4">
+            {category.settings.map((setting) => (
+              <div key={setting.key} className="flex items-start justify-between gap-4 p-3 sm:p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+                <div className="flex-1 min-w-0">
+                  <label className="block text-sm sm:text-base font-semibold text-gray-900 mb-1">
+                    {setting.label}
                   </label>
-                ) : setting.type === 'select' ? (
-                  <select
-                    value={localSettings[setting.key] || ''}
-                    onChange={(e) => handleSettingChange(setting.key, e.target.value)}
-                    className="select-input"
-                  >
-                    {setting.options.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                ) : null}
+                  <p className="text-xs sm:text-sm text-gray-600">{setting.description}</p>
+                </div>
+                <div className="flex-shrink-0">
+                  {setting.type === 'toggle' ? (
+                    <label className="relative inline-block w-11 h-6 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={localSettings[setting.key] || false}
+                        onChange={(e) => handleSettingChange(setting.key, e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                  ) : setting.type === 'select' ? (
+                    <select
+                      value={localSettings[setting.key] || ''}
+                      onChange={(e) => handleSettingChange(setting.key, e.target.value)}
+                      className="px-3 sm:px-4 py-2 sm:py-2.5 bg-white border-2 border-gray-200 rounded-lg text-sm sm:text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[180px]"
+                    >
+                      {setting.options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      ))}
+        );
+      })}
 
       {/* Quick Actions */}
-      <div className="settings-section">
-        <h3>Quick Actions</h3>
-        
-        <div className="quick-actions-grid">
+      <div>
+        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+          <AlertCircle size={20} className="sm:w-6 sm:h-6 text-amber-600 flex-shrink-0" />
+          <h3 className="text-lg sm:text-xl md:text-2xl font-extrabold text-gray-900">Quick Actions</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <button 
             onClick={() => handleSettingChange('profileVisibility', 'private')}
-            className="quick-action-btn"
+            className="bg-white border-2 border-gray-200 rounded-xl p-4 text-left hover:border-blue-500 hover:shadow-md transition-all duration-200"
           >
-            <span className="quick-action-icon">🔒</span>
-            <div>
-              <div className="quick-action-title">Make Profile Private</div>
-              <div className="quick-action-desc">Hide your profile from everyone</div>
+            <div className="flex items-center space-x-3 mb-2">
+              <span className="text-2xl">🔒</span>
+              <span className="font-semibold text-sm sm:text-base text-gray-900">Make Profile Private</span>
             </div>
+            <p className="text-xs sm:text-sm text-gray-600 ml-9">Hide your profile from everyone</p>
           </button>
           
           <button 
@@ -351,13 +374,13 @@ const PrivacySettingsPanel = () => {
               handleSettingChange('analyticsOptIn', false);
               handleSettingChange('marketingEmails', false);
             }}
-            className="quick-action-btn"
+            className="bg-white border-2 border-gray-200 rounded-xl p-4 text-left hover:border-red-500 hover:shadow-md transition-all duration-200"
           >
-            <span className="quick-action-icon">🚫</span>
-            <div>
-              <div className="quick-action-title">Disable Data Collection</div>
-              <div className="quick-action-desc">Stop all data collection and marketing</div>
+            <div className="flex items-center space-x-3 mb-2">
+              <span className="text-2xl">🚫</span>
+              <span className="font-semibold text-sm sm:text-base text-gray-900">Disable Data Collection</span>
             </div>
+            <p className="text-xs sm:text-sm text-gray-600 ml-9">Stop all data collection and marketing</p>
           </button>
           
           <button 
@@ -365,39 +388,46 @@ const PrivacySettingsPanel = () => {
               handleSettingChange('twoFactorAuth', true);
               handleSettingChange('loginAlerts', true);
             }}
-            className="quick-action-btn"
+            className="bg-white border-2 border-gray-200 rounded-xl p-4 text-left hover:border-green-500 hover:shadow-md transition-all duration-200"
           >
-            <span className="quick-action-icon">🛡️</span>
-            <div>
-              <div className="quick-action-title">Enhance Security</div>
-              <div className="quick-action-desc">Enable 2FA and login alerts</div>
+            <div className="flex items-center space-x-3 mb-2">
+              <span className="text-2xl">🛡️</span>
+              <span className="font-semibold text-sm sm:text-base text-gray-900">Enhance Security</span>
             </div>
+            <p className="text-xs sm:text-sm text-gray-600 ml-9">Enable 2FA and login alerts</p>
           </button>
           
           <button 
             onClick={resetToDefaults}
-            className="quick-action-btn"
+            className="bg-white border-2 border-gray-200 rounded-xl p-4 text-left hover:border-gray-400 hover:shadow-md transition-all duration-200"
           >
-            <span className="quick-action-icon">⚙️</span>
-            <div>
-              <div className="quick-action-title">Reset to Defaults</div>
-              <div className="quick-action-desc">Restore recommended settings</div>
+            <div className="flex items-center space-x-3 mb-2">
+              <span className="text-2xl">⚙️</span>
+              <span className="font-semibold text-sm sm:text-base text-gray-900">Reset to Defaults</span>
             </div>
+            <p className="text-xs sm:text-sm text-gray-600 ml-9">Restore recommended settings</p>
           </button>
         </div>
       </div>
 
       {/* Actions */}
-      <div className="settings-actions">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 border-t-2 border-gray-200">
         {hasChanges && (
-          <button onClick={handleReset} className="btn-secondary">
+          <button 
+            onClick={handleReset} 
+            className="flex-1 sm:flex-initial px-4 sm:px-6 py-2.5 sm:py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 text-sm sm:text-base"
+          >
             Cancel Changes
           </button>
         )}
         <button 
           onClick={handleSave} 
-          className="btn-primary"
           disabled={!hasChanges || isLoading}
+          className={`flex-1 sm:flex-initial px-4 sm:px-6 py-2.5 sm:py-3 font-semibold rounded-lg shadow-md transition-all duration-200 text-sm sm:text-base ${
+            !hasChanges || isLoading
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg'
+          }`}
         >
           {isLoading ? 'Saving...' : hasChanges ? 'Save Changes' : 'Saved'}
         </button>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Heading,
@@ -6,29 +6,34 @@ import {
   Text,
   Button,
   Alert,
-  Loader
-} from '@aws-amplify/ui-react';
-import { useAuth } from '../contexts/AuthContext';
-import AdvancedSearch from '../components/Search/AdvancedSearch';
-import SearchResults from '../components/Search/SearchResults';
-import { useResponsive } from '../hooks/useResponsive';
+  Loader,
+} from "@aws-amplify/ui-react";
+import { Search } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import AdvancedSearch from "../components/Search/AdvancedSearch";
+import SearchResults from "../components/Search/SearchResults";
+import { useResponsive } from "../hooks/useResponsive";
 
-const SearchPage = ({ 
-  onViewMoment, 
-  onViewStory, 
+const SearchPage = ({
+  onViewMoment,
+  onViewStory,
   onViewUser,
-  initialSearchQuery = '',
-  initialSearchType: _initialSearchType = 'all'
+  onNavigate,
+  initialSearchQuery = "",
+  initialSearchType: _initialSearchType = "all",
 }) => {
   const { user: _user } = useAuth();
-  const { isMobile, isTablet: _isTablet } = useResponsive();
-  
+  const { isMobile } = useResponsive();
+
   // Search state
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState(null);
+
+  // Debounce timer for mobile search
+  const searchTimeoutRef = useRef(null);
 
   // Search history
   const [searchHistory, setSearchHistory] = useState([]);
@@ -47,145 +52,188 @@ const SearchPage = ({
   // Load search history from localStorage
   const loadSearchHistory = () => {
     try {
-      const history = localStorage.getItem('amw_search_history');
+      const history = localStorage.getItem("amw_search_history");
       if (history) {
-        const parsedHistory = JSON.parse(history);
-        setSearchHistory(parsedHistory.slice(0, 10)); // Keep last 10 searches
-        setRecentSearches(parsedHistory.slice(0, 5)); // Show last 5 in suggestions
+        const parsed = JSON.parse(history);
+        setSearchHistory(parsed);
+        setRecentSearches(parsed.slice(0, 5));
       }
     } catch (err) {
-      console.error('Error loading search history:', err);
-    }
-  };
-
-  // Save search to history
-  const saveSearchToHistory = (query, type, resultsCount) => {
-    if (!query.trim()) return;
-
-    const searchEntry = {
-      query,
-      type,
-      resultsCount,
-      timestamp: new Date().toISOString(),
-      id: Date.now()
-    };
-
-    try {
-      const updatedHistory = [searchEntry, ...searchHistory.filter(h => h.query !== query)];
-      const limitedHistory = updatedHistory.slice(0, 10);
-      
-      setSearchHistory(limitedHistory);
-      setRecentSearches(limitedHistory.slice(0, 5));
-      
-      localStorage.setItem('amw_search_history', JSON.stringify(limitedHistory));
-    } catch (err) {
-      console.error('Error saving search history:', err);
+      console.error("Error loading search history:", err);
     }
   };
 
   // Load search suggestions
   const loadSearchSuggestions = () => {
-    // In a real app, these would come from your API
-    const suggestions = [
-      'family vacation',
-      'birthday celebrations',
-      'holiday memories',
-      'childhood photos',
-      'wedding moments',
-      'graduation day',
-      'anniversary',
-      'travel adventures',
-      'family gatherings',
-      'milestone moments'
-    ];
-    setSearchSuggestions(suggestions);
+    // Mock suggestions - in real app, this would come from API
+    setSearchSuggestions([
+      "Family vacation",
+      "Birthday party",
+      "Wedding photos",
+      "Graduation day",
+      "Holiday memories",
+    ]);
   };
 
   // Handle search results
   const handleSearchResults = (results) => {
     setSearchResults(results);
     setHasSearched(true);
+    setIsSearching(false);
     setError(null);
-    
-    // Save to search history if there's a query
+
+    // Save to search history
     if (searchQuery.trim()) {
-      saveSearchToHistory(searchQuery, 'all', results.length);
+      const newHistory = [
+        searchQuery.trim(),
+        ...searchHistory.filter((s) => s !== searchQuery.trim()),
+      ].slice(0, 10);
+      setSearchHistory(newHistory);
+      setRecentSearches(newHistory.slice(0, 5));
+      localStorage.setItem("amw_search_history", JSON.stringify(newHistory));
     }
   };
 
   // Handle search error
-  const handleSearchError = (errorMessage) => {
-    setError(errorMessage);
-    setSearchResults([]);
+  const handleSearchError = (err) => {
+    setError(err.message || "Search failed. Please try again.");
     setHasSearched(true);
+    setIsSearching(false);
   };
 
-  // Handle result click
-  const handleResultClick = (result) => {
-    // Track click analytics here if needed
-    console.log('Result clicked:', result);
-    
-    // Navigate based on result type
-    switch (result.type) {
-      case 'moment':
-        onViewMoment && onViewMoment(result);
-        break;
-      case 'story':
-        onViewStory && onViewStory(result);
-        break;
-      case 'user':
-        onViewUser && onViewUser(result);
-        break;
-      default:
-        console.log('Unknown result type:', result.type);
+  // Simple mobile search function
+  const performMobileSearch = async (query) => {
+    if (!query.trim()) {
+      handleSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+    setError(null);
+
+    try {
+      // This is a simplified version - in production, this would call your API
+      // For now, returning empty results as the search will be handled by API integration later
+      // The AdvancedSearch component handles the actual search logic
+      const results = [];
+      handleSearchResults(results);
+    } catch (err) {
+      handleSearchError(err);
     }
   };
 
-  // Handle suggestion click
-  const handleSuggestionClick = (suggestion) => {
-    setSearchQuery(suggestion);
-    setShowHistory(false);
-    // The AdvancedSearch component will handle the actual search
+  // Debounced mobile search handler
+  const handleMobileSearchChange = (value) => {
+    setSearchQuery(value);
+
+    // Clear existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // If empty, clear results
+    if (!value.trim()) {
+      setSearchResults([]);
+      setHasSearched(false);
+      setIsSearching(false);
+      return;
+    }
+
+    // Debounce search
+    searchTimeoutRef.current = setTimeout(() => {
+      performMobileSearch(value);
+    }, 300);
   };
 
-  // Handle recent search click
-  const handleRecentSearchClick = (searchEntry) => {
-    setSearchQuery(searchEntry.query);
-    setShowHistory(false);
-    // The AdvancedSearch component will handle the actual search
+  // Handle Enter key press to trigger search immediately
+  const handleMobileSearchKeyDown = (e) => {
+    if (e.key === "Enter" || e.keyCode === 13) {
+      e.preventDefault();
+      // Clear any pending debounced search
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+      // Trigger search immediately
+      if (searchQuery.trim()) {
+        performMobileSearch(searchQuery);
+      }
+    }
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Clear search history
   const clearSearchHistory = () => {
     setSearchHistory([]);
     setRecentSearches([]);
-    localStorage.removeItem('amw_search_history');
+    localStorage.removeItem("amw_search_history");
     setShowHistory(false);
   };
 
   return (
-    <View className="min-h-screen bg-gray-50 py-6">
-      <View className="amw-container">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <Heading level={1} className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+    <div className="min-h-screen bg-gray-50 pb-20 lg:pb-6">
+      {/* Desktop: Search Bar at Top */}
+      <div className="hidden lg:block">
+        <div className="bg-white border-b-2 border-gray-200 shadow-sm sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="bg-white rounded-xl border-2 border-gray-200 p-4">
+              <AdvancedSearch
+                onSearchResults={handleSearchResults}
+                onSearchError={handleSearchError}
+                initialQuery={searchQuery}
+                onQueryChange={setSearchQuery}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile: Search Bar Above Bottom Nav - Stuck to bottom nav with no gap */}
+      <div
+        className="lg:hidden fixed left-0 right-0 bg-white z-40 px-4 py-3"
+        style={{
+          bottom: "calc(env(safe-area-inset-bottom, 0) + 4.5rem)",
+          margin: 0,
+          marginBottom: "-4px",
+          borderBottom: "none",
+        }}
+      >
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+            <Search className="h-5 w-5 text-gray-400" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search moments, stories, and family..."
+            value={searchQuery}
+            onChange={(e) => handleMobileSearchChange(e.target.value)}
+            onKeyDown={handleMobileSearchKeyDown}
+            className="block w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base"
+            style={{ margin: 0 }}
+          />
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <View className="amw-container pt-6 lg:pt-8">
+        {/* Header - Only show on desktop */}
+        <div className="hidden lg:block text-center mb-8">
+          <Heading
+            level={1}
+            className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4"
+          >
             Search & Discover
           </Heading>
           <Text className="text-lg text-gray-600 max-w-2xl mx-auto">
             Find moments, stories, and family members across your collection
           </Text>
-        </div>
-
-        {/* Search Component */}
-        <div className="amw-card p-6 mb-8">
-          <AdvancedSearch
-            onSearchResults={handleSearchResults}
-            onSearchError={handleSearchError}
-            onSearchStart={() => setIsSearching(true)}
-            onSearchEnd={() => setIsSearching(false)}
-            initialQuery={searchQuery}
-            onQueryChange={setSearchQuery}
-          />
         </div>
 
         {/* Loading State */}
@@ -204,13 +252,29 @@ const SearchPage = ({
           </Alert>
         )}
 
+        {/* Search Results */}
+        {hasSearched && !isSearching && (
+          <div className="mt-6 lg:mt-8">
+            <SearchResults
+              results={searchResults}
+              onViewMoment={onViewMoment}
+              onViewStory={onViewStory}
+              onViewUser={onViewUser}
+            />
+          </div>
+        )}
+
         {/* Search Suggestions (when no search has been performed) */}
         {!hasSearched && !isSearching && (
           <div className="space-y-8">
             {/* Recent Searches */}
             {recentSearches.length > 0 && (
               <div className="amw-card p-6">
-                <Flex justifyContent="space-between" alignItems="center" className="mb-4">
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  className="mb-4"
+                >
                   <Text className="text-lg font-semibold text-gray-800">
                     Recent Searches
                   </Text>
@@ -218,43 +282,25 @@ const SearchPage = ({
                     variation="link"
                     size="small"
                     onClick={clearSearchHistory}
-                    className="text-red-600 hover:text-red-700 text-sm"
                   >
-                    Clear All
+                    Clear
                   </Button>
                 </Flex>
-                <div className="space-y-2">
+                <Flex direction="row" wrap="wrap" gap="small">
                   {recentSearches.map((search, index) => (
-                    <div
-                      key={search.id || index}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200"
-                      onClick={() => handleRecentSearchClick(search)}
+                    <Button
+                      key={index}
+                      variation="outlined"
+                      size="small"
+                      onClick={() => {
+                        setSearchQuery(search);
+                        // Trigger search
+                      }}
                     >
-                      <div className="flex items-center space-x-3">
-                        <span className="text-gray-400">🔍</span>
-                        <div>
-                          <Text className="font-medium text-gray-800">
-                            {search.query}
-                          </Text>
-                          <Text className="text-sm text-gray-500">
-                            {search.resultsCount} results • {new Date(search.timestamp).toLocaleDateString()}
-                          </Text>
-                        </div>
-                      </div>
-                      <Button
-                        variation="link"
-                        size="small"
-                        className="text-gray-400 hover:text-gray-600"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRecentSearchClick(search);
-                        }}
-                      >
-                        ↗
-                      </Button>
-                    </div>
+                      {search}
+                    </Button>
                   ))}
-                </div>
+                </Flex>
               </div>
             )}
 
@@ -263,80 +309,53 @@ const SearchPage = ({
               <Text className="text-lg font-semibold text-gray-800 mb-4">
                 Popular Searches
               </Text>
-              <div className="flex flex-wrap gap-2">
-                {searchSuggestions.slice(0, isMobile ? 6 : 10).map((suggestion, index) => (
+              <Flex direction="row" wrap="wrap" gap="small">
+                {searchSuggestions.map((suggestion, index) => (
                   <Button
                     key={index}
-                    variation="link"
+                    variation="outlined"
                     size="small"
-                    className="bg-primary-50 hover:bg-primary-100 text-primary-700 px-3 py-2 rounded-lg text-sm transition-colors duration-200"
-                    onClick={() => handleSuggestionClick(suggestion)}
+                    onClick={() => {
+                      setSearchQuery(suggestion);
+                      // Trigger search
+                    }}
                   >
                     {suggestion}
                   </Button>
                 ))}
-              </div>
+              </Flex>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="amw-card p-6">
+              <Text className="text-lg font-semibold text-gray-800 mb-4">
+                Quick Actions
+              </Text>
+              <Flex direction="column" gap="medium">
+                <Button
+                  variation="outlined"
+                  onClick={() => onNavigate && onNavigate("/moments")}
+                >
+                  Browse All Moments
+                </Button>
+                <Button
+                  variation="outlined"
+                  onClick={() => onNavigate && onNavigate("/stories")}
+                >
+                  Explore Stories
+                </Button>
+                <Button
+                  variation="outlined"
+                  onClick={() => onNavigate && onNavigate("/family")}
+                >
+                  View Family Members
+                </Button>
+              </Flex>
             </div>
           </div>
         )}
-
-        {/* Search Results */}
-        {hasSearched && !isSearching && (
-          <div className="amw-card">
-            <SearchResults
-              results={searchResults}
-              searchQuery={searchQuery}
-              onResultClick={handleResultClick}
-              onViewMoment={onViewMoment}
-              onViewStory={onViewStory}
-              onViewUser={onViewUser}
-              showResultType={true}
-              groupByType={true}
-            />
-          </div>
-        )}
-
-        {/* Quick Actions */}
-        {!hasSearched && !isSearching && (
-          <div className="amw-card p-6">
-            <Text className="text-lg font-semibold text-gray-800 mb-6 text-center">
-              Quick Actions
-            </Text>
-            <Flex 
-              direction={isMobile ? "column" : "row"} 
-              gap="medium" 
-              justifyContent="center"
-              className="space-y-4 lg:space-y-0 lg:space-x-4"
-            >
-              <Button
-                variation="primary"
-                onClick={() => handleSuggestionClick('recent moments')}
-                className="btn-primary inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-              >
-                <span>📸</span>
-                <span>Browse Recent Moments</span>
-              </Button>
-              <Button
-                variation="primary"
-                onClick={() => handleSuggestionClick('family stories')}
-                className="btn-secondary inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-              >
-                <span>📖</span>
-                <span>Explore Family Stories</span>
-              </Button>
-              <Button
-                variation="primary"
-                onClick={() => handleSuggestionClick('family members')}
-                className="bg-green-600 hover:bg-green-700 text-white inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-              >
-                <span>👥</span>
-                <span>Find Family Members</span>
-              </Button>
-            </Flex>
-          </div>
-        )}
       </View>
-    </View>
+    </div>
   );
 };
 

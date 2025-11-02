@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, Image, Text, Flex, Button, View, Badge } from '@aws-amplify/ui-react';
 import { getUrl } from 'aws-amplify/storage';
 import { useAuth } from '../contexts/AuthContext';
-import ShareModal from './ShareModal';
+import ShareDropdown from './ShareDropdown';
 import CommentSection from './Comment/CommentSection';
 import MDEditor from '@uiw/react-md-editor';
 import '@uiw/react-markdown-preview/markdown.css';
@@ -16,8 +16,9 @@ const MomentDetailView = ({
   showActions = true 
 }) => {
   const [imageData, setImageData] = useState(null);
-  const [showShareModal, setShowShareModal] = useState(false);
+  const [showShareDropdown, setShowShareDropdown] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const shareButtonRef = useRef(null);
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -283,15 +284,31 @@ const MomentDetailView = ({
 
           {/* Actions */}
           {showActions && (
-            <Flex direction="row" gap="small" justifyContent="flex-end">
+            <Flex direction="row" gap="small" justifyContent="flex-end" style={{ position: 'relative' }}>
               {moment?.allowSharing !== false && (
-                <Button 
-                  variation="outline" 
-                  size="small"
-                  onClick={() => setShowShareModal(true)}
-                >
-                  Share
-                </Button>
+                <div ref={shareButtonRef} style={{ position: 'relative', display: 'inline-block' }}>
+                  <Button 
+                    variation="outline" 
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowShareDropdown(!showShareDropdown);
+                    }}
+                    style={{ minWidth: '80px' }}
+                  >
+                    Share
+                  </Button>
+                  {showShareDropdown && (
+                    <ShareDropdown
+                      story={story}
+                      moment={moment}
+                      onClose={() => setShowShareDropdown(false)}
+                      shareType="moment"
+                      momentTitle={moment.title}
+                      buttonRef={shareButtonRef}
+                    />
+                  )}
+                </div>
               )}
               {onEdit && (
                 <Button 
@@ -320,17 +337,6 @@ const MomentDetailView = ({
 
       {/* Comments Section */}
       <CommentSection momentId={moment.id} />
-
-      {/* Share Modal */}
-      {showShareModal && (
-        <ShareModal
-          story={story}
-          moment={moment}
-          onClose={() => setShowShareModal(false)}
-          shareType="moment"
-          momentTitle={moment.title}
-        />
-      )}
 
       <style jsx>{`
         .moment-detail-view {

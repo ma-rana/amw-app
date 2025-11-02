@@ -20,6 +20,9 @@ import { usePrivacy } from '../../contexts/PrivacyContext';
 
 const AdvancedSearch = ({ 
   onSearchResults, 
+  onSearchError,
+  onQueryChange,
+  initialQuery = '',
   searchTypes = ['moments', 'stories', 'users'],
   placeholder = "Search across your family memories...",
   showFilters = true,
@@ -29,7 +32,7 @@ const AdvancedSearch = ({
   const { getUsersForPrivacy } = usePrivacy();
 
   // Search state
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [searchType, setSearchType] = useState('all');
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
@@ -87,19 +90,29 @@ const AdvancedSearch = ({
 
       setIsSearching(true);
       setError(null);
+      if (onSearchStart) {
+        onSearchStart();
+      }
 
       try {
         const results = await performSearch(query, type, currentFilters);
         setSearchResults(results);
         onSearchResults && onSearchResults(results);
       } catch (err) {
-        setError('Search failed. Please try again.');
+        const errorMessage = err.message || 'Search failed. Please try again.';
+        setError(errorMessage);
+        if (onSearchError) {
+          onSearchError(err);
+        }
         console.error('Search error:', err);
       } finally {
         setIsSearching(false);
+        if (onSearchEnd) {
+          onSearchEnd();
+        }
       }
     }, 300),
-    [onSearchResults]
+    [onSearchResults, onSearchError]
   );
 
   // Perform search
@@ -212,10 +225,20 @@ const AdvancedSearch = ({
   // Handle search input change
   const handleSearchChange = (value) => {
     setSearchQuery(value);
+    if (onQueryChange) {
+      onQueryChange(value);
+    }
     if (autoSearch) {
       debouncedSearch(value, searchType, filters);
     }
   };
+
+  // Sync with initialQuery prop
+  useEffect(() => {
+    if (initialQuery !== searchQuery && initialQuery) {
+      setSearchQuery(initialQuery);
+    }
+  }, [initialQuery]);
 
   // Handle search type change
   const handleSearchTypeChange = (value) => {

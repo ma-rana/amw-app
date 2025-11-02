@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getUrl } from 'aws-amplify/storage';
 import { useAuth } from '../contexts/AuthContext';
-import ShareModal from './ShareModal';
+import ShareDropdown from './ShareDropdown';
 
 const MomentCard = ({ title, imageUrl, date, onClick, moment, story }) => {
   const [imageData, setImageData] = useState(null);
-  const [showShareModal, setShowShareModal] = useState(false);
+  const [showShareDropdown, setShowShareDropdown] = useState(false);
+  const shareButtonRef = useRef(null);
   const { isAuthenticated } = useAuth();
   
   // Get media info for display
@@ -40,7 +41,7 @@ const MomentCard = ({ title, imageUrl, date, onClick, moment, story }) => {
   const canShare = moment?.allowSharing !== false;
 
   return (
-    <div className="card group cursor-pointer transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+    <div className="card group cursor-pointer transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg relative">
       <div className="relative overflow-hidden rounded-t-lg">
         {isPrimaryImage() ? (
           <img
@@ -83,30 +84,38 @@ const MomentCard = ({ title, imageUrl, date, onClick, moment, story }) => {
         <div className="flex gap-3">
           <button 
             className="btn btn-primary flex-1 text-sm font-medium"
+            style={{ minHeight: '40px', padding: '0.625rem 1rem' }}
             onClick={onClick}
           >
             View Details
           </button>
           {canShare && (
-            <button 
-              className="btn btn-outline text-sm font-medium px-4"
-              onClick={() => setShowShareModal(true)}
-            >
-              Share
-            </button>
+            <div className="relative flex-1">
+              <button 
+                ref={shareButtonRef}
+                className="btn btn-outline text-sm font-medium whitespace-nowrap w-full"
+                style={{ minHeight: '40px', padding: '0.625rem 1rem' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowShareDropdown(!showShareDropdown);
+                }}
+              >
+                Share
+              </button>
+              {showShareDropdown && (
+                <ShareDropdown
+                  story={story}
+                  moment={moment}
+                  onClose={() => setShowShareDropdown(false)}
+                  shareType="moment"
+                  momentTitle={title}
+                  buttonRef={shareButtonRef}
+                />
+              )}
+            </div>
           )}
         </div>
       </div>
-      
-      {showShareModal && (
-        <ShareModal
-          story={story}
-          moment={moment}
-          onClose={() => setShowShareModal(false)}
-          shareType="moment"
-          momentTitle={title}
-        />
-      )}
     </div>
   );
 };

@@ -46,7 +46,7 @@ const ToastNotification = ({ toast, onRemove }) => {
   };
 
   return (
-    <div className={getToastClass(toast.type)}>
+    <div className={getToastClass(toast.type)} style={{ background: '#ffffff', backgroundColor: '#ffffff' }}>
       <div className="toast-icon">
         {toast.icon || getToastIcon(toast.type)}
       </div>

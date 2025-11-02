@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './SettingsStyles.css';
+import { Globe, MapPin, Calendar, Clock, DollarSign, Eye } from 'lucide-react';
 
 const LanguageSettings = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('en');
@@ -161,85 +161,89 @@ const LanguageSettings = () => {
   };
 
   return (
-    <div className="settings-container">
-      <div className="settings-header">
-        <h2>Language & Region Settings</h2>
-        <p>Customize your language, region, and formatting preferences</p>
-      </div>
-
+    <div className="space-y-6 sm:space-y-8">
       {/* Language Selection */}
-      <div className="settings-section">
-        <h3>Language</h3>
-        
-        <div className="setting-item">
-          <div className="setting-info">
-            <label>Interface Language</label>
-            <p>Choose your preferred language for the app interface</p>
-          </div>
-          <div className="setting-control">
-            <div className="language-option selected">
-              <span className="language-flag">{getCurrentLanguage().flag}</span>
-              <span className="language-name">{getCurrentLanguage().nativeName}</span>
-            </div>
-          </div>
+      <div>
+        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+          <Globe size={20} className="sm:w-6 sm:h-6 text-blue-600 flex-shrink-0" />
+          <h3 className="text-lg sm:text-xl md:text-2xl font-extrabold text-gray-900">Language</h3>
         </div>
-
-        <div className="language-grid">
+        <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 ml-7 sm:ml-9">
+          Choose your preferred language for the app interface
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
           {languages.map((language) => (
-            <div
+            <button
               key={language.code}
-              className={`language-option ${selectedLanguage === language.code ? 'selected' : ''}`}
               onClick={() => handleLanguageChange(language.code)}
+              className={`relative bg-white border-2 rounded-xl p-3 sm:p-4 transition-all duration-200 text-left ${
+                selectedLanguage === language.code 
+                  ? 'border-blue-600 shadow-lg shadow-blue-100' 
+                  : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+              }`}
             >
-              <span className="language-flag">{language.flag}</span>
-              <div>
-                <div className="language-name">{language.name}</div>
-                <div style={{ fontSize: '12px', opacity: 0.8 }}>{language.nativeName}</div>
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <span className="text-2xl sm:text-3xl">{language.flag}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-sm sm:text-base text-gray-900 truncate">{language.name}</div>
+                  <div className="text-xs sm:text-sm text-gray-500 truncate">{language.nativeName}</div>
+                </div>
               </div>
-            </div>
+              {selectedLanguage === language.code && (
+                <div className="absolute top-2 right-2 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  ✓
+                </div>
+              )}
+            </button>
           ))}
         </div>
       </div>
 
       {/* Region Selection */}
-      <div className="settings-section">
-        <h3>Region</h3>
-        
-        <div className="setting-item">
-          <div className="setting-info">
-            <label>Region/Country</label>
-            <p>Select your region for localized content and formats</p>
-          </div>
-          <div className="setting-control">
-            <select
-              value={selectedRegion}
-              onChange={(e) => handleRegionChange(e.target.value)}
-              className="select-input"
-            >
-              {regions.map((region) => (
-                <option key={region.code} value={region.code}>
-                  {region.flag} {region.name}
-                </option>
-              ))}
-            </select>
-          </div>
+      <div>
+        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+          <MapPin size={20} className="sm:w-6 sm:h-6 text-red-600 flex-shrink-0" />
+          <h3 className="text-lg sm:text-xl md:text-2xl font-extrabold text-gray-900">Region</h3>
+        </div>
+        <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 ml-7 sm:ml-9">
+          Select your region for localized content and formats
+        </p>
+        <div className="bg-gray-50 rounded-xl p-4 sm:p-6 border-2 border-gray-200">
+          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+            <MapPin size={16} className="text-gray-500" />
+            Region/Country
+          </label>
+          <select
+            value={selectedRegion}
+            onChange={(e) => handleRegionChange(e.target.value)}
+            className="w-full px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg text-sm sm:text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            {regions.map((region) => (
+              <option key={region.code} value={region.code}>
+                {region.flag} {region.name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
       {/* Date & Time Formats */}
-      <div className="settings-section">
-        <h3>Date & Time Formats</h3>
-        
-        <div className="setting-item">
-          <div className="setting-info">
-            <label>Date Format</label>
-            <p>Choose how dates are displayed throughout the app</p>
-          </div>
-          <div className="setting-control">
+      <div>
+        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+          <Clock size={20} className="sm:w-6 sm:h-6 text-amber-600 flex-shrink-0" />
+          <h3 className="text-lg sm:text-xl md:text-2xl font-extrabold text-gray-900">Date & Time Formats</h3>
+        </div>
+        <div className="space-y-4">
+          <div className="bg-gray-50 rounded-xl p-4 sm:p-6 border-2 border-gray-200">
+            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+              <Calendar size={16} className="text-gray-500" />
+              Date Format
+            </label>
+            <p className="text-xs sm:text-sm text-gray-600 mb-3 ml-6">Choose how dates are displayed</p>
             <select
               value={dateFormat}
               onChange={(e) => handleDateFormatChange(e.target.value)}
-              className="select-input"
+              className="w-full px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg text-sm sm:text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {dateFormats.map((format) => (
                 <option key={format.value} value={format.value}>
@@ -248,32 +252,30 @@ const LanguageSettings = () => {
               ))}
             </select>
           </div>
-        </div>
 
-        <div className="setting-item">
-          <div className="setting-info">
-            <label>Time Format</label>
-            <p>Choose between 12-hour and 24-hour time format</p>
-          </div>
-          <div className="setting-control">
+          <div className="bg-gray-50 rounded-xl p-4 sm:p-6 border-2 border-gray-200">
+            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+              <Clock size={16} className="text-gray-500" />
+              Time Format
+            </label>
+            <p className="text-xs sm:text-sm text-gray-600 mb-3 ml-6">Choose between 12-hour and 24-hour format</p>
             <select
               value={timeFormat}
               onChange={(e) => handleTimeFormatChange(e.target.value)}
-              className="select-input"
+              className="w-full px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg text-sm sm:text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="12">12-hour (3:30 PM)</option>
               <option value="24">24-hour (15:30)</option>
             </select>
           </div>
-        </div>
 
-        <div className="setting-item">
-          <div className="setting-info">
-            <label>Preview</label>
-            <p>See how your date and time settings will appear</p>
-          </div>
-          <div className="setting-control">
-            <div style={{ textAlign: 'right', fontSize: '14px', color: '#280a32', fontWeight: '500' }}>
+          <div className="bg-blue-50 rounded-xl p-4 sm:p-6 border-2 border-blue-200">
+            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+              <Eye size={16} className="text-blue-600" />
+              Preview
+            </label>
+            <p className="text-xs sm:text-sm text-gray-600 mb-2 ml-6">See how your settings will appear</p>
+            <div className="text-base sm:text-lg font-semibold text-gray-900 space-y-1 ml-6">
               <div>{formatSampleDate()}</div>
               <div>{formatSampleTime()}</div>
             </div>
@@ -282,19 +284,22 @@ const LanguageSettings = () => {
       </div>
 
       {/* Currency */}
-      <div className="settings-section">
-        <h3>Currency</h3>
-        
-        <div className="setting-item">
-          <div className="setting-info">
-            <label>Default Currency</label>
-            <p>Choose your preferred currency for displaying prices</p>
-          </div>
-          <div className="setting-control">
+      <div>
+        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+          <DollarSign size={20} className="sm:w-6 sm:h-6 text-green-600 flex-shrink-0" />
+          <h3 className="text-lg sm:text-xl md:text-2xl font-extrabold text-gray-900">Currency</h3>
+        </div>
+        <div className="space-y-4">
+          <div className="bg-gray-50 rounded-xl p-4 sm:p-6 border-2 border-gray-200">
+            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+              <DollarSign size={16} className="text-gray-500" />
+              Default Currency
+            </label>
+            <p className="text-xs sm:text-sm text-gray-600 mb-3 ml-6">Choose your preferred currency</p>
             <select
               value={currency}
               onChange={(e) => handleCurrencyChange(e.target.value)}
-              className="select-input"
+              className="w-full px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg text-sm sm:text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {currencies.map((curr) => (
                 <option key={curr.code} value={curr.code}>
@@ -303,53 +308,32 @@ const LanguageSettings = () => {
               ))}
             </select>
           </div>
-        </div>
 
-        <div className="setting-item">
-          <div className="setting-info">
-            <label>Currency Preview</label>
-            <p>Example of how prices will be displayed</p>
-          </div>
-          <div className="setting-control">
-            <div style={{ fontSize: '14px', color: '#280a32', fontWeight: '500' }}>
+          <div className="bg-blue-50 rounded-xl p-4 sm:p-6 border-2 border-blue-200">
+            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+              <Eye size={16} className="text-blue-600" />
+              Currency Preview
+            </label>
+            <p className="text-xs sm:text-sm text-gray-600 mb-2 ml-6">Example of how prices will be displayed</p>
+            <div className="text-lg sm:text-xl font-bold text-gray-900 ml-6">
               {getCurrentCurrency().symbol}99.99
             </div>
           </div>
         </div>
       </div>
 
-      {/* Current Settings Summary */}
-      <div className="settings-section">
-        <h3>Current Settings Summary</h3>
-        
-        <div className="setting-item">
-          <div className="setting-info">
-            <label>Language</label>
-            <p>{getCurrentLanguage().name} ({getCurrentLanguage().nativeName})</p>
-          </div>
-        </div>
-
-        <div className="setting-item">
-          <div className="setting-info">
-            <label>Region</label>
-            <p>{getCurrentRegion().flag} {getCurrentRegion().name}</p>
-          </div>
-        </div>
-
-        <div className="setting-item">
-          <div className="setting-info">
-            <label>Formats</label>
-            <p>Date: {formatSampleDate()} | Time: {formatSampleTime()} | Currency: {getCurrentCurrency().symbol}</p>
-          </div>
-        </div>
-      </div>
-
       {/* Actions */}
-      <div className="settings-actions">
-        <button onClick={resetToDefaults} className="btn-secondary">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 border-t-2 border-gray-200">
+        <button 
+          onClick={resetToDefaults} 
+          className="flex-1 sm:flex-initial px-4 sm:px-6 py-2.5 sm:py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 text-sm sm:text-base"
+        >
           Reset to Defaults
         </button>
-        <button onClick={saveSettings} className="btn-primary">
+        <button 
+          onClick={saveSettings} 
+          className="flex-1 sm:flex-initial px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-sm sm:text-base"
+        >
           Save Settings
         </button>
       </div>

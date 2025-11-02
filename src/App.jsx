@@ -105,11 +105,15 @@ function AppContent() {
   
   const handleViewMoment = (moment) => {
     setSelectedMoment(moment)
-    navigate('/moment-detail')
+    navigate(`/moment-detail/${moment.id}`)
   }
   
   const handleCreateMoment = () => {
     navigate('/create-moment')
+  }
+
+  const handleCreateStory = () => {
+    navigate('/stories', { state: { action: 'create' } })
   }
 
   const handleEditMoment = (moment) => {
@@ -166,7 +170,7 @@ function AppContent() {
         />
       )}
       
-      <main className={`${isAuthenticated ? 'desktop-main' : 'min-h-screen'}`}>
+      <main className={`${isAuthenticated ? 'desktop-main' : 'min-h-screen'} lg:pt-0 pt-14`}>
         <div className={`${isAuthenticated ? 'container-fluid' : 'w-full'}`}>
           <Routes>
             {/* Welcome/Landing page */}
@@ -223,7 +227,7 @@ function AppContent() {
             {/* Protected user routes - require user authentication */}
             <Route path="/home" element={
               isAuthenticated ? (
-                <HomePage onCreateMoment={handleCreateMoment} onViewMoment={handleViewMoment} onEditMoment={handleEditMoment} moments={moments} onNavigate={handleNavigation} />
+                <HomePage onCreateMoment={handleCreateMoment} onCreateStory={handleCreateStory} onViewMoment={handleViewMoment} onEditMoment={handleEditMoment} onNavigate={handleNavigation} />
               ) : (
                 <Navigate to="/login" replace />
               )
@@ -292,7 +296,7 @@ function AppContent() {
                 <Navigate to="/login" replace />
               )
             } />
-            <Route path="/moment-detail" element={
+            <Route path="/moment-detail/:id?" element={
               isAuthenticated ? (
                 <MomentDetailPage moment={selectedMoment} onBack={() => handleNavigation('moments')} onUpdate={handleUpdateMoment} onDelete={handleDeleteMoment} onEdit={handleEditMoment} />
               ) : (
@@ -318,7 +322,7 @@ function AppContent() {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
           
-          <footer className="app-footer">
+          <footer className="app-footer hidden lg:block">
             <Text>&copy; {new Date().getFullYear()} A Moment With - All rights reserved</Text>
           </footer>
         </div>

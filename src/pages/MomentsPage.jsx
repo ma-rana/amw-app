@@ -131,9 +131,9 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
   const hasMoreMoments = displayedMoments < processedMoments.length;
     
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20 lg:pb-0">
       {/* Header */}
-      <div className="bg-white border-b-2 border-gray-200 sticky top-0 z-10 shadow-sm">
+      <div className="bg-white border-b-2 border-gray-200 sticky lg:sticky top-14 lg:top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
             <div className="flex items-center space-x-3 md:space-x-4">
@@ -277,7 +277,7 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
           
           {/* Load More Button */}
           {hasMoreMoments && (
-            <div className="flex justify-center mt-10 md:mt-12">
+            <div className="flex justify-center mt-10 md:mt-12 mb-20 lg:mb-0">
               <button 
                  onClick={loadMoreMoments}
                  disabled={isLoading}
