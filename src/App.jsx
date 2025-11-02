@@ -76,11 +76,12 @@ function AppContent() {
   
   // Redirect to login if not authenticated (but allow public pages and let invalid URLs show 404)
   useEffect(() => {
-    const protectedPages = ['/home', '/moments', '/stories', '/shared-stories', '/chapters', '/questions', '/family', '/search', '/profile', '/settings', '/moment-detail', '/create-moment', '/edit-moment', '/admin'];
+    const protectedPages = ['/home', '/moments', '/stories', '/shared-stories', '/chapters', '/questions', '/family', '/search', '/profile', '/settings', '/moment-detail', '/create-moment', '/edit-moment'];
     const currentPath = location.pathname;
     
     // Only redirect to login if user is not authenticated AND trying to access a known protected route
-    if (!isAuthenticated && currentPath !== '/' && protectedPages.some(page => currentPath.startsWith(page))) {
+    // Exclude admin paths as they have their own authentication logic
+    if (!isAuthenticated && currentPath !== '/' && !currentPath.startsWith('/admin') && protectedPages.some(page => currentPath.startsWith(page))) {
       navigate('/login');
     }
   }, [isAuthenticated, location.pathname, navigate]);

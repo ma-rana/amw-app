@@ -24,7 +24,12 @@ class RealtimeService {
           callbacks.onCreate(data.onCreateMoment);
         },
         error: (error) => {
-          console.error('❌ Moment creation subscription error:', error);
+          // Only log errors that aren't authentication-related
+          if (!this.isAuthenticationError(error)) {
+            console.error('❌ Moment creation subscription error:', error);
+          } else {
+            console.log('ℹ️ Moment subscription requires authentication');
+          }
           if (callbacks.onError) callbacks.onError(error);
         }
       });
@@ -39,7 +44,12 @@ class RealtimeService {
           callbacks.onUpdate(data.onUpdateMoment);
         },
         error: (error) => {
-          console.error('❌ Moment update subscription error:', error);
+          // Only log errors that aren't authentication-related
+          if (!this.isAuthenticationError(error)) {
+            console.error('❌ Moment update subscription error:', error);
+          } else {
+            console.log('ℹ️ Moment update subscription requires authentication');
+          }
           if (callbacks.onError) callbacks.onError(error);
         }
       });
@@ -193,6 +203,30 @@ class RealtimeService {
   // Check if service is connected
   isConnected() {
     return activeSubscriptions.size > 0;
+  }
+
+  // Helper method to check if error is authentication-related
+  isAuthenticationError(error) {
+    if (!error) return false;
+    
+    const errorMessage = error.message || '';
+    const errorName = error.name || '';
+    
+    return (
+      errorName === 'UserUnAuthenticatedError' ||
+      errorName === 'UserUnAuthenticatedException' ||
+      errorMessage.includes('not authenticated') ||
+      errorMessage.includes('User needs to be authenticated') ||
+      errorMessage.includes('Unauthorized') ||
+      errorMessage.includes('Authentication required') ||
+      (error.errors && error.errors.some(e => 
+        e.message && (
+          e.message.includes('not authenticated') ||
+          e.message.includes('Unauthorized') ||
+          e.message.includes('Authentication required')
+        )
+      ))
+    );
   }
 }
 

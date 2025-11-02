@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import notificationService from '../services/notificationService';
+import { useAuth } from './AuthContext';
 
 const NotificationContext = createContext();
 
@@ -16,8 +17,14 @@ export const NotificationProvider = ({ children }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isInitialized, setIsInitialized] = useState(false);
   const [pushEnabled, setPushEnabled] = useState(false);
+  const { isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
+    // Don't initialize if still loading auth state
+    if (isLoading) {
+      return;
+    }
+
     // Initialize notification service
     const initializeNotifications = async () => {
       try {
@@ -38,26 +45,30 @@ export const NotificationProvider = ({ children }) => {
         setNotifications(notificationService.getNotifications());
         setUnreadCount(notificationService.getUnreadCount());
 
-        // Initialize real-time subscriptions for moments and stories
-        console.log('🔴 Initializing real-time subscriptions...');
-        
-        // Subscribe to moment notifications
-        notificationService.subscribeMomentNotifications({
-          onMomentClick: (moment) => {
-            console.log('🔴 Moment notification clicked:', moment);
-            // Handle moment click navigation
-          }
-        });
+        // Only initialize real-time subscriptions if user is authenticated
+        if (isAuthenticated) {
+          console.log('🔴 Initializing real-time subscriptions...');
+          
+          // Subscribe to moment notifications
+          notificationService.subscribeMomentNotifications({
+            onMomentClick: (moment) => {
+              console.log('🔴 Moment notification clicked:', moment);
+              // Handle moment click navigation
+            }
+          });
 
-        // Subscribe to story notifications  
-        notificationService.subscribeStoryNotifications({
-          onStoryClick: (story) => {
-            console.log('🔴 Story notification clicked:', story);
-            // Handle story click navigation
-          }
-        });
+          // Subscribe to story notifications  
+          notificationService.subscribeStoryNotifications({
+            onStoryClick: (story) => {
+              console.log('🔴 Story notification clicked:', story);
+              // Handle story click navigation
+            }
+          });
 
-        console.log('✅ Real-time subscriptions initialized');
+          console.log('✅ Real-time subscriptions initialized');
+        } else {
+          console.log('ℹ️ Skipping real-time subscriptions - user not authenticated');
+        }
 
         return unsubscribe;
       } catch (error) {
@@ -76,7 +87,7 @@ export const NotificationProvider = ({ children }) => {
       console.log('🔴 Cleaning up real-time subscriptions...');
       notificationService.unsubscribeAllRealtime();
     };
-  }, []);
+  }, [isAuthenticated, isLoading]);
 
   const addNotification = (notification) => {
     return notificationService.addNotification(notification);

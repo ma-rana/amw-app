@@ -11,7 +11,10 @@ export const testCognitoConnection = async () => {
     console.log('✅ AWS Cognito connection successful - User is authenticated');
     return true;
   } catch (error) {
-    if (error.name === 'UserUnAuthenticatedError' || error.message.includes('not authenticated')) {
+    if (error.name === 'UserUnAuthenticatedError' || 
+        error.name === 'UserUnAuthenticatedException' ||
+        error.message.includes('not authenticated') ||
+        error.message.includes('User needs to be authenticated')) {
       console.log('✅ AWS Cognito connection successful - No user authenticated (expected)');
       return true;
     } else {
