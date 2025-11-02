@@ -1,0 +1,272 @@
+type Media @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  parentId: String
+  timestamp: AWSTimestamp
+  imageUrl: AWSURL
+  videoUrl: AWSURL
+  mediaSizeMegaBytes: Float
+  isVideo: Boolean
+}
+
+type Notification @model @auth(rules: [{ allow: private }]) {
+  timestamp: AWSTimestamp
+  message: String
+  title: String
+  storyId: String
+  StoryName: String
+  inviteCode: String
+  storyImageUrl: String
+  isRead: Boolean
+  isStoryJoined: Boolean
+  redirectUrl: String
+  momentId: String
+  fromUser: User @hasOne
+  toUser: User @hasOne
+}
+
+type NotificationUser {
+  userId: String
+  name: String
+  lastName: String
+  imageUrl: String
+  userDevices: [Devices]
+}
+
+type Devices {
+  deviceToken: String
+  channelType: String
+  __typename: String
+}
+
+type Attachment @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  parentId: String
+  userId: String
+  user: User @hasOne
+  timestamp: AWSTimestamp
+  elementId: String
+  element: Media
+  type: String
+  awswerId: ID! @index(name: "byAnswer")
+}
+
+type Answer @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  userId: String
+  user: User @hasOne
+  questionId: String
+  text: String
+  attachments: [Attachment] @hasMany(indexName: "byAnswer", fields: ["id"])
+  attachmentIds: [String]
+}
+
+type Question @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  userId: String
+  title: String
+  timestamp: AWSTimestamp
+  toUserId: String
+  answer: Answer
+  answerId: String
+  attachments: [Attachment]
+  attachmentIds: [String]
+  chapterId: ID! @index(name: "byChapter")
+  toUser: User @hasOne
+  storyId: Story @hasOne
+}
+
+type Moment @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  title: String
+  order: Int @index(name: "byMomentOrder", queryField: "momentByOrder")
+  mediaId: String
+  description: String
+  userId: String
+  taggedUserIds: [String]
+  taggedUsers: [User] @manyToMany(relationName: "momentTaggedUsers")
+  timestamp: AWSTimestamp
+  storyId: ID @index(name: "byStory")
+  chapterId: ID @index(name: "byChapter")
+  user: User @hasOne
+  media: Media @hasOne
+  chapter: Chapter @belongsTo(fields: ["chapterId"])
+  story: Story @hasOne
+  reportedCount: String
+}
+
+type Chapter @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  title: String
+  order: Int @index(name: "byChapterOrder", queryField: "chapterByOrder")
+  imageUrl: AWSURL
+  isDefault: Boolean
+  storyId: ID! @index(name: "byStory")
+  userId: String
+  momentIds: [String]
+  questionIds: [String]
+  user: User @hasOne
+  questions: [Question] @hasMany(indexName: "byChapter", fields: ["id"])
+  moments: [Moment] @hasMany(indexName: "byChapter", fields: ["id"])
+  sharedUrl: [SharedUrl] @hasMany(indexName: "byChapterId", fields: ["id"])
+  story: Story @belongsTo(fields: ["storyId"])
+}
+
+type User @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  name: String
+  lastName: String
+  funFacts: String
+  bio: String
+  sharingMoments: String
+  imageUrl: AWSURL
+  stories: [Story] @manyToMany(relationName: "StoryUsers")
+  ownershipStories: [Story] @manyToMany(relationName: "StoryOwners")
+  sharedUrls: [SharedUrl] @hasMany
+  relations: [Relationship] @hasMany
+  emergency: Emergency @hasOne
+  taggedMoments: [Moment] @manyToMany(relationName: "momentTaggedUsers")
+  userDevices: [UserDevices]
+  isAccountProtected: Boolean
+}
+
+type UserDevices {
+  channelType: String
+  deviceToken: String
+}
+
+type StoryUsersLink @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  userId: ID!
+  storyId: ID!
+  role: String
+  user: User!
+  story: Story!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Story @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  title: String!
+  inviteCode: String!
+    @index(name: "byInviteCode", queryField: "storyByInviteCode")
+  inviteCodeForOwner: String
+    @index(
+      name: "byInviteCodeForOwner"
+      queryField: "storyByInviteCodeForOwner"
+    )
+  imageUrl: AWSURL
+  userId: String @index(name: "byUserId", queryField: "storyByUserId")
+  userIds: [String]
+  users: [User] @manyToMany(relationName: "StoryUsers")
+  owners: [User] @manyToMany(relationName: "StoryOwners")
+  chapters: [Chapter] @hasMany(indexName: "byStory", fields: ["id"])
+  user: User @hasOne
+  sharedUrl: [SharedUrl] @hasMany(indexName: "byStoryId", fields: ["id"])
+  locked: Boolean
+}
+
+type SharedUrl @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  url: AWSURL
+  isReady: Boolean
+  chapterId: ID @index(name: "byChapterId", sortKeyFields: ["timestamp"])
+  storyId: ID @index(name: "byStoryId", sortKeyFields: ["timestamp"])
+  chapter: Chapter @belongsTo(fields: ["chapterId"])
+  story: Story @belongsTo(fields: ["storyId"])
+  timestamp: AWSTimestamp
+  user: User @belongsTo
+}
+
+type Relationship @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  relation: String
+  withUser: ID!
+  user: User @belongsTo
+}
+
+type Emergency @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  firstName: String
+  lastName: String
+  contact: String
+  email: String
+  user: User @belongsTo
+}
+
+type Report @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  name: String
+  userID: String!
+  email: AWSEmail!
+  reason: String!
+  reportedContent: String!
+}
+
+type StorageStatistics @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  timestamp: AWSTimestamp
+  fileSize: String
+  s3Key: String
+  user: User @hasOne
+}
+
+type Mutation {
+  sendNotification(payload: PushNotificationPayload!): Boolean
+    @function(name: "PushNotifications-${env}")
+
+  deleteStoryByUserId(
+    input: deleteStoryByUserIdInput!
+    condition: deleteStoryByUserIdCondition!
+  ): [Story]
+
+  deleteUserData(payload: deleteUserDataPayload!): Boolean
+    @function(name: "DeleteUserData-${env}")
+
+  sendEmail(payload: sendEmailPayload!): Boolean
+    @function(name: "SendEmail-${env}")
+
+  storageStatistics(payload: StorageStatisticsPayload!): Boolean
+    @function(name: "StorageStatistics-${env}")
+}
+
+input sendEmailPayload {
+  name: String
+  userID: String!
+  reason: String!
+  reportedContent: String!
+}
+
+input deleteUserDataPayload {
+  userId: String
+}
+
+input PushNotificationPayload {
+  token: String
+  service: PushNotificationService
+  message: String
+  title: String
+}
+
+enum PushNotificationService {
+  APNS
+  GCM
+}
+
+input deleteStoryByUserIdInput {
+  _deleted: Boolean
+}
+
+input deleteStoryByUserIdCondition {
+  userId: userIdEq
+}
+
+input userIdEq {
+  eq: String
+}
+
+input StorageStatisticsPayload {
+  userId: String
+  s3Key: String
+  actionType: String
+}

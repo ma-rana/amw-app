@@ -1,0 +1,14 @@
+{
+  "resourceName": "amwstorage",
+  "policyUUID": "cd9ec0b3",
+  "bucketName": "amw-user-uploads",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "S3Trigger4c12b481",
+  "groupAccess": {}
+}

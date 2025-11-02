@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "amwapp",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authamwapp69ceef05",
+      "Outputs.UserPoolId"
+    ]
+  }
+}
