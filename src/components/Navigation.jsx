@@ -12,7 +12,7 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
   const navItems = [
     { path: '/', label: 'Home', icon: '🏠' },
     { path: '/moments', label: 'Moments', icon: '✨' },
-    { path: '/relationships', label: 'Relationships', icon: '👥' },
+    { path: '/family', label: 'Relationships', icon: '👥' },
     { path: '/profile', label: 'Profile', icon: '👤' },
     { path: '/settings', label: 'Settings', icon: '⚙️' }
   ];
@@ -262,31 +262,6 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                   </div>
                 )}
 
-                <button 
-                  onClick={signOut} 
-                  style={{
-                    padding: '8px 16px',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    color: '#280A32',
-                    backgroundColor: 'transparent',
-                    border: '1px solid #B5B5B5',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    fontFamily: "'Oxygen', sans-serif"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = '#E7E7E7';
-                    e.target.style.borderColor = '#280A32';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'transparent';
-                    e.target.style.borderColor = '#B5B5B5';
-                  }}
-                >
-                  Sign Out
-                </button>
               </div>
             </div>
           </div>

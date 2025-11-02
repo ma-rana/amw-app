@@ -37,6 +37,8 @@ const MomentCard = ({ title, imageUrl, date, onClick, moment, story }) => {
     };
     loadImage();
   }, [primaryMediaUrl, isAuthenticated]);
+  const canShare = moment?.allowSharing !== false;
+
   return (
     <div className="card group cursor-pointer transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
       <div className="relative overflow-hidden rounded-t-lg">
@@ -85,18 +87,21 @@ const MomentCard = ({ title, imageUrl, date, onClick, moment, story }) => {
           >
             View Details
           </button>
-          <button 
-            className="btn btn-outline text-sm font-medium px-4"
-            onClick={() => setShowShareModal(true)}
-          >
-            Share
-          </button>
+          {canShare && (
+            <button 
+              className="btn btn-outline text-sm font-medium px-4"
+              onClick={() => setShowShareModal(true)}
+            >
+              Share
+            </button>
+          )}
         </div>
       </div>
       
       {showShareModal && (
         <ShareModal
           story={story}
+          moment={moment}
           onClose={() => setShowShareModal(false)}
           shareType="moment"
           momentTitle={title}

@@ -284,13 +284,15 @@ const MomentDetailView = ({
           {/* Actions */}
           {showActions && (
             <Flex direction="row" gap="small" justifyContent="flex-end">
-              <Button 
-                variation="outline" 
-                size="small"
-                onClick={() => setShowShareModal(true)}
-              >
-                Share
-              </Button>
+              {moment?.allowSharing !== false && (
+                <Button 
+                  variation="outline" 
+                  size="small"
+                  onClick={() => setShowShareModal(true)}
+                >
+                  Share
+                </Button>
+              )}
               {onEdit && (
                 <Button 
                   variation="primary" 
@@ -323,6 +325,7 @@ const MomentDetailView = ({
       {showShareModal && (
         <ShareModal
           story={story}
+          moment={moment}
           onClose={() => setShowShareModal(false)}
           shareType="moment"
           momentTitle={moment.title}
