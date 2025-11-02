@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Shield } from 'lucide-react';
 import '../components/auth/AuthStyles.css';
@@ -8,23 +8,13 @@ const AdminLoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isDemoMode, setIsDemoMode] = useState(false);
-  const { signIn, signOut, isLoading } = useAuth();
+  const [isDemoMode, setIsDemoMode] = useState(true); // Always show demo credentials for admin
+  const { adminSignIn, isAdminLoading } = useAdminAuth();
   const navigate = useNavigate();
 
+  // Admin login always shows demo credentials since it's a separate system
   useEffect(() => {
-    // Check if we're in demo mode (AWS not configured)
-    const checkDemoMode = async () => {
-      try {
-        const awsExports = await import('../aws-exports.js');
-        const config = awsExports.default || awsExports;
-        setIsDemoMode(!config.aws_user_pools_id || config.aws_user_pools_id.includes('xxxxxxxx'));
-      } catch {
-        setIsDemoMode(true);
-      }
-    };
-    
-    checkDemoMode();
+    setIsDemoMode(true);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -37,26 +27,16 @@ const AdminLoginPage = () => {
     }
     
     try {
-      const user = await signIn(username, password);
+      // Use the separate admin authentication system
+      const adminUser = await adminSignIn(username, password);
       
-      // Check if user is NOT an admin - reject regular users on admin login page
-       // Show generic error to avoid revealing user type information
-       if (user && user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'moderator') {
-         setError('Invalid username or password');
-         // Sign out the regular user immediately
-         await signOut();
-         return;
-       }
+      console.log('✅ Admin login successful:', adminUser);
       
       // Navigate to admin dashboard after successful admin login
       navigate('/admin');
     } catch (err) {
-      // Check if error is due to unverified email
-      if (err.type === 'EMAIL_NOT_CONFIRMED') {
-        setError('Please verify your email before accessing the admin panel.');
-      } else {
-        setError(err.message || 'Failed to sign in');
-      }
+      console.error('❌ Admin login failed:', err);
+      setError('Invalid admin credentials');
     }
   };
 
@@ -127,10 +107,10 @@ const AdminLoginPage = () => {
               
               <button
                 type="submit"
-                className={`auth-button auth-button-primary ${isLoading ? 'auth-button-loading' : ''}`}
-                disabled={isLoading}
+                className={`auth-button auth-button-primary ${isAdminLoading ? 'auth-button-loading' : ''}`}
+                disabled={isAdminLoading}
               >
-                {isLoading ? (
+                {isAdminLoading ? (
                   'Signing in...'
                 ) : (
                   <>

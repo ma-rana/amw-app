@@ -37,12 +37,14 @@ import './utils/quickAuthTest'
 // Import S3 file upload tests
 import './utils/testFileUpload'
 import { AdminProvider, useAdmin } from './contexts/AdminContext'
+import { AdminAuthProvider, useAdminAuth } from './contexts/AdminAuthContext'
 import AdminApp from './pages/AdminApp'
 import API from './services/api'
 
 function AppContent() {
   const { user, isAuthenticated, signOut, isLoading: authLoading } = useAuth();
   const { isAdmin, isLoading: adminLoading } = useAdmin();
+  const { adminUser, isAdminAuthenticated, isAdminLoading, adminSignOut } = useAdminAuth();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -171,12 +173,12 @@ function AppContent() {
             <Route path="/signup" element={<SignupPage onNavigate={handleNavigation} />} />
             <Route path="/email-confirmation" element={<EmailConfirmationPage onNavigate={handleNavigation} email={pageParams.email} />} />
             
-            {/* Admin routes - separate authentication flow */}
+            {/* Admin routes - completely separate authentication system */}
             <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/admin" element={
               (() => {
-                // Show loading while auth states are being determined
-                if (authLoading || adminLoading) {
+                // Show loading while admin auth state is being determined
+                if (isAdminLoading) {
                   return (
                     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
                       <div className="text-white">Loading admin panel...</div>
@@ -184,31 +186,13 @@ function AppContent() {
                   );
                 }
                 
-                // If not authenticated at all, go to admin login
-                if (!isAuthenticated) {
+                // If not authenticated as admin, go to admin login
+                if (!isAdminAuthenticated) {
                   return <Navigate to="/admin/login" replace />;
                 }
                 
-                // If authenticated but not admin, show access denied
-                if (!isAdmin) {
-                  return (
-                    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-                      <div className="text-white text-center">
-                        <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
-                        <p className="mb-4">You don't have admin privileges to access this page.</p>
-                        <button 
-                          onClick={() => navigate('/')} 
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                        >
-                          Go to Home
-                        </button>
-                      </div>
-                    </div>
-                  );
-                }
-                
-                // If authenticated and admin, show admin app
-                return <AdminApp onNavigate={handleNavigation} />;
+                // If authenticated as admin, show admin app
+                return <AdminApp onNavigate={handleNavigation} adminUser={adminUser} onAdminSignOut={adminSignOut} />;
               })()
             } />
             
@@ -319,7 +303,7 @@ function AppContent() {
   );
 }
 
-// Main App component that wraps the content with AuthProvider, NotificationProvider, ToastProvider, PrivacyProvider, and AdminProvider
+// Main App component that wraps the content with AuthProvider, NotificationProvider, ToastProvider, PrivacyProvider, AdminAuthProvider, and AdminProvider
 function App() {
   return (
     <Router>
@@ -327,9 +311,11 @@ function App() {
         <NotificationProvider>
           <ToastProvider>
             <PrivacyProvider>
-              <AdminProvider>
-                <AppContent />
-              </AdminProvider>
+              <AdminAuthProvider>
+                <AdminProvider>
+                  <AppContent />
+                </AdminProvider>
+              </AdminAuthProvider>
             </PrivacyProvider>
           </ToastProvider>
         </NotificationProvider>

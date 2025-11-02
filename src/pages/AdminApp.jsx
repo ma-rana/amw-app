@@ -9,7 +9,6 @@ import {
   Home,
   LogOut
 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
 import { useAdmin, AdminProvider } from '../contexts/AdminContext';
 import AdminDashboard from './AdminDashboard';
 import AdminUserManagement from './AdminUserManagement';
@@ -18,9 +17,8 @@ import AdminSettings from './AdminSettings';
 import AdminAnalytics from './AdminAnalytics';
 
 
-const AdminAppContent = ({ onExit }) => {
-  const { user } = useAuth();
-  const { isAdmin, hasPermission, PERMISSIONS, toggleAdminMode } = useAdmin();
+const AdminAppContent = ({ onExit, adminUser, onAdminSignOut }) => {
+  const { hasPermission, PERMISSIONS, toggleAdminMode } = useAdmin();
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -38,7 +36,7 @@ const AdminAppContent = ({ onExit }) => {
   };
 
   const handleExitAdmin = () => {
-    toggleAdminMode();
+    onAdminSignOut();
     if (onExit) {
       onExit();
     }
@@ -173,10 +171,10 @@ const AdminAppContent = ({ onExit }) => {
             <div className="flex items-center space-x-4">
               <div className="text-right">
                 <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>
-                  {user?.name || user?.email}
+                  {adminUser?.name || adminUser?.email}
                 </p>
                 <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: 'var(--amw-success-light)', color: 'var(--amw-success)', border: '1px solid var(--amw-success)' }}>
-                  Administrator
+                  {adminUser?.role === 'super_admin' ? 'Super Administrator' : adminUser?.role === 'moderator' ? 'Moderator' : 'Administrator'}
                 </span>
               </div>
               <button
@@ -296,10 +294,10 @@ const AdminAppContent = ({ onExit }) => {
   );
 };
 
-const AdminApp = ({ onExit }) => {
+const AdminApp = ({ onExit, adminUser, onAdminSignOut }) => {
   return (
     <AdminProvider>
-      <AdminAppContent onExit={onExit} />
+      <AdminAppContent onExit={onExit} adminUser={adminUser} onAdminSignOut={onAdminSignOut} />
     </AdminProvider>
   );
 };
