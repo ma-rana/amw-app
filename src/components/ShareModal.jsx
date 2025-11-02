@@ -7,12 +7,14 @@ const ShareModal = ({
   isOpen, 
   onClose, 
   story, 
+  moment,
   onInviteCodeRegenerated,
   userRole = 'member',
   shareType = 'story',
   momentTitle = ''
 }) => {
   const [shareUrl, setShareUrl] = useState('');
+  const [qrUrl, setQrUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState(''); // 'success' or 'error'
@@ -20,11 +22,16 @@ const ShareModal = ({
   const { isMobile } = useResponsive();
 
   useEffect(() => {
-    if (story && story.inviteCode) {
+    if (shareType === 'moment' && moment?.id) {
+      const url = sharingService.generateMomentShareUrl(moment.id);
+      setShareUrl(url);
+      setQrUrl(sharingService.generateQrCodeUrl(url));
+    } else if (story && story.inviteCode) {
       const url = sharingService.generateShareableUrl(story.inviteCode);
       setShareUrl(url);
+      setQrUrl(sharingService.generateQrCodeUrl(url));
     }
-  }, [story]);
+  }, [story, moment, shareType]);
 
   const showMessage = (text, type = 'success') => {
     setMessage(text);
@@ -36,18 +43,18 @@ const ShareModal = ({
   };
 
   const handleShare = async (method) => {
-    if (!story) return;
-    
     setIsLoading(true);
     try {
-      const result = await sharingService.shareStory(story, method);
+      const result = shareType === 'moment'
+        ? await sharingService.shareMoment(moment, method)
+        : await sharingService.shareStory(story, method);
       if (result.success) {
         showMessage(result.message, 'success');
       } else {
         showMessage(result.message, 'error');
       }
     } catch {
-      showMessage('Failed to share story', 'error');
+      showMessage('Failed to share', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +98,8 @@ const ShareModal = ({
     }
   };
 
-  if (!isOpen || !story) return null;
+  // Render modal only when invoked by parent condition
+  if (!shareType && !story) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
@@ -126,39 +134,41 @@ const ShareModal = ({
 
         {/* Story/Moment Info */}
         <div className="relative flex items-start space-x-4 p-6 border-b border-slate-700/30">
-          {story.imageUrl && (
+          {(story?.imageUrl) && (
             <div className="flex-shrink-0">
               <img 
                 src={story.imageUrl} 
-                alt={shareType === 'moment' ? momentTitle : story.title}
+                alt={shareType === 'moment' ? momentTitle : (story?.title || 'Story')}
                 className="w-20 h-20 rounded-2xl object-cover border border-slate-600/50"
               />
             </div>
           )}
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold text-white mb-2 truncate">
-              {shareType === 'moment' ? momentTitle : story.title}
+              {shareType === 'moment' ? (momentTitle || 'Moment') : (story?.title || 'Story')}
             </h3>
-            {shareType === 'moment' && (
+            {shareType === 'moment' && story?.title && (
               <p className="text-sm text-slate-400 italic mb-3">From story: {story.title}</p>
             )}
-            <div className="flex items-center space-x-4 text-sm text-slate-400">
-              <div className="flex items-center space-x-1">
-                <Users className="w-4 h-4" />
-                <span>{story.userIds?.length || 0} members</span>
+            {story && (
+              <div className="flex items-center space-x-4 text-sm text-slate-400">
+                <div className="flex items-center space-x-1">
+                  <Users className="w-4 h-4" />
+                  <span>{story.userIds?.length || 0} members</span>
+                </div>
+                {story.locked ? (
+                  <div className="flex items-center space-x-1 text-yellow-400">
+                    <Lock className="w-4 h-4" />
+                    <span>Private</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-1 text-green-400">
+                    <Unlock className="w-4 h-4" />
+                    <span>Open</span>
+                  </div>
+                )}
               </div>
-              {story.locked ? (
-                <div className="flex items-center space-x-1 text-yellow-400">
-                  <Lock className="w-4 h-4" />
-                  <span>Private</span>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-1 text-green-400">
-                  <Unlock className="w-4 h-4" />
-                  <span>Open</span>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
 
@@ -173,47 +183,49 @@ const ShareModal = ({
           </div>
         )}
 
-        {/* Invite Code Section */}
-        <div className="relative p-6 space-y-4">
-          <h4 className="text-lg font-semibold text-white flex items-center space-x-2">
-            <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <Copy className="w-3 h-3 text-white" />
-            </div>
-            <span>Invite Code</span>
-          </h4>
-          
-          <div className="space-y-3">
-            <div className="flex items-center space-x-2">
-              <div className="flex-1 bg-slate-800/50 border border-slate-600/50 rounded-xl p-3 font-mono text-blue-300 text-center text-lg tracking-wider">
-                {story.inviteCode}
+        {/* Invite Code Section - only for story sharing */}
+        {shareType === 'story' && story?.inviteCode && (
+          <div className="relative p-6 space-y-4">
+            <h4 className="text-lg font-semibold text-white flex items-center space-x-2">
+              <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <Copy className="w-3 h-3 text-white" />
               </div>
-              <button 
-                className="group p-3 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-blue-200 border border-blue-500/30 hover:border-blue-500/50 rounded-xl transition-all duration-200"
-                onClick={copyInviteCode}
-                disabled={isLoading}
-                title="Copy invite code"
-              >
-                <Copy className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-              </button>
+              <span>Invite Code</span>
+            </h4>
+            
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <div className="flex-1 bg-slate-800/50 border border-slate-600/50 rounded-xl p-3 font-mono text-blue-300 text-center text-lg tracking-wider">
+                  {story.inviteCode}
+                </div>
+                <button 
+                  className="group p-3 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-blue-200 border border-blue-500/30 hover:border-blue-500/50 rounded-xl transition-all duration-200"
+                  onClick={copyInviteCode}
+                  disabled={isLoading}
+                  title="Copy invite code"
+                >
+                  <Copy className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+                </button>
+              </div>
+              
+              {userRole === 'owner' && (
+                <button 
+                  className="group w-full flex items-center justify-center space-x-2 p-3 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-white border border-slate-600/50 hover:border-slate-500/50 rounded-xl transition-all duration-200"
+                  onClick={handleRegenerateInviteCode}
+                  disabled={isRegenerating}
+                  title="Regenerate invite code"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isRegenerating ? 'animate-spin' : 'group-hover:rotate-180'} transition-transform duration-200`} />
+                  <span>{isRegenerating ? 'Regenerating...' : 'Regenerate Code'}</span>
+                </button>
+              )}
             </div>
             
-            {userRole === 'owner' && (
-              <button 
-                className="group w-full flex items-center justify-center space-x-2 p-3 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-white border border-slate-600/50 hover:border-slate-500/50 rounded-xl transition-all duration-200"
-                onClick={handleRegenerateInviteCode}
-                disabled={isRegenerating}
-                title="Regenerate invite code"
-              >
-                <RefreshCw className={`w-4 h-4 ${isRegenerating ? 'animate-spin' : 'group-hover:rotate-180'} transition-transform duration-200`} />
-                <span>{isRegenerating ? 'Regenerating...' : 'Regenerate Code'}</span>
-              </button>
-            )}
+            <p className="text-sm text-slate-400 text-center">
+              Share this code with others so they can join your story
+            </p>
           </div>
-          
-          <p className="text-sm text-slate-400 text-center">
-            Share this code with others so they can join your story
-          </p>
-        </div>
+        )}
 
         {/* Share Link Section */}
         <div className="relative p-6 pt-0 space-y-4 border-b border-slate-700/30">
@@ -239,6 +251,32 @@ const ShareModal = ({
             >
               <Copy className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
             </button>
+          </div>
+        </div>
+
+        {/* QR Code Section */}
+        <div className="relative p-6 pt-4 space-y-4 border-b border-slate-700/30">
+          <h4 className="text-lg font-semibold text-white flex items-center space-x-2">
+            <div className="w-6 h-6 bg-gradient-to-br from-slate-500 to-slate-600 rounded-lg flex items-center justify-center">
+              <Share2 className="w-3 h-3 text-white" />
+            </div>
+            <span>QR Code</span>
+          </h4>
+          <div className="flex items-center justify-center">
+            {qrUrl && (
+              <img src={qrUrl} alt="Share QR Code" className="rounded-xl border border-slate-600/50" />
+            )}
+          </div>
+          <div className="flex items-center justify-center">
+            {qrUrl && (
+              <a
+                className="btn btn-outline"
+                href={qrUrl}
+                download={`amw-${shareType}-qr.png`}
+              >
+                Download QR
+              </a>
+            )}
           </div>
         </div>
 

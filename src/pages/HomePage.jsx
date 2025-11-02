@@ -2,6 +2,7 @@ import React from 'react';
 import { Camera, BookOpen, Users, Sparkles, ArrowRight, Heart, Star, Clock, Plus, Zap } from 'lucide-react';
 import MomentCard from '../components/MomentCard';
 import VerificationBanner from '../components/VerificationBanner';
+import PublicFeed from '../components/PublicFeed';
 import { useAuth } from '../contexts/AuthContext';
 
 const HomePage = ({ moments, onCreateMoment, onViewMoment, onNavigate }) => {
@@ -174,6 +175,9 @@ const HomePage = ({ moments, onCreateMoment, onViewMoment, onNavigate }) => {
           )}
         </div>
       </section>
+
+      {/* Public Feed */}
+      <PublicFeed moments={moments} onViewMoment={onViewMoment} onNavigate={onNavigate} />
     </div>
   );
 };

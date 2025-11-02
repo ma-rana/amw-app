@@ -6,6 +6,18 @@ import * as mutations from '../graphql/mutations';
 
 const client = generateClient();
 
+// Resolve the correct base URL (supports subpath deployments)
+const resolveBaseUrl = () => {
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  // Vite exposes the base path via import.meta.env.BASE_URL
+  const base = (import.meta && import.meta.env && import.meta.env.BASE_URL)
+    ? import.meta.env.BASE_URL
+    : '/';
+  // Ensure leading slash and trim trailing slash
+  const normalizedBase = (base.startsWith('/') ? base : `/${base}`).replace(/\/$/, '');
+  return `${origin}${normalizedBase}`;
+};
+
 // Generate a random invite code
 const generateInviteCode = (length = 8) => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -17,8 +29,21 @@ const generateInviteCode = (length = 8) => {
 };
 
 // Generate a shareable URL for a story
-const generateShareableUrl = (inviteCode, baseUrl = window.location.origin) => {
-  return `${baseUrl}/join/${inviteCode}`;
+const generateShareableUrl = (inviteCode, baseUrl) => {
+  const base = baseUrl || resolveBaseUrl();
+  return `${base}/join/${inviteCode}`;
+};
+
+// Generate a shareable URL for a moment (public view)
+const generateMomentShareUrl = (momentId, baseUrl) => {
+  const base = baseUrl || resolveBaseUrl();
+  return `${base}/moment/${momentId}`;
+};
+
+// Generate a QR code image URL for a given link (uses external service)
+const generateQrCodeUrl = (dataUrl, size = 256) => {
+  const s = Math.max(128, Math.min(1024, size));
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${s}x${s}&data=${encodeURIComponent(dataUrl)}`;
 };
 
 // Create a shared URL record
@@ -298,6 +323,58 @@ const shareStory = async (story, method = 'copy') => {
   }
 };
 
+// Share moment via social media or copy link
+const shareMoment = async (moment, method = 'copy') => {
+  if (!moment?.id) return { success: false, message: 'Invalid moment data' };
+
+  const shareUrl = generateMomentShareUrl(moment.id);
+  const title = moment.title || 'A Moment';
+  const shareText = `Check out "${title}" on A Moment With`;
+
+  switch (method) {
+    case 'copy':
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        return { success: true, message: 'Link copied to clipboard!' };
+      } catch {
+        const textArea = document.createElement('textarea');
+        textArea.value = shareUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        return { success: true, message: 'Link copied to clipboard!' };
+      }
+
+    case 'whatsapp': {
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`;
+      window.open(whatsappUrl, '_blank');
+      return { success: true, message: 'Opened WhatsApp' };
+    }
+
+    case 'facebook': {
+      const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+      window.open(facebookUrl, '_blank');
+      return { success: true, message: 'Opened Facebook' };
+    }
+
+    case 'twitter': {
+      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+      window.open(twitterUrl, '_blank');
+      return { success: true, message: 'Opened Twitter' };
+    }
+
+    case 'email': {
+      const emailUrl = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`${shareText}\n\n${shareUrl}`)}`;
+      window.open(emailUrl);
+      return { success: true, message: 'Opened email client' };
+    }
+
+    default:
+      return { success: false, message: 'Unknown sharing method' };
+  }
+};
+
 // Remove user from story
 const leaveStory = async (userId, storyId) => {
   try {
@@ -359,6 +436,9 @@ const leaveStory = async (userId, storyId) => {
 const fallbackFunctions = {
   generateInviteCode,
   generateShareableUrl,
+  generateMomentShareUrl,
+  generateQrCodeUrl,
+  resolveBaseUrl,
   
   createSharedUrl: async (storyId, chapterId = null) => {
     const sharedUrls = JSON.parse(localStorage.getItem('amw_shared_urls') || '[]');
@@ -396,13 +476,17 @@ const fallbackFunctions = {
     return { success: true, message: 'Successfully joined the story!', story };
   },
 
-  shareStory
+  shareStory,
+  shareMoment
 };
 
 // Export the service with fallback support
 const sharingService = {
   generateInviteCode,
   generateShareableUrl,
+  generateMomentShareUrl,
+  generateQrCodeUrl,
+  resolveBaseUrl,
   createSharedUrl,
   getSharedUrls,
   joinStoryByInviteCode,
@@ -411,6 +495,7 @@ const sharingService = {
   getUserRoleInStory,
   getSharedStories,
   shareStory,
+  shareMoment,
   leaveStory,
   fallback: fallbackFunctions
 };

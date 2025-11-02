@@ -12,6 +12,7 @@ import CreateMomentPage from './pages/CreateMomentPage'
 import EditMomentPage from './pages/EditMomentPage'
 import StoriesPage from './pages/StoriesPage'
 import SharedStories from './pages/SharedStories'
+import SharedMomentPage from './pages/SharedMomentPage'
 import ChaptersPage from './pages/ChaptersPage'
 import QuestionsPage from './pages/QuestionsPage'
 import FamilyPage from './pages/FamilyPage'
@@ -94,9 +95,12 @@ function AppContent() {
   }
   
   const handleNavigation = (page, params = {}) => {
-    navigate(`/${page}`)
-    setPageParams(params)
-    setSelectedMoment(null) // Clear selected moment when navigating
+    const targetPath = typeof page === 'string'
+      ? (page.startsWith('/') ? page : `/${page}`)
+      : '/';
+    navigate(targetPath);
+    setPageParams(params);
+    setSelectedMoment(null); // Clear selected moment when navigating
   }
   
   const handleViewMoment = (moment) => {
@@ -156,7 +160,7 @@ function AppContent() {
     <View className="app-container">
       {isAuthenticated && (
         <Navigation 
-          signOut={signOut} 
+          signOut={handleSignOut} 
           onNavigate={handleNavigation} 
           currentPage={currentPage}
         />
@@ -165,13 +169,33 @@ function AppContent() {
       <main className={`${isAuthenticated ? 'desktop-main' : 'min-h-screen'}`}>
         <div className={`${isAuthenticated ? 'container-fluid' : 'w-full'}`}>
           <Routes>
-            {/* Welcome/Landing page - accessible to everyone */}
-            <Route path="/" element={<WelcomePage />} />
+            {/* Welcome/Landing page */}
+            <Route
+              path="/"
+              element={
+                isAuthenticated ? (
+                  <Navigate to="/home" replace />
+                ) : (
+                  <WelcomePage />
+                )
+              }
+            />
             
-            {/* Public routes - accessible to everyone */}
-            <Route path="/login" element={<LoginPage onNavigate={handleNavigation} />} />
+            {/* Public routes */}
+            <Route
+              path="/login"
+              element={
+                isAuthenticated ? (
+                  <Navigate to="/home" replace />
+                ) : (
+                  <LoginPage onNavigate={handleNavigation} />
+                )
+              }
+            />
             <Route path="/signup" element={<SignupPage onNavigate={handleNavigation} />} />
             <Route path="/email-confirmation" element={<EmailConfirmationPage onNavigate={handleNavigation} email={pageParams.email} />} />
+            {/* Public shared moment route */}
+            <Route path="/moment/:id" element={<SharedMomentPage />} />
             
             {/* Admin routes - completely separate authentication system */}
             <Route path="/admin/login" element={<AdminLoginPage />} />

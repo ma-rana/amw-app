@@ -108,7 +108,7 @@ const AdminAnalytics = () => {
     }
   };
 
-  const MetricCard = ({ title, value, change, icon: _Icon, trend, color = 'primary' }) => {
+  const MetricCard = ({ title, value, change, icon: Icon, trend, color = 'primary' }) => {
     const colorClasses = {
       primary: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
       success: 'text-green-400 bg-green-500/10 border-green-500/20',
