@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button, TextField, Heading, Flex, Text, Link, Alert } from '@aws-amplify/ui-react';
 import { useAuth } from '../contexts/AuthContext';
+import '../components/auth/AuthStyles.css';
 
 const SignupPage = ({ onNavigate }) => {
   const [formData, setFormData] = useState({
@@ -58,93 +58,130 @@ const SignupPage = ({ onNavigate }) => {
 
   return (
     <div className="auth-page">
-      <Flex direction="column" alignItems="center" className="auth-container">
-        <Heading level={2} marginBottom="1.5rem">Create Account</Heading>
-        
-        {error && (
-          <Alert variation="error" marginBottom="1rem" width="100%">
-            {error}
-          </Alert>
-        )}
-        
-        {success && (
-          <Alert variation="success" marginBottom="1rem" width="100%">
-            {success}
-          </Alert>
-        )}
-        
-        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-          <TextField
-            label="Full Name"
-            name="name"
-            placeholder="Enter your full name"
-            value={formData.name}
-            onChange={handleChange}
-            marginBottom="1rem"
-            required
-          />
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-header">
+            <div className="auth-logo">
+              AMW
+            </div>
+            <h1 className="auth-title">Create Account</h1>
+            <p className="auth-subtitle">Sign up to start sharing your moments</p>
+          </div>
           
-          <TextField
-            label="Email"
-            name="email"
-            placeholder="Enter your email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            marginBottom="1rem"
-            required
-          />
-          
-          <TextField
-            label="Phone Number"
-            name="phone"
-            placeholder="Enter your phone number"
-            value={formData.phone}
-            onChange={handleChange}
-            marginBottom="1rem"
-            required
-          />
-          
-          <TextField
-            label="Password"
-            name="password"
-            placeholder="Create a password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            marginBottom="1rem"
-            required
-          />
-          
-          <TextField
-            label="Confirm Password"
-            name="confirmPassword"
-            placeholder="Confirm your password"
-            type="password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            marginBottom="1.5rem"
-            required
-          />
-          
-          <Button
-            type="submit"
-            variation="primary"
-            isFullWidth
-            isLoading={isLoading}
-            loadingText="Creating account..."
-          >
-            Create Account
-          </Button>
-        </form>
-        
-        <Flex direction="column" alignItems="center" marginTop="2rem">
-          <Text>Already have an account?</Text>
-          <Link onClick={() => onNavigate('login')} fontSize="0.9rem">
-            Sign in
-          </Link>
-        </Flex>
-      </Flex>
+          <div className="auth-content">
+            {error && (
+              <div className="auth-error">
+                {error}
+              </div>
+            )}
+            
+            {success && (
+              <div style={{
+                background: '#f0fdf4',
+                border: '2px solid #bbf7d0',
+                color: '#166534',
+                padding: '0.75rem 1rem',
+                borderRadius: '8px',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                marginBottom: '1rem'
+              }}>
+                {success}
+              </div>
+            )}
+            
+            <form className="auth-form" onSubmit={handleSubmit}>
+              <div className="auth-form-group">
+                <label className="auth-label" htmlFor="name">Full Name</label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  className="auth-input"
+                  placeholder="Enter your full name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              
+              <div className="auth-form-group">
+                <label className="auth-label" htmlFor="email">Email Address</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  className="auth-input"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              
+              <div className="auth-form-group">
+                <label className="auth-label" htmlFor="phone">Phone Number</label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  className="auth-input"
+                  placeholder="Enter your phone number"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              
+              <div className="auth-form-group">
+                <label className="auth-label" htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  className="auth-input"
+                  placeholder="Create a password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              
+              <div className="auth-form-group">
+                <label className="auth-label" htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  className="auth-input"
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              
+              <button
+                type="submit"
+                className={`auth-button auth-button-primary ${isLoading ? 'auth-button-loading' : ''}`}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Creating account...' : 'Create Account'}
+              </button>
+            </form>
+            
+            <div className="auth-navigation">
+              <p style={{ marginBottom: '0.75rem', color: '#6b7280' }}>Already have an account?</p>
+              <button 
+                className="auth-button auth-button-secondary"
+                onClick={() => onNavigate('login')}
+              >
+                Sign in
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

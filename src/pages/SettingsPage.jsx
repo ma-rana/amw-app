@@ -41,43 +41,27 @@ const SettingsPage = ({ onNavigate }) => {
   const activeSettingsSection = settingsSections.find(section => section.id === activeSection);
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--color-background)' }}>
-      {/* Background Pattern */}
-      <div className="absolute inset-0" style={{ background: 'var(--color-background-alt)', opacity: 0.3 }}></div>
-      
+    <div className="min-h-screen bg-gray-50">
       <div className="relative">
         {/* Page Header */}
-        <div className="backdrop-blur-lg border-b sticky top-0 z-40" style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
-          <div className="amw-container py-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+        <div className="bg-white border-b-2 border-gray-200 sticky top-0 z-40 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center space-x-3 md:space-x-4">
                 <button
                   onClick={() => onNavigate('profile')}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 border"
-                  style={{ 
-                    background: 'var(--color-background-alt)', 
-                    color: 'var(--color-text-primary)',
-                    borderColor: 'var(--color-border)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = 'var(--color-hover)';
-                    e.target.style.borderColor = 'var(--color-border-hover)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'var(--color-background-alt)';
-                    e.target.style.borderColor = 'var(--color-border)';
-                  }}
+                  className="flex items-center space-x-2 px-3 py-2 md:px-4 md:py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all duration-200 border-2 border-gray-200 hover:border-gray-300"
                 >
                   <ArrowLeft size={16} />
-                  <span>Back to Profile</span>
+                  <span className="text-sm md:text-base">Back to Profile</span>
                 </button>
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'var(--amw-primary)' }}>
+                <div className="flex items-center space-x-3 md:space-x-4">
+                  <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
                     <Settings size={24} className="text-white" />
                   </div>
                   <div>
-                    <h1 className="text-3xl font-bold" style={{ color: 'var(--color-text-primary)' }}>Settings & Preferences</h1>
-                    <p style={{ color: 'var(--color-text-secondary)' }}>Customize your experience with themes, privacy controls, and more</p>
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Settings & Preferences</h1>
+                    <p className="text-sm md:text-base text-gray-600 mt-1">Customize your experience with themes, privacy controls, and more</p>
                   </div>
                 </div>
               </div>
@@ -85,18 +69,18 @@ const SettingsPage = ({ onNavigate }) => {
           </div>
         </div>
 
-        <div className="amw-container py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
             {/* Settings Navigation Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow-xl p-6 sticky top-32">
+              <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-4 md:p-6 sticky top-32">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--amw-primary)' }}>
+                  <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-600 rounded-xl flex items-center justify-center">
                     <Settings size={16} className="text-white" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>Settings</h4>
-                    <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>Manage your preferences</p>
+                    <h4 className="text-lg font-bold text-gray-900">Settings</h4>
+                    <p className="text-xs text-gray-600">Manage your preferences</p>
                   </div>
                 </div>
                 
@@ -109,35 +93,16 @@ const SettingsPage = ({ onNavigate }) => {
                       <button
                         key={section.id}
                         onClick={() => setActiveSection(section.id)}
-                        className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200"
-                        style={{
-                          backgroundColor: activeSection === section.id 
-                            ? 'var(--amw-primary-light)' 
-                            : 'transparent',
-                          color: activeSection === section.id 
-                            ? 'var(--amw-primary)' 
-                            : 'var(--color-text-secondary)',
-                          border: activeSection === section.id 
-                            ? '1px solid var(--amw-primary)' 
-                            : '1px solid transparent'
-                        }}
-                        onMouseEnter={(e) => {
-                          if (activeSection !== section.id) {
-                            e.target.style.backgroundColor = 'var(--color-hover)';
-                            e.target.style.color = 'var(--color-text-primary)';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (activeSection !== section.id) {
-                            e.target.style.backgroundColor = 'transparent';
-                            e.target.style.color = 'var(--color-text-secondary)';
-                          }
-                        }}
+                        className={`w-full flex items-center space-x-3 px-3 py-2.5 md:px-4 md:py-3 rounded-xl transition-all duration-200 text-left ${
+                          isActive 
+                            ? 'bg-blue-50 border-2 border-blue-500 text-blue-700' 
+                            : 'bg-transparent border-2 border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-200'
+                        }`}
                       >
-                        <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--amw-primary)' }}>
-                          <section.icon size={14} className="text-white" />
+                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isActive ? 'bg-blue-600' : 'bg-gray-200'}`}>
+                          <Icon size={14} className={isActive ? 'text-white' : 'text-gray-600'} />
                         </div>
-                        <span className="font-medium">{section.label}</span>
+                        <span className="font-medium text-sm md:text-base">{section.label}</span>
                       </button>
                     );
                   })}
@@ -147,24 +112,22 @@ const SettingsPage = ({ onNavigate }) => {
 
             {/* Settings Content Area */}
             <div className="lg:col-span-3">
-              <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow-xl">
+              <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg">
                 {/* Content Header */}
-                <div className="p-6 border-b border-white/20">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-4 mb-6">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--amw-primary)' }}>
-                        <activeSettingsSection.icon size={20} className="text-white" />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold" style={{ color: 'var(--color-text-primary)' }}>{activeSettingsSection.label}</h2>
-                        <p style={{ color: 'var(--color-text-secondary)' }}>Customize your {activeSettingsSection.label.toLowerCase()} preferences</p>
-                      </div>
+                <div className="p-4 md:p-6 border-b-2 border-gray-200">
+                  <div className="flex items-center space-x-3 md:space-x-4">
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                      <activeSettingsSection.icon size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl md:text-2xl font-bold text-gray-900">{activeSettingsSection.label}</h2>
+                      <p className="text-sm md:text-base text-gray-600 mt-1">Customize your {activeSettingsSection.label.toLowerCase()} preferences</p>
                     </div>
                   </div>
                 </div>
                 
                 {/* Content Body */}
-                <div className="p-6">
+                <div className="p-4 md:p-6">
                   {renderActiveSection()}
                 </div>
               </div>

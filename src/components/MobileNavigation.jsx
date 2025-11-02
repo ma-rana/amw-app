@@ -62,14 +62,14 @@ const MobileNavigation = ({ signOut, onNavigate, currentPage: _currentPage }) =>
             <Link 
               key={item.key} 
               to={item.path} 
-              className={`flex flex-col items-center justify-center px-2 py-2 rounded-lg transition-all duration-200 min-w-0 flex-1 ${
+              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-lg transition-all duration-200 min-w-0 flex-1 ${
                 (currentPath === item.path || (item.path === '/home' && currentPath === '/')) 
                   ? 'bg-blue-50 text-blue-600' 
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
-              <span className="text-lg mb-1">{item.icon}</span>
-              <span className="text-xs font-medium truncate w-full text-center">
+              <span className="text-lg leading-none">{item.icon}</span>
+              <span className="text-xs font-medium leading-tight truncate w-full text-center">
                 {item.label.replace(/^[^\s]+ /, '')}
               </span>
             </Link>
@@ -77,7 +77,7 @@ const MobileNavigation = ({ signOut, onNavigate, currentPage: _currentPage }) =>
           
           {/* More menu for additional items */}
           <button
-            className={`flex flex-col items-center justify-center px-2 py-2 rounded-lg transition-all duration-200 min-w-0 flex-1 ${
+            className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-lg transition-all duration-200 min-w-0 flex-1 ${
               isMenuOpen 
                 ? 'bg-blue-50 text-blue-600' 
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -85,8 +85,8 @@ const MobileNavigation = ({ signOut, onNavigate, currentPage: _currentPage }) =>
             onClick={toggleMenu}
             aria-label="More options"
           >
-            <span className="text-lg mb-1">☰</span>
-            <span className="text-xs font-medium">More</span>
+            <span className="text-lg leading-none">☰</span>
+            <span className="text-xs font-medium leading-tight">More</span>
           </button>
         </div>
       </div>

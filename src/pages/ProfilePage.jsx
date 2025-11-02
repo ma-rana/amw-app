@@ -64,61 +64,61 @@ const ProfilePage = ({ onNavigate: _onNavigate }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gray-50 py-6 md:py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <div className="flex items-center space-x-4 mb-6">
-            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
+        <div className="mb-6 md:mb-8">
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
               <User size={24} className="text-white" />
             </div>
             <div>
-              <h2 className="text-3xl font-bold text-slate-900">My Profile</h2>
-              <p className="text-slate-600">Manage your account information and security settings</p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">My Profile</h2>
+              <p className="text-sm md:text-base text-gray-600 mt-1">Manage your account information and security settings</p>
             </div>
           </div>
         </div>
         
         {/* Message Alert */}
         {message.text && (
-          <div className={`mb-6 p-4 rounded-lg border ${
+          <div className={`mb-6 p-4 md:p-5 rounded-xl border-2 ${
             message.type === 'success' 
               ? 'bg-green-50 border-green-200 text-green-800' 
               : 'bg-red-50 border-red-200 text-red-800'
           }`}>
             <div className="flex items-center space-x-2">
               {message.type === 'success' ? (
-                <CheckCircle size={20} />
+                <CheckCircle size={20} className="flex-shrink-0" />
               ) : (
-                <AlertCircle size={20} />
+                <AlertCircle size={20} className="flex-shrink-0" />
               )}
-              <span>{message.text}</span>
+              <span className="text-sm md:text-base">{message.text}</span>
             </div>
           </div>
         )}
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
           {/* Profile Information */}
-          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 md:p-8">
+            <div className="flex items-center space-x-3 mb-6 md:mb-8">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-md">
                 <User size={20} className="text-white" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900">Profile Information</h3>
+              <h3 className="text-xl md:text-2xl font-bold text-gray-900">Profile Information</h3>
             </div>
             
-            <form onSubmit={handleProfileUpdate} className="space-y-6">
+            <form onSubmit={handleProfileUpdate} className="space-y-5 md:space-y-6">
               {/* Name Field */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">Full Name</label>
+                <label className="block text-sm font-semibold text-gray-700">Full Name</label>
                 <div className="relative">
-                  <User size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <User size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -126,15 +126,15 @@ const ProfilePage = ({ onNavigate: _onNavigate }) => {
 
               {/* Email Field */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">Email Address</label>
+                <label className="block text-sm font-semibold text-gray-700">Email Address</label>
                 <div className="relative">
-                  <Mail size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <Mail size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                     placeholder="Enter your email address"
                   />
                 </div>
@@ -142,15 +142,15 @@ const ProfilePage = ({ onNavigate: _onNavigate }) => {
 
               {/* Phone Field */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">Phone Number</label>
+                <label className="block text-sm font-semibold text-gray-700">Phone Number</label>
                 <div className="relative">
-                  <Phone size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <Phone size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                     placeholder="Enter your phone number"
                   />
                 </div>
@@ -159,7 +159,7 @@ const ProfilePage = ({ onNavigate: _onNavigate }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center space-x-2">
@@ -177,26 +177,26 @@ const ProfilePage = ({ onNavigate: _onNavigate }) => {
           </div>
           
           {/* Password Change */}
-          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 md:p-8">
+            <div className="flex items-center space-x-3 mb-6 md:mb-8">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-md">
                 <Lock size={20} className="text-white" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900">Change Password</h3>
+              <h3 className="text-xl md:text-2xl font-bold text-gray-900">Change Password</h3>
             </div>
             
-            <form onSubmit={handlePasswordChange} className="space-y-6">
+            <form onSubmit={handlePasswordChange} className="space-y-5 md:space-y-6">
               {/* Current Password */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">Current Password</label>
+                <label className="block text-sm font-semibold text-gray-700">Current Password</label>
                 <div className="relative">
-                  <Lock size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <Lock size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="password"
                     name="currentPassword"
                     value={formData.currentPassword}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
                     placeholder="Enter current password"
                   />
                 </div>
@@ -204,15 +204,15 @@ const ProfilePage = ({ onNavigate: _onNavigate }) => {
 
               {/* New Password */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">New Password</label>
+                <label className="block text-sm font-semibold text-gray-700">New Password</label>
                 <div className="relative">
-                  <Shield size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <Shield size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="password"
                     name="newPassword"
                     value={formData.newPassword}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
                     placeholder="Enter new password"
                   />
                 </div>
@@ -220,15 +220,15 @@ const ProfilePage = ({ onNavigate: _onNavigate }) => {
 
               {/* Confirm Password */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">Confirm New Password</label>
+                <label className="block text-sm font-semibold text-gray-700">Confirm New Password</label>
                 <div className="relative">
-                  <Shield size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <Shield size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="password"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
                     placeholder="Confirm new password"
                   />
                 </div>
@@ -237,7 +237,7 @@ const ProfilePage = ({ onNavigate: _onNavigate }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-6 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center space-x-2">

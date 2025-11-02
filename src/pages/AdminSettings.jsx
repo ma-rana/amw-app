@@ -184,11 +184,11 @@ const AdminSettings = () => {
 
   if (!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)) {
     return (
-      <div className="admin-settings-access-denied">
-        <Card className="access-denied-card">
-          <Heading level={3}>Access Denied</Heading>
-          <Text>You do not have permission to view admin settings.</Text>
-        </Card>
+      <div className="w-full">
+        <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 md:p-8 text-center">
+          <h3 className="text-2xl font-bold text-gray-900 mb-3">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view admin settings.</p>
+        </div>
       </div>
     );
   }
@@ -203,41 +203,41 @@ const AdminSettings = () => {
 
   const renderPlatformSettings = () => (
     <div className="space-y-6">
-      <div className="border-b border-white/20 pb-4">
-        <h4 className="text-xl font-semibold text-white mb-2">Platform Configuration</h4>
-        <p className="text-white/60">Configure basic platform settings and user limits</p>
+      <div className="border-b-2 border-gray-200 pb-4">
+        <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Platform Configuration</h4>
+        <p className="text-gray-600 text-sm md:text-base">Configure basic platform settings and user limits</p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Site Name */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Site Name</label>
+          <label className="block text-sm font-semibold text-gray-700">Site Name</label>
           <input
             type="text"
             value={platformSettings.siteName}
             onChange={(e) => updatePlatformSetting('siteName', e.target.value)}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Site Description */}
         <div className="space-y-2 md:col-span-2">
-          <label className="block text-sm font-medium text-white/80">Site Description</label>
+          <label className="block text-sm font-semibold text-gray-700">Site Description</label>
           <textarea
             value={platformSettings.siteDescription}
             onChange={(e) => updatePlatformSetting('siteDescription', e.target.value)}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             rows={3}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed resize-none"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed resize-none"
           />
         </div>
 
         {/* Maintenance Mode */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Maintenance Mode</label>
-            <p className="text-xs text-white/60 mt-1">Temporarily disable site access</p>
+            <label className="block text-sm font-semibold text-gray-700">Maintenance Mode</label>
+            <p className="text-xs text-gray-600 mt-1">Temporarily disable site access</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -247,15 +247,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Registration Enabled */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Registration Enabled</label>
-            <p className="text-xs text-white/60 mt-1">Allow new user registrations</p>
+            <label className="block text-sm font-semibold text-gray-700">Registration Enabled</label>
+            <p className="text-xs text-gray-600 mt-1">Allow new user registrations</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -265,15 +265,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Email Verification Required */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Email Verification Required</label>
-            <p className="text-xs text-white/60 mt-1">Require email verification for new accounts</p>
+            <label className="block text-sm font-semibold text-gray-700">Email Verification Required</label>
+            <p className="text-xs text-gray-600 mt-1">Require email verification for new accounts</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -283,13 +283,13 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Max File Size */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Max File Size (MB)</label>
+          <label className="block text-sm font-semibold text-gray-700">Max File Size (MB)</label>
           <input
             type="number"
             value={platformSettings.maxFileSize}
@@ -297,46 +297,46 @@ const AdminSettings = () => {
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
             max="100"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Allowed File Types */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Allowed File Types</label>
+          <label className="block text-sm font-semibold text-gray-700">Allowed File Types</label>
           <input
             type="text"
             value={platformSettings.allowedFileTypes}
             onChange={(e) => updatePlatformSetting('allowedFileTypes', e.target.value)}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             placeholder="jpg,jpeg,png,gif,mp4,mov"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Max Moments Per User */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Max Moments Per User</label>
+          <label className="block text-sm font-semibold text-gray-700">Max Moments Per User</label>
           <input
             type="number"
             value={platformSettings.maxMomentsPerUser}
             onChange={(e) => updatePlatformSetting('maxMomentsPerUser', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Max Stories Per User */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Max Stories Per User</label>
+          <label className="block text-sm font-semibold text-gray-700">Max Stories Per User</label>
           <input
             type="number"
             value={platformSettings.maxStoriesPerUser}
             onChange={(e) => updatePlatformSetting('maxStoriesPerUser', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
       </div>
@@ -345,45 +345,45 @@ const AdminSettings = () => {
 
   const renderPrivacySettings = () => (
     <div className="space-y-6">
-      <div className="border-b border-white/20 pb-4">
-        <h4 className="text-xl font-semibold text-white mb-2">Privacy & Data Protection</h4>
-        <p className="text-white/60">Configure privacy settings and data protection policies</p>
+      <div className="border-b border-gray-200 pb-4">
+        <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Privacy & Data Protection</h4>
+        <p className="text-gray-600">Configure privacy settings and data protection policies</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Default Privacy Level */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Default Privacy Level</label>
+          <label className="block text-sm font-semibold text-gray-700">Default Privacy Level</label>
           <select
             value={privacySettings.defaultPrivacyLevel}
             onChange={(e) => updatePrivacySetting('defaultPrivacyLevel', e.target.value)}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <option value="private" className="bg-slate-800 text-white">Private</option>
-            <option value="family" className="bg-slate-800 text-white">Family Only</option>
-            <option value="public" className="bg-slate-800 text-white">Public</option>
+            <option value="private" className="bg-slate-800 text-gray-900">Private</option>
+            <option value="family" className="bg-slate-800 text-gray-900">Family Only</option>
+            <option value="public" className="bg-slate-800 text-gray-900">Public</option>
           </select>
         </div>
 
         {/* Data Retention Days */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Data Retention (Days)</label>
+          <label className="block text-sm font-semibold text-gray-700">Data Retention (Days)</label>
           <input
             type="number"
             value={privacySettings.dataRetentionDays}
             onChange={(e) => updatePrivacySetting('dataRetentionDays', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Allow Public Moments */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Allow Public Moments</label>
-            <p className="text-xs text-white/60 mt-1">Enable users to share moments publicly</p>
+            <label className="block text-sm font-semibold text-gray-700">Allow Public Moments</label>
+            <p className="text-xs text-gray-600 mt-1">Enable users to share moments publicly</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -393,15 +393,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Allow Guest Viewing */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Allow Guest Viewing</label>
-            <p className="text-xs text-white/60 mt-1">Allow non-registered users to view content</p>
+            <label className="block text-sm font-semibold text-gray-700">Allow Guest Viewing</label>
+            <p className="text-xs text-gray-600 mt-1">Allow non-registered users to view content</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -411,15 +411,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Enable Data Export */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Enable Data Export</label>
-            <p className="text-xs text-white/60 mt-1">Allow users to export their data</p>
+            <label className="block text-sm font-semibold text-gray-700">Enable Data Export</label>
+            <p className="text-xs text-gray-600 mt-1">Allow users to export their data</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -429,15 +429,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Enable Account Deletion */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Enable Account Deletion</label>
-            <p className="text-xs text-white/60 mt-1">Allow users to delete their accounts</p>
+            <label className="block text-sm font-semibold text-gray-700">Enable Account Deletion</label>
+            <p className="text-xs text-gray-600 mt-1">Allow users to delete their accounts</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -447,15 +447,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Cookie Consent */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Cookie Consent</label>
-            <p className="text-xs text-white/60 mt-1">Require cookie consent from users</p>
+            <label className="block text-sm font-semibold text-gray-700">Cookie Consent</label>
+            <p className="text-xs text-gray-600 mt-1">Require cookie consent from users</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -465,15 +465,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Analytics Enabled */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Analytics Enabled</label>
-            <p className="text-xs text-white/60 mt-1">Enable analytics tracking</p>
+            <label className="block text-sm font-semibold text-gray-700">Analytics Enabled</label>
+            <p className="text-xs text-gray-600 mt-1">Enable analytics tracking</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -483,15 +483,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Third Party Integrations */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Third Party Integrations</label>
-            <p className="text-xs text-white/60 mt-1">Allow third-party service integrations</p>
+            <label className="block text-sm font-semibold text-gray-700">Third Party Integrations</label>
+            <p className="text-xs text-gray-600 mt-1">Allow third-party service integrations</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -501,7 +501,7 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
       </div>
@@ -510,17 +510,17 @@ const AdminSettings = () => {
 
   const renderNotificationSettings = () => (
     <div className="space-y-6">
-      <div className="border-b border-white/20 pb-4">
-        <h4 className="text-xl font-semibold text-white mb-2">Notification Configuration</h4>
-        <p className="text-white/60">Configure notification settings and delivery preferences</p>
+      <div className="border-b border-gray-200 pb-4">
+        <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Notification Configuration</h4>
+        <p className="text-gray-600">Configure notification settings and delivery preferences</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Email Notifications */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Email Notifications</label>
-            <p className="text-xs text-white/60 mt-1">Send notifications via email</p>
+            <label className="block text-sm font-semibold text-gray-700">Email Notifications</label>
+            <p className="text-xs text-gray-600 mt-1">Send notifications via email</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -530,15 +530,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Push Notifications */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Push Notifications</label>
-            <p className="text-xs text-white/60 mt-1">Send push notifications to devices</p>
+            <label className="block text-sm font-semibold text-gray-700">Push Notifications</label>
+            <p className="text-xs text-gray-600 mt-1">Send push notifications to devices</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -548,15 +548,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* SMS Notifications */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">SMS Notifications</label>
-            <p className="text-xs text-white/60 mt-1">Send notifications via SMS</p>
+            <label className="block text-sm font-semibold text-gray-700">SMS Notifications</label>
+            <p className="text-xs text-gray-600 mt-1">Send notifications via SMS</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -566,15 +566,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Weekly Digest */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Weekly Digest</label>
-            <p className="text-xs text-white/60 mt-1">Send weekly activity summaries</p>
+            <label className="block text-sm font-semibold text-gray-700">Weekly Digest</label>
+            <p className="text-xs text-gray-600 mt-1">Send weekly activity summaries</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -584,15 +584,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* System Alerts */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">System Alerts</label>
-            <p className="text-xs text-white/60 mt-1">Send critical system notifications</p>
+            <label className="block text-sm font-semibold text-gray-700">System Alerts</label>
+            <p className="text-xs text-gray-600 mt-1">Send critical system notifications</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -602,15 +602,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Marketing Emails */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Marketing Emails</label>
-            <p className="text-xs text-white/60 mt-1">Send promotional and marketing emails</p>
+            <label className="block text-sm font-semibold text-gray-700">Marketing Emails</label>
+            <p className="text-xs text-gray-600 mt-1">Send promotional and marketing emails</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -620,33 +620,33 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Notification Retention Days */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Notification Retention (Days)</label>
+          <label className="block text-sm font-semibold text-gray-700">Notification Retention (Days)</label>
           <input
             type="number"
             value={notificationSettings.notificationRetentionDays}
             onChange={(e) => updateNotificationSetting('notificationRetentionDays', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Max Notifications Per Day */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Max Notifications Per Day</label>
+          <label className="block text-sm font-semibold text-gray-700">Max Notifications Per Day</label>
           <input
             type="number"
             value={notificationSettings.maxNotificationsPerDay}
             onChange={(e) => updateNotificationSetting('maxNotificationsPerDay', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
       </div>
@@ -655,17 +655,17 @@ const AdminSettings = () => {
 
   const renderModerationSettings = () => (
     <div className="space-y-6">
-      <div className="border-b border-white/20 pb-4">
-        <h4 className="text-xl font-semibold text-white mb-2">Content Moderation</h4>
-        <p className="text-white/60">Configure content moderation and safety settings</p>
+      <div className="border-b border-gray-200 pb-4">
+        <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Content Moderation</h4>
+        <p className="text-gray-600">Configure content moderation and safety settings</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Auto Moderation */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Auto Moderation</label>
-            <p className="text-xs text-white/60 mt-1">Enable automatic content moderation</p>
+            <label className="block text-sm font-semibold text-gray-700">Auto Moderation</label>
+            <p className="text-xs text-gray-600 mt-1">Enable automatic content moderation</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -675,15 +675,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Profanity Filter */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Profanity Filter</label>
-            <p className="text-xs text-white/60 mt-1">Filter inappropriate language</p>
+            <label className="block text-sm font-semibold text-gray-700">Profanity Filter</label>
+            <p className="text-xs text-gray-600 mt-1">Filter inappropriate language</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -693,15 +693,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Spam Detection */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Spam Detection</label>
-            <p className="text-xs text-white/60 mt-1">Detect and prevent spam content</p>
+            <label className="block text-sm font-semibold text-gray-700">Spam Detection</label>
+            <p className="text-xs text-gray-600 mt-1">Detect and prevent spam content</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -711,15 +711,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Image Moderation */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Image Moderation</label>
-            <p className="text-xs text-white/60 mt-1">Moderate uploaded images automatically</p>
+            <label className="block text-sm font-semibold text-gray-700">Image Moderation</label>
+            <p className="text-xs text-gray-600 mt-1">Moderate uploaded images automatically</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -729,15 +729,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Require Approval */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Require Approval</label>
-            <p className="text-xs text-white/60 mt-1">Require manual approval for all content</p>
+            <label className="block text-sm font-semibold text-gray-700">Require Approval</label>
+            <p className="text-xs text-gray-600 mt-1">Require manual approval for all content</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -747,46 +747,46 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Flag Threshold */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Flag Threshold</label>
+          <label className="block text-sm font-semibold text-gray-700">Flag Threshold</label>
           <input
             type="number"
             value={moderationSettings.flagThreshold}
             onChange={(e) => updateModerationSetting('flagThreshold', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Auto Delete Threshold */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Auto Delete Threshold</label>
+          <label className="block text-sm font-semibold text-gray-700">Auto Delete Threshold</label>
           <input
             type="number"
             value={moderationSettings.autoDeleteThreshold}
             onChange={(e) => updateModerationSetting('autoDeleteThreshold', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Moderation Queue Limit */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Moderation Queue Limit</label>
+          <label className="block text-sm font-semibold text-gray-700">Moderation Queue Limit</label>
           <input
             type="number"
             value={moderationSettings.moderationQueueLimit}
             onChange={(e) => updateModerationSetting('moderationQueueLimit', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
       </div>
@@ -795,84 +795,84 @@ const AdminSettings = () => {
 
   const renderSystemSettings = () => (
     <div className="space-y-6">
-      <div className="border-b border-white/20 pb-4">
-        <h4 className="text-xl font-semibold text-white mb-2">System Configuration</h4>
-        <p className="text-white/60">Configure system settings and performance parameters</p>
+      <div className="border-b border-gray-200 pb-4">
+        <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">System Configuration</h4>
+        <p className="text-gray-600">Configure system settings and performance parameters</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Backup Frequency */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Backup Frequency</label>
+          <label className="block text-sm font-semibold text-gray-700">Backup Frequency</label>
           <select
             value={systemSettings.backupFrequency}
             onChange={(e) => updateSystemSetting('backupFrequency', e.target.value)}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <option value="hourly" className="bg-slate-800 text-white">Hourly</option>
-            <option value="daily" className="bg-slate-800 text-white">Daily</option>
-            <option value="weekly" className="bg-slate-800 text-white">Weekly</option>
+            <option value="hourly" className="bg-slate-800 text-gray-900">Hourly</option>
+            <option value="daily" className="bg-slate-800 text-gray-900">Daily</option>
+            <option value="weekly" className="bg-slate-800 text-gray-900">Weekly</option>
           </select>
         </div>
 
         {/* Log Retention Days */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Log Retention (Days)</label>
+          <label className="block text-sm font-semibold text-gray-700">Log Retention (Days)</label>
           <input
             type="number"
             value={systemSettings.logRetentionDays}
             onChange={(e) => updateSystemSetting('logRetentionDays', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Cache Expiration */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Cache Expiration (Seconds)</label>
+          <label className="block text-sm font-semibold text-gray-700">Cache Expiration (Seconds)</label>
           <input
             type="number"
             value={systemSettings.cacheExpiration}
             onChange={(e) => updateSystemSetting('cacheExpiration', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Rate Limit Requests */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Rate Limit (Requests)</label>
+          <label className="block text-sm font-semibold text-gray-700">Rate Limit (Requests)</label>
           <input
             type="number"
             value={systemSettings.rateLimitRequests}
             onChange={(e) => updateSystemSetting('rateLimitRequests', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Rate Limit Window */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-white/80">Rate Limit Window (Seconds)</label>
+          <label className="block text-sm font-semibold text-gray-700">Rate Limit Window (Seconds)</label>
           <input
             type="number"
             value={systemSettings.rateLimitWindow}
             onChange={(e) => updateSystemSetting('rateLimitWindow', parseInt(e.target.value))}
             disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
             min="1"
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Enable API Logging */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Enable API Logging</label>
-            <p className="text-xs text-white/60 mt-1">Log all API requests and responses</p>
+            <label className="block text-sm font-semibold text-gray-700">Enable API Logging</label>
+            <p className="text-xs text-gray-600 mt-1">Log all API requests and responses</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -882,15 +882,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Enable Performance Monitoring */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Enable Performance Monitoring</label>
-            <p className="text-xs text-white/60 mt-1">Monitor system performance metrics</p>
+            <label className="block text-sm font-semibold text-gray-700">Enable Performance Monitoring</label>
+            <p className="text-xs text-gray-600 mt-1">Monitor system performance metrics</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -900,15 +900,15 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
 
         {/* Enable Error Reporting */}
-        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
           <div>
-            <label className="block text-sm font-medium text-white/80">Enable Error Reporting</label>
-            <p className="text-xs text-white/60 mt-1">Automatically report system errors</p>
+            <label className="block text-sm font-semibold text-gray-700">Enable Error Reporting</label>
+            <p className="text-xs text-gray-600 mt-1">Automatically report system errors</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -918,7 +918,7 @@ const AdminSettings = () => {
               disabled={!hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
           </label>
         </div>
       </div>
@@ -944,54 +944,42 @@ const AdminSettings = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: 'var(--color-background)' }}>
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow-2xl p-8 text-center">
-          <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white/70">Loading settings...</p>
+      <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50">
+        <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-8 text-center">
+          <div className="w-8 h-8 border-2 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading settings...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-6" style={{ backgroundColor: 'var(--color-background)' }}>
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="w-full">
+      <div className="space-y-4 md:space-y-6">
         {/* Header */}
-        <div className="backdrop-blur-lg rounded-2xl shadow-2xl p-6" style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
+        <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-4 md:p-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>Admin Settings</h2>
-              <p style={{ color: 'var(--color-text-secondary)' }}>Configure platform settings and system parameters</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Admin Settings</h2>
+              <p className="text-gray-600 text-sm md:text-base">Configure platform settings and system parameters</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               {hasUnsavedChanges && (
-                <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: 'var(--amw-warning-light)', color: 'var(--amw-warning)', border: '1px solid var(--amw-warning)' }}>
+                <span className="px-3 py-1 rounded-lg text-sm font-semibold bg-amber-50 text-amber-700 border-2 border-amber-200">
                   Unsaved Changes
                 </span>
               )}
               <button
                 onClick={handleResetSettings}
                 disabled={isLoading || !hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS)}
-                className="px-4 py-2 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ color: 'var(--color-text-secondary)', backgroundColor: 'transparent' }}
-                onMouseEnter={(e) => {
-                  e.target.style.color = 'var(--color-text-primary)';
-                  e.target.style.backgroundColor = 'var(--color-hover)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.color = 'var(--color-text-secondary)';
-                  e.target.style.backgroundColor = 'transparent';
-                }}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium border-2 border-gray-200 hover:border-gray-300 text-sm"
               >
                 Reset to Defaults
               </button>
               <button
                 onClick={handleSaveSettings}
                 disabled={!hasUnsavedChanges || !hasAdminPermission(ADMIN_PERMISSIONS.SYSTEM_SETTINGS) || isLoading}
-                className="px-6 py-2 text-white font-semibold rounded-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
-                style={{ backgroundColor: 'var(--amw-primary)' }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--amw-primary-dark)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--amw-primary)'}
+                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-gray-900 font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg text-sm"
               >
                 {isLoading ? 'Saving...' : 'Save Settings'}
               </button>
@@ -1001,12 +989,12 @@ const AdminSettings = () => {
 
         {/* Unsaved Changes Alert */}
         {hasUnsavedChanges && (
-          <div className="rounded-2xl p-4" style={{ backgroundColor: 'var(--amw-warning-light)', border: '1px solid var(--amw-warning)' }}>
+          <div className="bg-amber-50 rounded-2xl border-2 border-amber-200 p-4">
             <div className="flex items-center gap-3">
-              <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--amw-warning)' }}>
-                <span className="text-white text-xs font-bold">!</span>
+              <div className="w-5 h-5 rounded-full flex items-center justify-center bg-amber-500">
+                <span className="text-gray-900 text-xs font-bold">!</span>
               </div>
-              <p className="font-medium" style={{ color: 'var(--amw-warning)' }}>
+              <p className="font-medium text-amber-800">
                 You have unsaved changes. Don't forget to save your settings.
               </p>
             </div>
@@ -1014,42 +1002,22 @@ const AdminSettings = () => {
         )}
 
         {/* Settings Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
           {/* Settings Tabs */}
           <div className="lg:col-span-1">
-            <div className="backdrop-blur-lg rounded-2xl shadow-xl p-4 space-y-2" style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
+            <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-3 md:p-4 space-y-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                    activeTab === tab.id
-                      ? 'shadow-lg'
-                      : 'border border-transparent'
-                  }`}
-                  style={activeTab === tab.id ? {
-                    backgroundColor: 'var(--amw-primary-light)',
-                    border: '1px solid var(--amw-primary)',
-                    color: 'var(--color-text-primary)'
-                  } : {
-                    color: 'var(--color-text-secondary)',
-                    backgroundColor: 'transparent'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (activeTab !== tab.id) {
-                      e.target.style.color = 'var(--color-text-primary)';
-                      e.target.style.backgroundColor = 'var(--color-hover)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (activeTab !== tab.id) {
-                      e.target.style.color = 'var(--color-text-secondary)';
-                      e.target.style.backgroundColor = 'transparent';
-                    }
-                  }}
                   onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium ${
+                    activeTab === tab.id
+                      ? 'bg-blue-600 text-gray-900 shadow-md'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  }`}
                 >
-                  <span className="text-xl">{tab.icon}</span>
-                  <span className="font-medium">{tab.label}</span>
+                  <span className="text-lg">{tab.icon}</span>
+                  <span>{tab.label}</span>
                 </button>
               ))}
             </div>
@@ -1057,7 +1025,7 @@ const AdminSettings = () => {
 
           {/* Settings Content */}
           <div className="lg:col-span-3">
-            <div className="backdrop-blur-lg rounded-2xl shadow-xl p-6" style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
+            <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-4 md:p-6">
               {renderActiveTab()}
             </div>
           </div>
@@ -1068,4 +1036,5 @@ const AdminSettings = () => {
 
 };
 
-export default AdminSettings;
+export default AdminSettings;
+
