@@ -1,16 +1,16 @@
 version: 1
 applications:
-  - appRoot: amw-app
+  phases:
     frontend:
       phases:
         preBuild:
           commands:
-            - npm ci
+            - npm install
         build:
           commands:
             - npm run build
       artifacts:
-        baseDirectory: dist
+        baseDirectory: build
         files:
           - '**/*'
       cache:
