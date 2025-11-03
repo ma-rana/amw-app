@@ -99,7 +99,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
           <div className="text-center">
             <div className="relative mb-8">
               <div
-                className="w-16 h-16 border-4 rounded-full animate-spin mx-auto"
+                className="w-16 h-16 border-4 rounded-full mx-auto"
                 style={{
                   borderColor: "var(--amw-primary)",
                   borderTopColor: "transparent",
@@ -123,7 +123,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
       <div className="relative z-10">
         {/* Header Section */}
         <div className="bg-white border-b-2 border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+          <div className="amw-container py-12 md:py-16">
             <div className="text-center">
               <div className="flex items-center justify-center mb-6">
                 <div className="bg-gradient-to-br from-green-600 to-emerald-600 w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center shadow-lg">
@@ -145,7 +145,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
 
         {/* Error Message */}
         {error && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="amw-container py-4">
             <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
@@ -167,7 +167,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
 
         {/* Controls Section */}
         <div className="bg-white border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="amw-container py-6">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               {/* Search */}
               <div className="relative flex-1 w-full sm:max-w-md">
@@ -179,14 +179,14 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
                   placeholder="Search stories by title or invite code..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 />
               </div>
 
               {/* Create Button */}
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="inline-flex items-center space-x-2 px-4 py-2 md:px-6 md:py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto justify-center"
+                className="inline-flex items-center space-x-2 px-4 py-2 md:px-6 md:py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg w-full sm:w-auto justify-center"
               >
                 <Plus className="w-5 h-5" />
                 <span>Create New Story</span>
@@ -219,7 +219,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
                   </div>
                   <button
                     onClick={() => setShowCreateForm(false)}
-                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200 flex-shrink-0 ml-2"
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg flex-shrink-0 ml-2"
                     aria-label="Close"
                   >
                     <X className="w-5 h-5" />
@@ -239,7 +239,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
         )}
 
         {/* Stories Grid */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+        <div className="amw-container py-6 md:py-8">
           {filteredStories.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 md:py-20 text-center">
               <div className="bg-gradient-to-br from-green-600 to-emerald-600 w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center mb-6 shadow-lg">
@@ -257,7 +257,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
 
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="inline-flex items-center space-x-2 px-6 py-3 md:px-8 md:py-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+                className="inline-flex items-center space-x-2 px-6 py-3 md:px-8 md:py-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg"
               >
                 <Sparkles className="w-5 h-5" />
                 <span>Create Your First Story</span>
@@ -270,7 +270,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
                 {filteredStories.map((story) => (
                   <div
                     key={story.id}
-                    className="group bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:border-green-500 hover:shadow-xl transition-all duration-300"
+                    className="group bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:border-green-500 hover:shadow-xl"
                   >
                     {/* Story Image */}
                     <div className="relative h-48 overflow-hidden bg-gray-100">
@@ -278,7 +278,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
                         <img
                           src={story.imageUrl}
                           alt={story.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -296,7 +296,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
 
                     {/* Story Content */}
                     <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors duration-200">
+                      <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-600">
                         {story.title}
                       </h3>
 
@@ -323,7 +323,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
                             onNavigate &&
                             onNavigate("chapters", { storyId: story.id })
                           }
-                          className="flex-1 inline-flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white border-2 border-blue-600 hover:border-blue-700 rounded-lg transition-all duration-200 font-medium"
+                          className="flex-1 inline-flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white border-2 border-blue-600 hover:border-blue-700 rounded-lg font-medium"
                         >
                           <Eye className="w-4 h-4" />
                           <span className="text-sm">View</span>
@@ -331,7 +331,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
 
                         <button
                           onClick={() => setShareModalStory(story)}
-                          className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 border-2 border-gray-200 hover:border-green-300 rounded-lg transition-all duration-200"
+                          className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 border-2 border-gray-200 hover:border-green-300 rounded-lg"
                           title="Share"
                         >
                           <Share2 className="w-4 h-4" />
@@ -339,7 +339,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
 
                         <button
                           onClick={() => handleDeleteStory(story.id)}
-                          className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 border-2 border-gray-200 hover:border-red-300 rounded-lg transition-all duration-200"
+                          className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 border-2 border-gray-200 hover:border-red-300 rounded-lg"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -352,7 +352,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
 
               {/* Statistics Section */}
               <div className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 hover:border-blue-500 transition-all duration-300">
+                <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 hover:border-blue-500">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-md">
                       <BookOpen className="w-6 h-6 text-white" />
@@ -368,7 +368,7 @@ const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 hover:border-green-500 transition-all duration-300">
+                <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-6 hover:border-green-500">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center shadow-md">
                       <Users className="w-6 h-6 text-white" />

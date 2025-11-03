@@ -309,18 +309,20 @@ const AdvancedSearch = ({
   };
 
   return (
-    <Card className="advanced-search">
-      <View padding="large">
+    <View className="advanced-search">
+      <View>
         {/* Main Search */}
         <Flex direction="column" gap="medium">
-          <Flex direction="row" gap="medium" alignItems="end">
+          <Flex direction="row" gap="medium" alignItems="end" wrap="nowrap" className="search-row">
             <View flex="1">
               <SearchField
                 label="Search"
                 placeholder={placeholder}
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
+                onClear={() => handleSearchChange('')}
                 size="large"
+                width="100%"
               />
             </View>
             
@@ -330,6 +332,7 @@ const AdvancedSearch = ({
                 value={searchType}
                 onChange={(e) => handleSearchTypeChange(e.target.value)}
                 width="150px"
+                className="search-type-wrap"
               >
                 <option value="all">All</option>
                 {searchTypes.includes('moments') && <option value="moments">Moments</option>}
@@ -354,7 +357,7 @@ const AdvancedSearch = ({
           {isSearching && (
             <Flex direction="row" alignItems="center" gap="small">
               <Loader size="small" />
-              <Text fontSize="small" color="neutral.60">Searching...</Text>
+              <Text fontSize="small" className="text-gray-600">Searching...</Text>
             </Flex>
           )}
 
@@ -523,7 +526,7 @@ const AdvancedSearch = ({
           {searchResults.length > 0 && (
             <>
               <Divider />
-              <Text fontSize="small" color="neutral.60">
+              <Text fontSize="small" className="text-gray-600">
                 Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
                 {searchQuery && ` for "${searchQuery}"`}
               </Text>
@@ -531,7 +534,7 @@ const AdvancedSearch = ({
           )}
         </Flex>
       </View>
-    </Card>
+    </View>
   );
 };
 

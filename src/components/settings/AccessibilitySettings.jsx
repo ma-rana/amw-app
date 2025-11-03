@@ -82,6 +82,7 @@ const AccessibilitySettings = () => {
 
   const applyAccessibilitySettings = (settings) => {
     const root = document.documentElement;
+    const body = document.body;
     
     root.style.setProperty('--font-size-base', `${settings.fontSize}px`);
     root.style.setProperty('--font-family-base', settings.fontFamily === 'default' ? 'system-ui, -apple-system, sans-serif' : settings.fontFamily);
@@ -98,7 +99,13 @@ const AccessibilitySettings = () => {
       root.classList.remove('reduced-motion');
     }
     
+    // Magnification: set variable and toggle scaling class on body
     root.style.setProperty('--magnification', settings.magnification);
+    if (settings.magnification && settings.magnification !== 1) {
+      body.classList.add('amw-app-scale');
+    } else {
+      body.classList.remove('amw-app-scale');
+    }
     
     root.classList.remove('cursor-small', 'cursor-normal', 'cursor-large', 'cursor-extra-large');
     root.classList.add(`cursor-${settings.cursorSize}`);

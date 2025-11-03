@@ -22,8 +22,12 @@ const MobileNavigation = ({
     <>
       {/* Modern Mobile Bottom Navigation */}
       <div
-        className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50"
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 0)" }}
+        className="fixed bottom-0 left-0 right-0 shadow-lg z-50"
+        style={{ 
+          paddingBottom: "env(safe-area-inset-bottom, 0)",
+          backgroundColor: 'var(--brand-background)',
+          borderTop: '2px solid var(--color-border)'
+        }}
       >
         <div className="flex items-center justify-around px-1 py-2 max-w-lg mx-auto">
           {navigationItems.map((item) => {
@@ -35,11 +39,8 @@ const MobileNavigation = ({
               <Link
                 key={item.key}
                 to={item.path}
-                className={`relative flex flex-col items-center justify-center gap-1 px-2 py-1.5 rounded-lg transition-all duration-200 min-w-0 flex-1 ${
-                  isActive
-                    ? "text-blue-600"
-                    : "text-gray-600 active:text-blue-600"
-                }`}
+                className={`relative flex flex-col items-center justify-center gap-1 px-2 py-1.5 rounded-lg transition-all duration-200 min-w-0 flex-1`}
+                style={{ color: isActive ? 'var(--brand-secondary)' : 'var(--color-text-muted)' }}
               >
                 <span
                   className={`text-xl leading-none ${
@@ -52,7 +53,7 @@ const MobileNavigation = ({
                   {item.label.replace(/^[^\s]+ /, "")}
                 </span>
                 {isActive && (
-                  <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-blue-600 rounded-full"></span>
+                  <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-0.5 rounded-full" style={{ backgroundColor: 'var(--brand-secondary)' }}></span>
                 )}
               </Link>
             );

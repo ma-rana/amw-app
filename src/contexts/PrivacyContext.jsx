@@ -18,6 +18,8 @@ export const PrivacyProvider = ({ children }) => {
     moments: {},
     stories: {}
   });
+  // User-level privacy & security preferences (profile visibility, notifications, etc.)
+  const [userPrivacySettings, setUserPrivacySettings] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,6 +49,52 @@ export const PrivacyProvider = ({ children }) => {
       // Load user relationships (placeholder for now)
       // In a real implementation, this would load family relationships
       setUserRelationships({});
+
+      // Load user-level privacy preferences
+      try {
+        const stored = JSON.parse(localStorage.getItem('amw_user_privacy_settings') || 'null');
+        setUserPrivacySettings(stored || {
+          profileVisibility: 'friends',
+          showEmail: false,
+          showPhone: false,
+          allowFriendRequests: true,
+          allowMessages: true,
+          showOnlineStatus: true,
+          allowTagging: true,
+          allowLocationSharing: false,
+          dataCollection: false,
+          analyticsOptIn: false,
+          marketingEmails: false,
+          pushNotifications: true,
+          emailNotifications: true,
+          smsNotifications: false,
+          twoFactorAuth: false,
+          loginAlerts: true,
+          sessionTimeout: 30,
+          autoLogout: true
+        });
+      } catch (_) {
+        setUserPrivacySettings({
+          profileVisibility: 'friends',
+          showEmail: false,
+          showPhone: false,
+          allowFriendRequests: true,
+          allowMessages: true,
+          showOnlineStatus: true,
+          allowTagging: true,
+          allowLocationSharing: false,
+          dataCollection: false,
+          analyticsOptIn: false,
+          marketingEmails: false,
+          pushNotifications: true,
+          emailNotifications: true,
+          smsNotifications: false,
+          twoFactorAuth: false,
+          loginAlerts: true,
+          sessionTimeout: 30,
+          autoLogout: true
+        });
+      }
 
       setLoading(false);
     } catch (error) {
@@ -286,6 +334,41 @@ export const PrivacyProvider = ({ children }) => {
     });
   };
 
+  // User-level privacy settings management
+  const getUserPrivacySettings = () => {
+    return userPrivacySettings || {
+      profileVisibility: 'friends',
+      showEmail: false,
+      showPhone: false,
+      allowFriendRequests: true,
+      allowMessages: true,
+      showOnlineStatus: true,
+      allowTagging: true,
+      allowLocationSharing: false,
+      dataCollection: false,
+      analyticsOptIn: false,
+      marketingEmails: false,
+      pushNotifications: true,
+      emailNotifications: true,
+      smsNotifications: false,
+      twoFactorAuth: false,
+      loginAlerts: true,
+      sessionTimeout: 30,
+      autoLogout: true
+    };
+  };
+
+  const updateUserPrivacySettings = (settings) => {
+    try {
+      setUserPrivacySettings(settings);
+      localStorage.setItem('amw_user_privacy_settings', JSON.stringify(settings));
+      return true;
+    } catch (error) {
+      console.error('Error updating user privacy settings:', error);
+      return false;
+    }
+  };
+
   const value = {
     currentUser,
     userRelationships,
@@ -312,6 +395,11 @@ export const PrivacyProvider = ({ children }) => {
     // Utilities
     getDefaultPrivacySettings,
     clearPrivacyCache,
+    
+    // User-level privacy settings
+    userPrivacySettings,
+    getUserPrivacySettings,
+    updateUserPrivacySettings,
     
     // Constants
     DEFAULT_MOMENT_PRIVACY: privacyService.DEFAULT_MOMENT_PRIVACY,

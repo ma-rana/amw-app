@@ -140,7 +140,7 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
     <div className="min-h-screen bg-gray-50 pb-20 lg:pb-0">
       {/* Header */}
       <div className="bg-white border-b-2 border-gray-200 sticky lg:sticky top-14 lg:top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+        <div className="amw-container py-6 md:py-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
             <div className="flex items-center space-x-3 md:space-x-4">
               <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-3 rounded-xl shadow-md">
@@ -167,7 +167,7 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
                     {/* New moments notification */}
                     {newMomentsCount > 0 && (
                       <div 
-                        className="flex items-center space-x-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs cursor-pointer hover:bg-blue-200 transition-colors font-medium"
+                        className="flex items-center space-x-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs cursor-pointer font-medium"
                         onClick={() => {
                           setNewMomentsCount(0);
                           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -185,7 +185,7 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
             </div>
             
             <button 
-              className="inline-flex items-center space-x-2 px-4 py-2 md:px-6 md:py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+              className="inline-flex items-center space-x-2 px-4 py-2 md:px-6 md:py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md"
               onClick={() => onCreateMoment && onCreateMoment()}
               title="Create New Moment"
             >
@@ -198,7 +198,7 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
       
       {/* Feed Controls */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+        <div className="amw-container py-4 md:py-6">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
             <div className="flex-1 w-full sm:max-w-md">
               <div className="relative">
@@ -210,31 +210,31 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
                   placeholder="Search moments..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  className="block w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </div>
             
             <div className="flex items-center space-x-3 w-full sm:w-auto">
               <div className="relative flex-1 sm:flex-initial">
-                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                <Filter className="absolute left-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
                 <select 
                   value={sortBy} 
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full sm:w-auto appearance-none bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 pl-10 pr-8 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 cursor-pointer font-medium"
+                  className="w-full sm:w-auto appearance-none bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 pl-10 pr-8 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer font-medium"
                 >
                   <option value="newest">Newest First</option>
                   <option value="oldest">Oldest First</option>
                   <option value="title">By Title</option>
                 </select>
-                <ArrowDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                <ArrowDown className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
               </div>
               
               <div className="flex items-center bg-gray-100 border-2 border-gray-200 rounded-xl p-1">
-                <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg transition-all duration-200">
+                <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg">
                   <Grid className="w-4 h-4" />
                 </button>
-                <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg transition-all duration-200">
+                <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg">
                   <List className="w-4 h-4" />
                 </button>
               </div>
@@ -245,10 +245,10 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
       
       {/* Moments Feed */}
       {visibleMoments.length > 0 ? (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+        <div className="amw-container py-6 md:py-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {visibleMoments.map((moment, index) => (
-              <div key={String(moment?.id ?? index)} className="group bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:border-blue-500 hover:shadow-xl transition-all duration-300">
+              <div key={String(moment?.id ?? index)} className="group bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:border-blue-500 hover:shadow-xl">
                 <MomentCard 
                   title={moment?.title || 'Untitled'}
                   date={moment?.date || 'No date'}
@@ -288,11 +288,11 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
               <button 
                  onClick={loadMoreMoments}
                  disabled={isLoading}
-                 className="inline-flex items-center space-x-2 px-6 py-3 md:px-8 md:py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
+                 className="inline-flex items-center space-x-2 px-6 py-3 md:px-8 md:py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                >
                   {isLoading ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"></div>
                       <span>Loading...</span>
                     </>
                   ) : (
@@ -319,7 +319,7 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
               
               <button 
                 onClick={() => onCreateMoment && onCreateMoment()}
-                className="inline-flex items-center space-x-2 px-6 py-3 md:px-8 md:py-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+                className="inline-flex items-center space-x-2 px-6 py-3 md:px-8 md:py-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg"
               >
                 <Camera className="w-5 h-5" />
                 <span>Create More Moments</span>
@@ -342,7 +342,7 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
               
               <button 
                 onClick={() => setSearchQuery('')}
-                className="inline-flex items-center space-x-2 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+                className="inline-flex items-center space-x-2 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg"
               >
                 <span>Clear Search</span>
               </button>
@@ -360,7 +360,7 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
               
               <button 
                 onClick={() => onCreateMoment && onCreateMoment()}
-                className="inline-flex items-center space-x-2 px-6 py-3 md:px-8 md:py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+                className="inline-flex items-center space-x-2 px-6 py-3 md:px-8 md:py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg"
               >
                 <Plus className="w-5 h-5" />
                 <span>Create Your First Moment</span>

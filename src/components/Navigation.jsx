@@ -60,8 +60,8 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
       <nav 
         className="hidden lg:block desktop-navigation" 
         style={{
-          backgroundColor: '#FFFFFF',
-          borderBottom: '1px solid #E7E7E7',
+          backgroundColor: 'var(--brand-background)',
+          borderBottom: '1px solid var(--color-border)',
           boxShadow: '0 2px 8px rgba(40, 10, 50, 0.08)',
           position: 'sticky',
           top: 0,
@@ -71,7 +71,7 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
           fontFamily: "'ITC Avant Garde Gothic Pro', sans-serif"
         }}
       >
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
+        <div className="amw-container">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '70px' }}>
             {/* Brand Logo */}
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -83,22 +83,22 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                     gap: '12px',
                     fontSize: '24px',
                     fontWeight: 'bold',
-                    color: '#280A32',
+                    color: 'var(--color-text-primary)',
                     textDecoration: 'none',
                     transition: 'color 0.2s ease'
                   }}
-                  onMouseEnter={(e) => e.target.style.color = '#C37CDE'}
-                  onMouseLeave={(e) => e.target.style.color = '#280A32'}
+                  onMouseEnter={(e) => e.target.style.color = 'var(--brand-secondary)'}
+                  onMouseLeave={(e) => e.target.style.color = 'var(--color-text-primary)'}
                 >
                   <div style={{
                     width: '40px',
                     height: '40px',
-                    backgroundColor: '#280A32',
+                    backgroundColor: 'var(--brand-primary)',
                     borderRadius: '8px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#FFFFFF',
+                    color: 'var(--brand-white)',
                     fontWeight: 'bold',
                     fontSize: '18px'
                   }}>
@@ -125,20 +125,20 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                     fontWeight: '500',
                     textDecoration: 'none',
                     transition: 'all 0.2s ease',
-                    backgroundColor: isActive(item.path) ? '#C37CDE' : 'transparent',
-                    color: isActive(item.path) ? '#FFFFFF' : '#280A32',
-                    border: isActive(item.path) ? '1px solid #C37CDE' : '1px solid transparent'
+                    backgroundColor: isActive(item.path) ? 'var(--brand-secondary)' : 'transparent',
+                    color: isActive(item.path) ? 'var(--brand-white)' : 'var(--color-text-secondary)',
+                    border: isActive(item.path) ? '1px solid var(--brand-secondary)' : '1px solid transparent'
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive(item.path)) {
-                      e.target.style.backgroundColor = '#E7E7E7';
-                      e.target.style.color = '#280A32';
+                      e.target.style.backgroundColor = 'var(--color-background-alt)';
+                      e.target.style.color = 'var(--color-text-primary)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive(item.path)) {
                       e.target.style.backgroundColor = 'transparent';
-                      e.target.style.color = '#280A32';
+                      e.target.style.color = 'var(--color-text-secondary)';
                     }
                   }}
                 >
@@ -162,12 +162,12 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                   style={{
                     width: '40px',
                     height: '40px',
-                    backgroundColor: '#8CA1A3',
+                    backgroundColor: 'var(--brand-primary)',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#FFFFFF',
+                    color: 'var(--brand-white)',
                     fontSize: '16px',
                     fontWeight: '600',
                     border: 'none',
@@ -175,11 +175,11 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                     transition: 'all 0.2s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = '#047BC1';
+                    e.target.style.backgroundColor = 'var(--brand-secondary)';
                     e.target.style.transform = 'scale(1.05)';
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = '#8CA1A3';
+                    e.target.style.backgroundColor = 'var(--brand-primary)';
                     e.target.style.transform = 'scale(1)';
                   }}
                 >
@@ -193,8 +193,8 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                       position: 'absolute',
                       top: '50px',
                       right: '0',
-                      backgroundColor: '#FFFFFF',
-                      border: '1px solid #E7E7E7',
+                      backgroundColor: 'var(--brand-background)',
+                      border: '1px solid var(--color-border)',
                       borderRadius: '8px',
                       boxShadow: '0 4px 12px rgba(40, 10, 50, 0.15)',
                       minWidth: '180px',
@@ -227,17 +227,17 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                         alignItems: 'center',
                         gap: '8px',
                         padding: '12px 16px',
-                        color: '#280A32',
+                        color: 'var(--color-text-secondary)',
                         backgroundColor: 'transparent',
                         border: 'none',
                         fontSize: '16px',
                         width: '100%',
                         textAlign: 'left',
                         cursor: 'pointer',
-                        borderBottom: '1px solid #E7E7E7',
+                        borderBottom: '1px solid var(--color-border)',
                         transition: 'background-color 0.2s ease'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E7E7E7'}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-background-alt)'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                       <span>👤</span>
@@ -268,17 +268,17 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                         alignItems: 'center',
                         gap: '8px',
                         padding: '12px 16px',
-                        color: '#280A32',
+                        color: 'var(--color-text-secondary)',
                         backgroundColor: 'transparent',
                         border: 'none',
                         fontSize: '16px',
                         width: '100%',
                         textAlign: 'left',
                         cursor: 'pointer',
-                        borderBottom: '1px solid #E7E7E7',
+                        borderBottom: '1px solid var(--color-border)',
                         transition: 'background-color 0.2s ease'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E7E7E7'}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-background-alt)'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                       <span>⚙️</span>
@@ -306,7 +306,7 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                         alignItems: 'center',
                         gap: '8px',
                         padding: '12px 16px',
-                        color: '#280A32',
+                        color: 'var(--amw-error)',
                         backgroundColor: 'transparent',
                         border: 'none',
                         fontSize: '16px',
@@ -316,7 +316,7 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                         borderRadius: '0 0 8px 8px',
                         transition: 'background-color 0.2s ease'
                       }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#E7E7E7'}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-background-alt)'}
                       onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                     >
                       <span>🚪</span>
@@ -332,16 +332,17 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
       </nav>
 
       {/* Mobile Top Navigation Bar - Only on mobile */}
-      <nav className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b-2 border-gray-200 shadow-sm z-50">
-        <div className="max-w-7xl mx-auto px-4">
+      <nav className="lg:hidden fixed top-0 left-0 right-0 shadow-sm z-50" style={{backgroundColor: 'var(--brand-background)', borderBottom: '2px solid var(--color-border)'}}>
+        <div className="amw-container px-4">
           <div className="flex items-center justify-between h-14">
             {/* App Name/Logo */}
             <Link 
               to="/" 
-              className="flex items-center space-x-2 text-gray-900 hover:text-blue-600 transition-colors"
+              className="flex items-center space-x-2 transition-colors"
+              style={{ color: 'var(--color-text-primary)' }}
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
-                <span className="text-white font-bold text-sm">A</span>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-md" style={{ backgroundColor: 'var(--brand-primary)' }}>
+                <span className="font-bold text-sm" style={{ color: 'var(--brand-white)' }}>A</span>
               </div>
               <span className="font-bold text-base sm:text-lg">A Moment With</span>
             </Link>
@@ -369,7 +370,8 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                       onClick={handleProfileMenuClose}
                     />
                     <div 
-                      className="absolute top-full right-0 mt-2 bg-white rounded-xl border-2 border-gray-200 shadow-2xl z-50 min-w-[180px] overflow-hidden"
+                      className="absolute top-full right-0 mt-2 rounded-xl shadow-2xl z-50 min-w-[180px] overflow-hidden"
+                      style={{ backgroundColor: 'var(--brand-background)', border: '2px solid var(--color-border)' }}
                     >
                       <button
                         type="button"
@@ -391,7 +393,8 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                             onNavigate('/profile');
                           }
                         }}
-                        className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-200 cursor-pointer text-left"
+                        className="w-full flex items-center space-x-2 px-4 py-3 transition-colors cursor-pointer text-left"
+                        style={{ color: 'var(--color-text-secondary)', borderBottom: '1px solid var(--color-border)' }}
                       >
                         <span className="text-lg">👤</span>
                         <span className="font-medium text-sm">View Profile</span>
@@ -416,7 +419,8 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                             onNavigate('/settings');
                           }
                         }}
-                        className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-200 cursor-pointer text-left"
+                        className="w-full flex items-center space-x-2 px-4 py-3 transition-colors cursor-pointer text-left"
+                        style={{ color: 'var(--color-text-secondary)', borderBottom: '1px solid var(--color-border)' }}
                       >
                         <span className="text-lg">⚙️</span>
                         <span className="font-medium text-sm">Settings</span>
@@ -437,8 +441,9 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                             signOut();
                           }
                         }}
-                        className="w-full flex items-center space-x-2 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                      >
+                        className="w-full flex items-center space-x-2 px-4 py-3 transition-colors cursor-pointer"
+                        style={{ color: 'var(--amw-error)' }}
+                    >
                         <span className="text-lg">🚪</span>
                         <span className="font-medium text-sm">Sign Out</span>
                       </button>

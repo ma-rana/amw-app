@@ -69,44 +69,44 @@ const HomePage = ({ onCreateMoment, onCreateStory, onViewMoment, onNavigate }) =
         />
       )}
       
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+      <div className="amw-container py-6 md:py-8">
         {/* Creation Containers */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
           {/* Create Moment Card */}
           <button
             onClick={handleCreateMoment}
-            className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-blue-500 hover:shadow-lg transition-all duration-200 text-left group"
+            className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-blue-500 hover:shadow-lg text-left group"
           >
             <div className="flex items-center space-x-4 mb-4">
-              <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform">
+              <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-3 rounded-lg shadow-md">
                 <Camera className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-xl font-bold text-gray-900">
                   Create Moment
                 </h3>
                 <p className="text-sm text-gray-600 mt-1">Share a precious memory</p>
               </div>
-              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="w-5 h-5 text-gray-400" />
             </div>
           </button>
 
           {/* Create Story Card */}
           <button
             onClick={handleCreateStory}
-            className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-green-500 hover:shadow-lg transition-all duration-200 text-left group"
+            className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-green-500 hover:shadow-lg text-left group"
           >
             <div className="flex items-center space-x-4 mb-4">
-              <div className="bg-gradient-to-br from-green-600 to-emerald-600 p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform">
+              <div className="bg-gradient-to-br from-green-600 to-emerald-600 p-3 rounded-lg shadow-md">
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900 group-hover:text-green-600 transition-colors">
+                <h3 className="text-xl font-bold text-gray-900">
                   Create Story
                 </h3>
                 <p className="text-sm text-gray-600 mt-1">Start a family story</p>
               </div>
-              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-green-600 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="w-5 h-5 text-gray-400" />
             </div>
           </button>
         </div>
@@ -126,7 +126,7 @@ const HomePage = ({ onCreateMoment, onCreateStory, onViewMoment, onNavigate }) =
         {/* Loading State */}
         {isLoading ? (
           <div className="text-center py-12">
-            <div className="inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <div className="inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
             <p className="mt-4 text-gray-600">Loading feed...</p>
           </div>
         ) : allMoments.length > 0 ? (
@@ -159,14 +159,14 @@ const HomePage = ({ onCreateMoment, onCreateStory, onViewMoment, onNavigate }) =
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center">
                   <button 
-                    className="inline-flex items-center justify-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-semibold rounded-xl shadow-md hover:shadow-lg transition-all w-full sm:w-auto"
+                    className="inline-flex items-center justify-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-semibold rounded-xl shadow-md hover:shadow-lg w-full sm:w-auto"
                     onClick={handleCreateMoment}
                   >
                     <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>Create Moment</span>
                   </button>
                   <button 
-                    className="inline-flex items-center justify-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white border-2 border-gray-300 text-gray-700 text-sm sm:text-base font-semibold rounded-xl hover:border-green-500 hover:text-green-600 transition-all w-full sm:w-auto"
+                    className="inline-flex items-center justify-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white border-2 border-gray-300 text-gray-700 text-sm sm:text-base font-semibold rounded-xl hover:border-green-500 hover:text-green-600 w-full sm:w-auto"
                     onClick={handleCreateStory}
                   >
                     <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />

@@ -177,11 +177,28 @@ const SearchPage = ({
     setShowHistory(false);
   };
 
+  // Safely get a display label from a recent search entry
+  const getSearchLabel = (entry) => {
+    if (typeof entry === "string") return entry;
+    if (entry && typeof entry === "object") {
+      // Prefer a 'query' field if present, otherwise fallback to a readable string
+      if (typeof entry.query === "string" && entry.query.length > 0) return entry.query;
+      try {
+        // As a very last resort, stringify a compact summary
+        const { query, type } = entry;
+        return [query, type].filter(Boolean).join(" ") || "";
+      } catch (_) {
+        return "";
+      }
+    }
+    return "";
+  };
+
   return (
     <View className="min-h-screen bg-gray-50 py-6">
       <View className="amw-container">
         {/* Search Component at top */}
-        <div className="amw-card p-6 mb-8">
+        <div className="mb-8">
           <AdvancedSearch
             onSearchResults={handleSearchResults}
             onSearchError={handleSearchError}
@@ -259,11 +276,14 @@ const SearchPage = ({
                       variation="outlined"
                       size="small"
                       onClick={() => {
-                        setSearchQuery(search);
+                        const label = getSearchLabel(search);
+                        if (label) {
+                          setSearchQuery(label);
+                        }
                         // Trigger search
                       }}
                     >
-                      {search}
+                      {getSearchLabel(search) || "(unknown)"}
                     </Button>
                   ))}
                 </Flex>

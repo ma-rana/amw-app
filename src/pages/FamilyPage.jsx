@@ -92,7 +92,7 @@ const FamilyPage = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-8 max-w-md w-full text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
+          <Loader2 className="w-8 h-8 text-blue-600 mx-auto mb-4" />
           <p className="text-lg font-medium text-gray-900">Loading family members...</p>
         </div>
       </div>
@@ -103,7 +103,7 @@ const FamilyPage = () => {
     <div className="min-h-screen bg-gray-50 pb-20 lg:pb-0">
       {/* Page Header */}
       <div className="bg-white border-b-2 border-gray-200 sticky lg:sticky top-14 lg:top-0 z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="amw-container py-6">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
               <Users size={24} className="text-white" />
@@ -118,12 +118,12 @@ const FamilyPage = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="amw-container py-4">
           <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 flex items-center justify-between">
             <span className="text-red-800 font-medium text-sm">{error}</span>
             <button
               onClick={() => setError(null)}
-              className="text-red-600 hover:text-red-800 transition-colors p-1"
+              className="text-red-600 hover:text-red-800 p-1"
             >
               <X size={18} />
             </button>
@@ -131,25 +131,25 @@ const FamilyPage = () => {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+      <div className="amw-container py-6 md:py-8">
         {/* Controls Section - Clean and Professional */}
         <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-4 md:p-6 mb-6">
           <div className="flex flex-col lg:flex-row lg:items-center gap-4">
             {/* Search Input */}
             <div className="relative flex-1">
-              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <Search size={18} className="absolute left-3 top-3 text-gray-400 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search family members..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
               />
             </div>
             
             {/* Role Filter Dropdown */}
             <div className="relative">
-              <Filter size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none z-10" />
+              <Filter size={18} className="absolute left-3 top-3 text-gray-400 pointer-events-none z-10" />
               <select
                 value={filterRole}
                 onChange={(e) => setFilterRole(e.target.value)}
@@ -162,13 +162,13 @@ const FamilyPage = () => {
                   </option>
                 ))}
               </select>
-              <ChevronDown size={18} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <ChevronDown size={18} className="absolute right-3 top-3 text-gray-400 pointer-events-none" />
             </div>
             
             {/* Add Member Button */}
             <button
               onClick={() => setShowCreateForm(true)}
-              className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-sm whitespace-nowrap"
+              className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg text-sm whitespace-nowrap"
             >
               <Plus size={18} />
               <span>Add Member</span>
@@ -178,7 +178,7 @@ const FamilyPage = () => {
 
         {/* Family Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-5 md:p-6 hover:border-blue-500 hover:shadow-xl transition-all duration-300">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-5 md:p-6 hover:border-blue-500 hover:shadow-xl">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
                 <Users size={24} className="text-white" />
@@ -190,7 +190,7 @@ const FamilyPage = () => {
             </div>
           </div>
           
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-5 md:p-6 hover:border-green-500 hover:shadow-xl transition-all duration-300">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-5 md:p-6 hover:border-green-500 hover:shadow-xl">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
                 <UserCheck size={24} className="text-white" />
@@ -202,7 +202,7 @@ const FamilyPage = () => {
             </div>
           </div>
           
-          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-5 md:p-6 hover:border-amber-500 hover:shadow-xl transition-all duration-300">
+          <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-5 md:p-6 hover:border-amber-500 hover:shadow-xl">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-amber-600 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
                 <Crown size={24} className="text-white" />
@@ -238,7 +238,7 @@ const FamilyPage = () => {
                 {!searchQuery && filterRole === 'all' && (
                   <button
                     onClick={() => setShowCreateForm(true)}
-                    className="inline-flex items-center space-x-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-sm"
+                    className="inline-flex items-center space-x-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg text-sm"
                   >
                     <Plus size={18} />
                     <span>Add Your First Family Member</span>
@@ -250,7 +250,7 @@ const FamilyPage = () => {
                       setSearchQuery('');
                       setFilterRole('all');
                     }}
-                    className="inline-flex items-center space-x-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-200 border-2 border-gray-200 hover:border-gray-300 text-sm"
+                    className="inline-flex items-center space-x-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl border-2 border-gray-200 hover:border-gray-300 text-sm"
                   >
                     <span>Clear Search</span>
                   </button>
@@ -263,7 +263,7 @@ const FamilyPage = () => {
                 const roleInfo = getRoleInfo(user.role);
                 
                 return (
-                  <div key={user.id} className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-5 hover:border-blue-500 hover:shadow-xl transition-all duration-300">
+                  <div key={user.id} className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-5 hover:border-blue-500 hover:shadow-xl">
                     {/* Avatar */}
                     <div className="relative mb-4">
                       <div className="w-16 h-16 md:w-20 md:h-20 mx-auto rounded-xl overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-600 to-purple-600">
@@ -302,20 +302,20 @@ const FamilyPage = () => {
                     <div className="space-y-2">
                       <button
                         onClick={() => setSelectedUser(user)}
-                        className="w-full flex items-center justify-center space-x-2 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl transition-all duration-200 border-2 border-blue-200 hover:border-blue-300 font-medium text-sm"
+                        className="w-full flex items-center justify-center space-x-2 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl border-2 border-blue-200 hover:border-blue-300 font-medium text-sm"
                       >
                         <Eye size={16} />
                         <span>View Profile</span>
                       </button>
                       <div className="flex space-x-2">
                         <button 
-                          className="flex-1 flex items-center justify-center px-3 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg transition-all duration-200 border-2 border-gray-200 hover:border-gray-300"
+                          className="flex-1 flex items-center justify-center px-3 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg border-2 border-gray-200 hover:border-gray-300"
                           title="Send Message"
                         >
                           <MessageCircle size={16} />
                         </button>
                         <button 
-                          className="flex-1 flex items-center justify-center px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-all duration-200 border-2 border-red-200 hover:border-red-300"
+                          className="flex-1 flex items-center justify-center px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg border-2 border-red-200 hover:border-red-300"
                           title="Remove Member"
                           onClick={() => handleDeleteUser(user.id)}
                         >
@@ -424,12 +424,12 @@ const FamilyPage = () => {
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <button 
-                  className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all duration-200 shadow-md hover:shadow-lg font-semibold text-sm"
+                  className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md hover:shadow-lg font-semibold text-sm"
                 >
                   <Heart size={18} />
                   <span>View Moments</span>
                 </button>
-                <button className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-all duration-200 border-2 border-gray-200 hover:border-gray-300 font-semibold text-sm">
+                <button className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl border-2 border-gray-200 hover:border-gray-300 font-semibold text-sm">
                   <MessageCircle size={18} />
                   <span>Send Message</span>
                 </button>

@@ -4,9 +4,10 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 24px;
-  background: #ffffff;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .settings-header {
@@ -32,9 +33,9 @@
 .settings-section {
   margin-bottom: 32px;
   padding: 24px;
-  background: #f8f9fa;
+  background: var(--color-surface);
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--color-border);
 }
 
 .settings-section h3 {
@@ -51,7 +52,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 16px 0;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .setting-item:last-child {
@@ -305,17 +306,18 @@
 
 .theme-option {
   padding: 16px;
-  border: 2px solid #e9ecef;
+  border: 2px solid var(--color-border);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: white;
+  background: var(--color-surface);
 }
 
 .theme-option:hover {
-  border-color: #280a32;
+  border-color: var(--brand-primary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  background: var(--color-background-alt);
 }
 
 .theme-option.selected {
@@ -557,9 +559,9 @@
 
 .tag-item {
   padding: 0.75rem 1rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid var(--color-border);
   border-radius: 20px;
-  background: white;
+  background: var(--color-surface);
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
@@ -569,8 +571,8 @@
 }
 
 .tag-item:hover {
-  border-color: #280a32;
-  background: #f8f9fa;
+  border-color: var(--brand-primary);
+  background: var(--color-background-alt);
   transform: translateY(-1px);
 }
 
@@ -582,8 +584,8 @@
 
 /* Profile Preview Card */
 .profile-preview-card {
-  background: white;
-  border: 1px solid #e9ecef;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 1.5rem;
   margin-top: 1rem;
@@ -724,8 +726,8 @@
 
 /* Privacy Score Card */
 .privacy-score-card {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border: 1px solid #dee2e6;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 20px;
@@ -742,13 +744,13 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: white;
-  border: 3px solid #280a32;
+  background: var(--color-surface);
+  border: 3px solid var(--brand-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 4px 12px rgba(40, 10, 50, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .privacy-score-number {

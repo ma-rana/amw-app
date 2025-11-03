@@ -129,9 +129,9 @@ const SearchResults = ({
     const isExpanded = expandedResults[result.id];
 
     return (
-      <Card 
-        key={result.id} 
-        className={`search-result-item ${!canView ? 'restricted' : ''}`}
+      <Card
+        key={result.id}
+        className={`amw-card search-result-item ${!canView ? 'restricted' : ''} hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer`}
         onClick={() => canView && handleResultClick(result)}
       >
         <View padding="medium">
@@ -148,7 +148,7 @@ const SearchResults = ({
                   borderRadius="8px"
                 />
               ) : (
-                <div className="result-type-icon">
+                <div className="icon-circle result-type-icon" style={{ width: '60px', height: '60px', fontSize: '24px' }}>
                   {getTypeIcon(result.type)}
                 </div>
               )}
@@ -159,7 +159,7 @@ const SearchResults = ({
               <Flex direction="column" gap="small">
                 {/* Title/Name */}
                 <Flex direction="row" justifyContent="space-between" alignItems="flex-start">
-                  <Heading level={6} className="result-title">
+                  <Heading level={6} className="result-title text-gray-900">
                     {highlightText(result.title || result.name || 'Untitled', searchQuery)}
                   </Heading>
                   
@@ -179,7 +179,7 @@ const SearchResults = ({
 
                 {/* Description */}
                 {result.description && (
-                  <Text fontSize="small" color="neutral.80" className="result-description">
+                  <Text fontSize="small" className="result-description text-gray-700">
                     {isExpanded 
                       ? highlightText(result.description, searchQuery)
                       : highlightText(
@@ -195,19 +195,19 @@ const SearchResults = ({
                 {/* Metadata */}
                 <Flex direction="row" gap="medium" alignItems="center" wrap="wrap">
                   {result.date && (
-                    <Text fontSize="small" color="neutral.60">
+                    <Text fontSize="small" className="text-gray-500">
                       📅 {new Date(result.date).toLocaleDateString()}
                     </Text>
                   )}
                   
                   {result.user && (
-                    <Text fontSize="small" color="neutral.60">
+                    <Text fontSize="small" className="text-gray-500">
                       👤 {result.user.name} {result.user.lastName}
                     </Text>
                   )}
                   
                   {result.memberCount && (
-                    <Text fontSize="small" color="neutral.60">
+                    <Text fontSize="small" className="text-gray-500">
                       👥 {result.memberCount} members
                     </Text>
                   )}
@@ -275,7 +275,7 @@ const SearchResults = ({
         {groupByType && Object.keys(groupedResults).length > 1 && (
           <>
             <Flex direction="row" alignItems="center" gap="small" marginBottom="medium">
-              <Text fontSize="large" fontWeight="bold" color="neutral.80">
+              <Text fontSize="large" fontWeight="bold" className="text-gray-700">
                 {getTypeIcon(type)} {getTypeDisplayName(type)}
               </Text>
               <Badge variation="info">{typeResults.length}</Badge>
@@ -297,12 +297,12 @@ const SearchResults = ({
   if (results.length === 0) {
     return (
       <View className="search-results empty">
-        <Card>
+        <Card className="amw-card">
           <View padding="large" textAlign="center">
-            <Text fontSize="large" color="neutral.60" marginBottom="small">
+            <Text fontSize="large" className="text-gray-600" marginBottom="small">
               🔍 No results found
             </Text>
-            <Text color="neutral.60">
+            <Text className="text-gray-600">
               {searchQuery 
                 ? `No results found for "${searchQuery}". Try adjusting your search terms or filters.`
                 : 'Start typing to search through your family memories.'
@@ -319,7 +319,7 @@ const SearchResults = ({
       <Flex direction="column" gap="medium">
         {/* Results Summary */}
         <Flex direction="row" justifyContent="space-between" alignItems="center">
-          <Text fontSize="medium" fontWeight="semibold" color="neutral.80">
+          <Text fontSize="medium" fontWeight="semibold" className="text-gray-700">
             {results.length} result{results.length !== 1 ? 's' : ''} found
             {searchQuery && ` for "${searchQuery}"`}
           </Text>
