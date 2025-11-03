@@ -1,0 +1,34 @@
+/* Mobile/Responsive Navigation Hover Underline Overrides
+   - Removes text-decoration and border-bottom on hover for all nav items
+   - Preserves other hover states (color, opacity) and focus indicators
+   - Applies to both text labels and icon elements
+   - Scoped to breakpoints where mobile navigation is active
+*/
+
+/* Tailwind-like breakpoints used in project: sm=640px, lg=1024px */
+@media (max-width: 1024px) {
+  /* Target bottom mobile navigation container */
+  .mobile-nav a:hover,
+  .mobile-nav a:hover span,
+  .mobile-nav a:hover svg {
+    text-decoration: none !important;
+    border-bottom: none !important;
+  }
+
+  /* Ensure focus indicators remain visible; do not override :focus styles */
+  .mobile-nav a:focus,
+  .mobile-nav a:focus-visible {
+    outline: auto;
+  }
+}
+
+/* Explicit coverage for small screens */
+@media (max-width: 640px) {
+  .mobile-nav a:hover,
+  .mobile-nav a:hover span,
+  .mobile-nav a:hover svg {
+    text-decoration: none !important;
+    border-bottom: none !important;
+  }
+}
+

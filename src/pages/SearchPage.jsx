@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from 'react-router-dom';
 import {
   View,
   Heading,
@@ -23,7 +24,8 @@ const SearchPage = ({
   initialSearchType = "all",
 }) => {
   const { user: _user } = useAuth();
-  const { isMobile } = useResponsive();
+  const { isMobile, isDesktop } = useResponsive();
+  const location = useLocation();
 
   // Search state
   const [searchResults, setSearchResults] = useState([]);
@@ -74,6 +76,19 @@ const SearchPage = ({
       "Holiday memories",
     ]);
   };
+
+  // Read query param from URL and initialize search query
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get('q');
+    if (typeof q === 'string' && q.length > 0 && q !== searchQuery) {
+      setSearchQuery(q);
+      // Optionally trigger a lightweight search on mobile for quick feedback
+      if (isMobile) {
+        performMobileSearch(q);
+      }
+    }
+  }, [location.search]);
 
   // Handle search results
   const handleSearchResults = (results) => {
@@ -197,17 +212,19 @@ const SearchPage = ({
   return (
     <View className="min-h-screen bg-gray-50 py-6">
       <View className="amw-container">
-        {/* Search Component at top */}
-        <div className="mb-8">
-          <AdvancedSearch
-            onSearchResults={handleSearchResults}
-            onSearchError={handleSearchError}
-            onSearchStart={() => setIsSearching(true)}
-            onSearchEnd={() => setIsSearching(false)}
-            initialQuery={searchQuery}
-            onQueryChange={setSearchQuery}
-          />
-        </div>
+        {/* Search Component at top - hidden on desktop to avoid duplicate with nav search */}
+        {!isDesktop && (
+          <div className="mb-8" aria-hidden={false}>
+            <AdvancedSearch
+              onSearchResults={handleSearchResults}
+              onSearchError={handleSearchError}
+              onSearchStart={() => setIsSearching(true)}
+              onSearchEnd={() => setIsSearching(false)}
+              initialQuery={searchQuery}
+              onQueryChange={setSearchQuery}
+            />
+          </div>
+        )}
 
         {/* Header below search */}
         <div className="text-center mb-8">

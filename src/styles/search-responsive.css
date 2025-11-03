@@ -1,0 +1,77 @@
+/* Responsive search component styling */
+
+/* Overlay base */
+.search-overlay { 
+  position: fixed; inset: 0; z-index: 30000; pointer-events: none; opacity: 0; transition: opacity var(--transition-normal);
+}
+.search-overlay.open { pointer-events: auto; opacity: 1; }
+.search-overlay-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.35); }
+
+.search-overlay-panel { position: absolute; left: 0; right: 0; bottom: 0; background: var(--brand-background); border-top: 1px solid var(--color-border); box-shadow: 0 -8px 24px rgba(0,0,0,0.12); transform: translateY(100%); transition: transform var(--transition-normal); }
+.search-overlay.open .search-overlay-panel { transform: translateY(0%); }
+
+.search-overlay-form { display: flex; align-items: center; gap: 12px; padding: 16px; }
+.search-overlay-icon { font-size: 20px; color: var(--color-text-secondary); }
+.search-overlay-input { flex: 1; height: 44px; border-radius: 8px; border: 1px solid var(--color-border); padding: 0 12px; font-size: 16px; color: var(--color-text-primary); background: var(--color-surface); transition: border-color var(--transition-fast), box-shadow var(--transition-fast); }
+.search-overlay-input::placeholder { color: var(--color-text-muted); }
+.search-overlay-input:focus { outline: none; border-color: var(--color-active-border); box-shadow: 0 0 0 3px var(--color-active-bg); }
+.search-overlay-cancel { height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast); }
+.search-overlay-cancel:hover { color: var(--color-text-primary); border-color: var(--color-border-clean); background-color: var(--color-background-alt); }
+
+/* Mobile/Responsive behavior */
+@media (max-width: 1024px) {
+  .desktop-searchbar { display: none; }
+}
+
+/* Desktop search bar adjacent to top nav */
+@media (min-width: 1024px) {
+  /* Container sits immediately below top nav and animates in */
+  .desktop-searchbar-container {
+    position: relative;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: max-height var(--transition-normal), opacity var(--transition-normal);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--brand-background);
+  }
+  .desktop-searchbar-container.open {
+    max-height: 120px; /* enough to show the form comfortably */
+    opacity: 1;
+    pointer-events: auto;
+    display: block;
+  }
+
+  /* Center content within container for vertical/horizontal alignment */
+  .desktop-searchbar-container.open .amw-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+  }
+
+  .desktop-searchbar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 0; }
+  /* Fixed-width desktop input to prevent shrinking/resizing during interaction */
+  :root { --desktop-searchbar-width: 600px; }
+  .desktop-searchbar .search-input {
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    padding: 0 12px;
+    font-size: 16px;
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    box-sizing: border-box;
+    width: var(--desktop-searchbar-width);
+    min-width: var(--desktop-searchbar-width);
+    max-width: var(--desktop-searchbar-width);
+    flex: 0 0 var(--desktop-searchbar-width);
+    flex-shrink: 0;
+  }
+  .desktop-searchbar .search-input::placeholder { color: var(--color-text-muted); }
+  .desktop-searchbar .search-input:focus { outline: none; border-color: var(--color-active-border); box-shadow: 0 0 0 3px var(--color-active-bg); }
+  .desktop-searchbar .search-submit { height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--color-border-clean); background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast); }
+  .desktop-searchbar .search-submit:hover { color: var(--color-text-primary); border-color: var(--color-active-border); background-color: var(--color-background-alt); }
+}

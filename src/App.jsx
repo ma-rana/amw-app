@@ -1,31 +1,33 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense, lazy } from 'react'
 import { View, Text } from '@aws-amplify/ui-react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import '@aws-amplify/ui-react/styles.css'
 import './App.css'
 import Navigation from './components/Navigation'
-import HomePage from './pages/HomePage'
-import MomentsPage from './pages/MomentsPage'
-import ProfilePage from './pages/ProfilePage'
-import MomentDetailPage from './pages/MomentDetailPage'
-import CreateMomentPage from './pages/CreateMomentPage'
-import EditMomentPage from './pages/EditMomentPage'
-import StoriesPage from './pages/StoriesPage'
-import SharedMomentPage from './pages/SharedMomentPage'
-import AWSLinksPage from './pages/AWSLinksPage'
-import APIDebug from './pages/APIDebug'
-import ChaptersPage from './pages/ChaptersPage'
-import QuestionsPage from './pages/QuestionsPage'
-import FamilyPage from './pages/FamilyPage'
-import LoginPage from './pages/LoginPage'
-import SignupPage from './pages/SignupPage'
-import EmailConfirmationPage from './pages/EmailConfirmationPage'
-import AdminLoginPage from './pages/AdminLoginPage'
+import SearchOverlay from './components/Search/SearchOverlay'
+// Route-level code splitting: lazy load pages to avoid eager module/CSS requests
+const HomePage = lazy(() => import('./pages/HomePage'))
+const MomentsPage = lazy(() => import('./pages/MomentsPage'))
+const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+const MomentDetailPage = lazy(() => import('./pages/MomentDetailPage'))
+const CreateMomentPage = lazy(() => import('./pages/CreateMomentPage'))
+const EditMomentPage = lazy(() => import('./pages/EditMomentPage'))
+const StoriesPage = lazy(() => import('./pages/StoriesPage'))
+const SharedMomentPage = lazy(() => import('./pages/SharedMomentPage'))
+const AWSLinksPage = lazy(() => import('./pages/AWSLinksPage'))
+const APIDebug = lazy(() => import('./pages/APIDebug'))
+const ChaptersPage = lazy(() => import('./pages/ChaptersPage'))
+const QuestionsPage = lazy(() => import('./pages/QuestionsPage'))
+const FamilyPage = lazy(() => import('./pages/FamilyPage'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const SignupPage = lazy(() => import('./pages/SignupPage'))
+const EmailConfirmationPage = lazy(() => import('./pages/EmailConfirmationPage'))
+const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage'))
 
-import SettingsPage from './pages/SettingsPage'
-import SearchPage from './pages/SearchPage'
-import WelcomePage from './pages/WelcomePage'
-import NotFoundPage from './pages/NotFoundPage'
+const SettingsPage = lazy(() => import('./pages/SettingsPage'))
+const SearchPage = lazy(() => import('./pages/SearchPage'))
+const WelcomePage = lazy(() => import('./pages/WelcomePage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { NotificationProvider } from './contexts/NotificationContext'
 import { ToastProvider, useToast } from './contexts/ToastContext'
@@ -40,7 +42,7 @@ import './utils/quickAuthTest'
 import './utils/testFileUpload'
 import { AdminProvider, useAdmin } from './contexts/AdminContext'
 import { AdminAuthProvider, useAdminAuth } from './contexts/AdminAuthContext'
-import AdminApp from './pages/AdminApp'
+const AdminApp = lazy(() => import('./pages/AdminApp'))
 import API from './services/api'
 
 function AppContent() {
@@ -54,6 +56,7 @@ function AppContent() {
   const [moments, setMoments] = useState([])
   const [, setIsLoading] = useState(false)
   const [pageParams, setPageParams] = useState({})
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   
   // Get current page from URL
   const currentPage = location.pathname.slice(1) || 'welcome';
@@ -108,6 +111,14 @@ function AppContent() {
     navigate(targetPath);
     setPageParams(params);
     setSelectedMoment(null); // Clear selected moment when navigating
+  }
+
+  const toggleSearchOverlay = () => {
+    setIsSearchOpen((prev) => !prev);
+  }
+
+  const handleSearchSubmit = (q) => {
+    navigate(`/search?q=${encodeURIComponent(q)}`);
   }
   
   const handleViewMoment = (moment) => {
@@ -174,11 +185,20 @@ function AppContent() {
           signOut={handleSignOut} 
           onNavigate={handleNavigation} 
           currentPage={currentPage}
+          onToggleSearch={toggleSearchOverlay}
+          isSearchOpen={isSearchOpen}
         />
+      )}
+
+      {/* Mobile Search Overlay */}
+      {isAuthenticated && (
+        <SearchOverlay open={isSearchOpen} onClose={() => setIsSearchOpen(false)} onSubmit={handleSearchSubmit} />
       )}
       
       <main className={`${isAuthenticated ? 'desktop-main' : 'min-h-screen'} lg:pt-0 pt-14`}>
         <div className={`${isAuthenticated ? 'container-fluid' : 'w-full'}`}>
+          {/* Error boundary to catch route load errors and provide a graceful fallback */}
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading…</div>}>
           <Routes>
             {/* Welcome/Landing page */}
             <Route
@@ -343,6 +363,7 @@ function AppContent() {
             {/* Catch-all route for unknown paths - 404 page */}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
+          </Suspense>
           
           <footer className="app-footer hidden lg:block">
             <Text>&copy; {new Date().getFullYear()} A Moment With - All rights reserved</Text>
@@ -355,6 +376,43 @@ function AppContent() {
 
 // Main App component that wraps the content with AuthProvider, NotificationProvider, ToastProvider, PrivacyProvider, AdminAuthProvider, and AdminProvider
 function App() {
+  // Basic error boundary for runtime and chunk-load failures
+  class ErrorBoundary extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = { hasError: false, error: null };
+    }
+    static getDerivedStateFromError(error) {
+      return { hasError: true, error };
+    }
+    componentDidCatch(error, info) {
+      console.error('[App] Caught error:', error, info);
+    }
+    render() {
+      if (this.state.hasError) {
+        return (
+          <div className="min-h-screen flex flex-col items-center justify-center p-6">
+            <div className="text-center max-w-md">
+              <h1 className="text-2xl font-bold mb-3">Something went wrong</h1>
+              <p className="text-slate-600 mb-6">An error occurred loading the page. Please try again.</p>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  this.setState({ hasError: false, error: null });
+                  // Full reload helps recover from chunk-load or HMR issues
+                  window.location.reload();
+                }}
+              >
+                Reload
+              </button>
+            </div>
+          </div>
+        );
+      }
+      return this.props.children;
+    }
+  }
+
   return (
     <Router>
       <AuthProvider>
@@ -363,7 +421,9 @@ function App() {
             <PrivacyProvider>
               <AdminAuthProvider>
                 <AdminProvider>
-                  <AppContent />
+                  <ErrorBoundary>
+                    <AppContent />
+                  </ErrorBoundary>
                 </AdminProvider>
               </AdminAuthProvider>
             </PrivacyProvider>

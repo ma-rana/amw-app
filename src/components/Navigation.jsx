@@ -5,12 +5,13 @@ import NotificationBell from './NotificationBell';
 import MobileNavigation from './MobileNavigation';
 import { useAuth } from '../contexts/AuthContext';
 
-const Navigation = ({ signOut, onNavigate, currentPage }) => {
+const Navigation = ({ signOut, onNavigate, currentPage, onToggleSearch, isSearchOpen }) => {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileMenuRef = useRef(null);
+  const desktopSearchInputRef = useRef(null);
 
   // Top navigation items order: Home, Moments, Search, Stories, Relations
   const navItems = [
@@ -51,6 +52,13 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showProfileMenu]);
+
+  // Focus desktop search input when opened
+  useEffect(() => {
+    if (isSearchOpen && desktopSearchInputRef.current) {
+      desktopSearchInputRef.current.focus();
+    }
+  }, [isSearchOpen]);
 
   // Single Search button that routes to Search page
 
@@ -93,14 +101,15 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                   <div style={{
                     width: '40px',
                     height: '40px',
-                    backgroundColor: 'var(--brand-primary)',
                     borderRadius: '8px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: 'var(--brand-white)',
+                    color: 'var(--brand-primary)',
+                    border: '1px solid var(--color-border-clean)',
                     fontWeight: 'bold',
-                    fontSize: '18px'
+                    fontSize: '18px',
+                    backgroundColor: 'transparent'
                   }}>
                     A
                   </div>
@@ -124,21 +133,21 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                     fontSize: '16px',
                     fontWeight: '500',
                     textDecoration: 'none',
-                    transition: 'all 0.2s ease',
-                    backgroundColor: isActive(item.path) ? 'var(--brand-secondary)' : 'transparent',
-                    color: isActive(item.path) ? 'var(--brand-white)' : 'var(--color-text-secondary)',
-                    border: isActive(item.path) ? '1px solid var(--brand-secondary)' : '1px solid transparent'
+                    transition: 'color 0.2s ease, border-color 0.2s ease',
+                    backgroundColor: 'transparent',
+                    color: isActive(item.path) ? 'var(--brand-primary)' : 'var(--color-text-secondary)',
+                    border: isActive(item.path) ? '1px solid var(--color-active-border)' : '1px solid transparent'
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive(item.path)) {
-                      e.target.style.backgroundColor = 'var(--color-background-alt)';
                       e.target.style.color = 'var(--color-text-primary)';
+                      e.target.style.borderColor = 'var(--color-border-clean)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive(item.path)) {
-                      e.target.style.backgroundColor = 'transparent';
                       e.target.style.color = 'var(--color-text-secondary)';
+                      e.target.style.borderColor = 'transparent';
                     }
                   }}
                 >
@@ -162,25 +171,25 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                   style={{
                     width: '40px',
                     height: '40px',
-                    backgroundColor: 'var(--brand-primary)',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: 'var(--brand-white)',
+                    color: 'var(--color-text-primary)',
                     fontSize: '16px',
                     fontWeight: '600',
-                    border: 'none',
+                    border: '1px solid var(--color-border-clean)',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease'
+                    backgroundColor: 'transparent',
+                    transition: 'color 0.2s ease, border-color 0.2s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = 'var(--brand-secondary)';
-                    e.target.style.transform = 'scale(1.05)';
+                    e.target.style.color = 'var(--brand-primary)';
+                    e.target.style.borderColor = 'var(--color-active-border)';
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'var(--brand-primary)';
-                    e.target.style.transform = 'scale(1)';
+                    e.target.style.color = 'var(--color-text-primary)';
+                    e.target.style.borderColor = 'var(--color-border-clean)';
                   }}
                 >
                   U
@@ -331,6 +340,43 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
           </div>
       </nav>
 
+      {/* Desktop Search Bar below top navigation - visible by default */}
+      <div
+        className={"hidden lg:block desktop-searchbar-container open"}
+        role="region"
+        aria-label="Site search"
+        id="desktop-searchbar-container"
+      >
+        <div className="amw-container">
+          <form
+            className="desktop-searchbar"
+            id="desktop-searchbar"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const input = e.currentTarget.querySelector('input[name="q"]');
+              const q = input?.value?.trim();
+              if (q) {
+                navigate(`/search?q=${encodeURIComponent(q)}`);
+                if (onNavigate) {
+                  onNavigate(`/search?q=${encodeURIComponent(q)}`);
+                }
+              }
+            }}
+          >
+            <span className="search-overlay-icon" aria-hidden="true">🔍</span>
+            <input
+              ref={desktopSearchInputRef}
+              name="q"
+              type="search"
+              aria-label="Search across your family memories"
+              placeholder="Search..."
+              className="search-input"
+            />
+            <button type="submit" className="search-submit" aria-label="Submit search">Search</button>
+          </form>
+        </div>
+      </div>
+
       {/* Mobile Top Navigation Bar - Only on mobile */}
       <nav className="lg:hidden fixed top-0 left-0 right-0 shadow-sm z-50" style={{backgroundColor: 'var(--brand-background)', borderBottom: '2px solid var(--color-border)'}}>
         <div className="amw-container px-4">
@@ -341,8 +387,8 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
               className="flex items-center space-x-2 transition-colors"
               style={{ color: 'var(--color-text-primary)' }}
             >
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-md" style={{ backgroundColor: 'var(--brand-primary)' }}>
-                <span className="font-bold text-sm" style={{ color: 'var(--brand-white)' }}>A</span>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-md" style={{ backgroundColor: 'transparent', border: '1px solid var(--color-border-clean)' }}>
+                <span className="font-bold text-sm" style={{ color: 'var(--brand-primary)' }}>A</span>
               </div>
               <span className="font-bold text-base sm:text-lg">A Moment With</span>
             </Link>
@@ -356,7 +402,8 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
               <div ref={profileMenuRef} className="relative">
                 <button
                   onClick={handleProfileClick}
-                  className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  className="w-9 h-9 rounded-full flex items-center justify-center font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  style={{ backgroundColor: 'transparent', color: 'var(--color-text-primary)', border: '1px solid var(--color-border-clean)' }}
                 >
                   {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                 </button>
@@ -462,6 +509,8 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
           signOut={signOut} 
           onNavigate={onNavigate} 
           currentPage={currentPage} 
+          onToggleSearch={onToggleSearch}
+          isSearchOpen={isSearchOpen}
         />
       </div>
     </>
