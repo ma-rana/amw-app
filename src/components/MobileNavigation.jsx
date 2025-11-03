@@ -9,12 +9,12 @@ const MobileNavigation = ({
   const location = useLocation();
   const currentPath = location.pathname;
 
+  // Keep just four main items in bottom nav
   const navigationItems = [
-    { key: "home", path: "/", label: "🏠 Home", icon: "🏠" },
-    { key: "stories", path: "/stories", label: "📖 Stories", icon: "📖" },
-    { key: "search", path: "/search", label: "🔍 Search", icon: "🔍" },
-    { key: "moments", path: "/moments", label: "✨ Moments", icon: "✨" },
-    { key: "family", path: "/family", label: "👥 Family", icon: "👥" },
+    { key: 'home', path: '/', label: '🏠 Home', icon: '🏠' },
+    { key: 'moments', path: '/moments', label: '📸 Moments', icon: '📸' },
+    { key: 'stories', path: '/stories', label: '📖 Stories', icon: '📖' },
+    { key: 'family', path: '/family', label: '👥 Relations', icon: '👥' }
   ];
 
   return (

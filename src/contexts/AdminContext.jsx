@@ -2,14 +2,39 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useNotifications } from './NotificationContext';
 
-const AdminContext = createContext();
+// Provide a safe default to avoid crashes if the provider isn't mounted yet
+const defaultAdminContext = {
+  isAdmin: false,
+  adminPermissions: [],
+  adminStats: {
+    totalUsers: 0,
+    activeUsers: 0,
+    totalMoments: 0,
+    totalStories: 0,
+    pendingReports: 0,
+    systemHealth: 'good'
+  },
+  isLoading: false,
+  PERMISSIONS: {
+    USER_MANAGEMENT: 'user_management',
+    CONTENT_MODERATION: 'content_moderation',
+    SYSTEM_SETTINGS: 'system_settings',
+    ANALYTICS: 'analytics',
+    SUPER_ADMIN: 'super_admin'
+  },
+  hasPermission: () => false,
+  toggleAdminMode: () => {},
+  updateUserStatus: async () => false,
+  deleteContent: async () => false,
+  banUser: async () => false,
+  generateReport: async () => null,
+  loadAdminStats: async () => {}
+};
+
+const AdminContext = createContext(defaultAdminContext);
 
 export const useAdmin = () => {
-  const context = useContext(AdminContext);
-  if (!context) {
-    throw new Error('useAdmin must be used within an AdminProvider');
-  }
-  return context;
+  return useContext(AdminContext);
 };
 
 export const AdminProvider = ({ children }) => {

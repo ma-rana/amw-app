@@ -13,18 +13,28 @@ const MomentCard = ({ title, imageUrl, date, onClick, moment, story }) => {
   const mediaUrls = moment?.mediaUrls || [];
   const hasMultipleMedia = mediaUrls.length > 1;
   const primaryMediaUrl = mediaUrls.length > 0 ? mediaUrls[0] : (imageData || imageUrl);
+
+  const getFileExtension = (urlOrKey) => {
+    if (!urlOrKey) return '';
+    // Treat data URLs as images
+    if (typeof urlOrKey === 'string' && urlOrKey.startsWith('data:image/')) return 'data-image';
+    const clean = urlOrKey.split('?')[0].split('#')[0];
+    const parts = clean.split('.');
+    return parts.length > 1 ? parts.pop().toLowerCase() : '';
+  };
   
   // Determine if primary media is an image
   const isPrimaryImage = () => {
     if (!primaryMediaUrl) return true; // Default to image placeholder
-    const extension = primaryMediaUrl.split('.').pop()?.toLowerCase();
+    const extension = getFileExtension(primaryMediaUrl);
+    if (extension === 'data-image') return true;
     return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension);
   };
   
   useEffect(() => {
     const loadImage = async () => {
-      // Load primary media from S3 if authenticated
-      if (isAuthenticated && primaryMediaUrl && primaryMediaUrl.startsWith('moments/')) {
+      // Resolve S3 keys to signed URLs for display (no auth gate for public level)
+      if (primaryMediaUrl && typeof primaryMediaUrl === 'string' && primaryMediaUrl.startsWith('moments/')) {
         try {
           const { url } = await getUrl({ key: primaryMediaUrl, options: { level: 'public' } });
           setImageData(url.toString());
@@ -37,7 +47,7 @@ const MomentCard = ({ title, imageUrl, date, onClick, moment, story }) => {
       }
     };
     loadImage();
-  }, [primaryMediaUrl, isAuthenticated]);
+  }, [primaryMediaUrl]);
   const canShare = moment?.allowSharing !== false;
 
   return (

@@ -8,9 +8,12 @@ import awsConfig from '../aws-exports.js';
 // Create GraphQL client
 const client = generateClient();
 
-// Always use real AWS services since we have a properly configured backend
+// Global switch to allow local fallback usage and storage writes in development
+const ENABLE_LOCAL_FALLBACK = true;
+
+// Use local fallback when enabled (primarily for local development/testing)
 const shouldUseFallback = () => {
-  return false; // Always use real AWS services
+  return ENABLE_LOCAL_FALLBACK;
 };
 
 // Initialize local storage with comprehensive sample data if empty (fallback)
@@ -210,17 +213,19 @@ const initializeStorage = () => {
 };
 
 // Initialize storage on import for fallback
-if (shouldUseFallback()) {
+if (shouldUseFallback() && ENABLE_LOCAL_FALLBACK) {
   initializeStorage();
 }
 
 // Helper functions for localStorage operations
 const getStorageData = (key) => {
+  if (!ENABLE_LOCAL_FALLBACK) return [];
   const data = localStorage.getItem(key);
   return data ? JSON.parse(data) : [];
 };
 
 const saveStorageData = (key, data) => {
+  if (!ENABLE_LOCAL_FALLBACK) return; // no-op when fallback disabled
   localStorage.setItem(key, JSON.stringify(data));
 };
 
@@ -237,8 +242,9 @@ export const API = {
       const result = await client.graphql({ query: queries.listMoments });
       return result.data.listMoments.items;
     } catch (error) {
-      console.warn('GraphQL listMoments failed, using fallback:', error);
-      return getStorageData('amw_moments');
+      console.warn('GraphQL listMoments failed:', error);
+      // Do not fallback when user expects AWS-backed data
+      return [];
     }
   },
 
@@ -256,9 +262,8 @@ export const API = {
       });
       return result.data.getMoment;
     } catch (error) {
-      console.warn('GraphQL getMoment failed, using fallback:', error);
-      const moments = getStorageData('amw_moments');
-      return moments.find(moment => moment.id === id);
+      console.warn('GraphQL getMoment failed:', error);
+      return null;
     }
   },
 
@@ -267,8 +272,8 @@ export const API = {
       await new Promise(resolve => setTimeout(resolve, 800));
       
       const newMoment = {
-        id: uuidv4(),
         ...momentData,
+        id: uuidv4(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -281,25 +286,37 @@ export const API = {
     }
     
     try {
+      // Sanitize input to match GraphQL CreateMomentInput
+      // AWSTimestamp expects epoch seconds (integer), not ISO strings
+      const toAwsTimestamp = (ts) => {
+        if (typeof ts === 'number') return Math.floor(ts);
+        if (typeof ts === 'string' && /^\d+$/.test(ts)) return Math.floor(parseInt(ts, 10));
+        // Fallback to current time in seconds
+        return Math.floor(Date.now() / 1000);
+      };
+
+      const input = {
+        ...(momentData.id ? { id: momentData.id } : {}),
+        title: momentData.title,
+        description: momentData.description,
+        userId: momentData.userId,
+        timestamp: toAwsTimestamp(momentData.timestamp),
+        ...(typeof momentData.order === 'number' ? { order: momentData.order } : {}),
+        ...(momentData.mediaId ? { mediaId: momentData.mediaId } : {}),
+        ...(Array.isArray(momentData.taggedUserIds) ? { taggedUserIds: momentData.taggedUserIds } : {}),
+        ...(momentData.storyId ? { storyId: momentData.storyId } : {}),
+        ...(momentData.chapterId ? { chapterId: momentData.chapterId } : {})
+      };
+
       const result = await client.graphql({
         query: mutations.createMoment,
-        variables: { input: momentData }
+        variables: { input }
       });
       return result.data.createMoment;
     } catch (error) {
-      console.warn('GraphQL createMoment failed, using fallback:', error);
-      const newMoment = {
-        id: uuidv4(),
-        ...momentData,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      
-      const moments = getStorageData('amw_moments');
-      moments.unshift(newMoment);
-      saveStorageData('amw_moments', moments);
-      
-      return newMoment;
+      console.warn('GraphQL createMoment failed:', error);
+      // Surface the error so the UI knows the insert did not reach AWS
+      throw error;
     }
   },
 
@@ -325,29 +342,34 @@ export const API = {
     }
     
     try {
+      const toAwsTimestamp = (ts) => {
+        if (ts == null) return undefined;
+        if (typeof ts === 'number') return Math.floor(ts);
+        if (typeof ts === 'string' && /^\d+$/.test(ts)) return Math.floor(parseInt(ts, 10));
+        return undefined;
+      };
+
+      const input = {
+        id,
+        ...(momentData.title ? { title: momentData.title } : {}),
+        ...(momentData.description ? { description: momentData.description } : {}),
+        ...(momentData.userId ? { userId: momentData.userId } : {}),
+        ...(typeof momentData.order === 'number' ? { order: momentData.order } : {}),
+        ...(momentData.mediaId ? { mediaId: momentData.mediaId } : {}),
+        ...(Array.isArray(momentData.taggedUserIds) ? { taggedUserIds: momentData.taggedUserIds } : {}),
+        ...(momentData.storyId ? { storyId: momentData.storyId } : {}),
+        ...(momentData.chapterId ? { chapterId: momentData.chapterId } : {}),
+        ...(toAwsTimestamp(momentData.timestamp) !== undefined ? { timestamp: toAwsTimestamp(momentData.timestamp) } : {})
+      };
+
       const result = await client.graphql({
         query: mutations.updateMoment,
-        variables: { input: { id, ...momentData } }
+        variables: { input }
       });
       return result.data.updateMoment;
     } catch (error) {
-      console.warn('GraphQL updateMoment failed, using fallback:', error);
-      // Fallback implementation
-      const moments = getStorageData('amw_moments');
-      const index = moments.findIndex(moment => moment.id === id);
-      
-      if (index === -1) throw new Error('Moment not found');
-      
-      const updatedMoment = {
-        ...moments[index],
-        ...momentData,
-        updatedAt: new Date().toISOString()
-      };
-      
-      moments[index] = updatedMoment;
-      saveStorageData('amw_moments', moments);
-      
-      return updatedMoment;
+      console.warn('GraphQL updateMoment failed:', error);
+      throw error;
     }
   },
 
@@ -373,24 +395,15 @@ export const API = {
       });
       return { success: true, id, data: result.data.deleteMoment };
     } catch (error) {
-      console.warn('GraphQL deleteMoment failed, using fallback:', error);
-      // Fallback implementation
-      const moments = getStorageData('amw_moments');
-      const filteredMoments = moments.filter(moment => moment.id !== id);
-      
-      if (filteredMoments.length === moments.length) {
-        throw new Error('Moment not found');
-      }
-      
-      saveStorageData('amw_moments', filteredMoments);
-      return { success: true, id };
+      console.warn('GraphQL deleteMoment failed:', error);
+      throw error;
     }
   },
 
   momentsByStoryId: async (storyId) => {
     if (shouldUseFallback()) {
       await new Promise(resolve => setTimeout(resolve, 400));
-      const moments = getStorageData('amw_moments');
+      const moments = ENABLE_LOCAL_FALLBACK ? getStorageData('amw_moments') : [];
       return moments.filter(moment => moment.storyId === storyId);
     }
     
@@ -401,16 +414,15 @@ export const API = {
       });
       return result.data.momentsByStoryId.items;
     } catch (error) {
-      console.warn('GraphQL momentsByStoryId failed, using fallback:', error);
-      const moments = getStorageData('amw_moments');
-      return moments.filter(moment => moment.storyId === storyId);
+      console.warn('GraphQL momentsByStoryId failed:', error);
+      return [];
     }
   },
 
   momentsByChapterId: async (chapterId) => {
     if (shouldUseFallback()) {
       await new Promise(resolve => setTimeout(resolve, 400));
-      const moments = getStorageData('amw_moments');
+      const moments = ENABLE_LOCAL_FALLBACK ? getStorageData('amw_moments') : [];
       return moments.filter(moment => moment.chapterId === chapterId);
     }
     
@@ -421,9 +433,8 @@ export const API = {
       });
       return result.data.momentsByChapterId.items;
     } catch (error) {
-      console.warn('GraphQL momentsByChapterId failed, using fallback:', error);
-      const moments = getStorageData('amw_moments');
-      return moments.filter(moment => moment.chapterId === chapterId);
+      console.warn('GraphQL momentsByChapterId failed:', error);
+      return [];
     }
   },
 
@@ -431,23 +442,23 @@ export const API = {
   listStories: async () => {
     if (shouldUseFallback()) {
       await new Promise(resolve => setTimeout(resolve, 500));
-      return getStorageData('amw_stories');
+      return ENABLE_LOCAL_FALLBACK ? getStorageData('amw_stories') : [];
     }
     
     try {
       const result = await client.graphql({ query: queries.listStories });
       return result.data.listStories.items;
     } catch (error) {
-      console.warn('GraphQL listStories failed, using fallback:', error);
-      return getStorageData('amw_stories');
+      console.warn('GraphQL listStories failed:', error);
+      return [];
     }
   },
 
   getStory: async (id) => {
     if (shouldUseFallback()) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      const stories = getStorageData('amw_stories');
-      return stories.find(story => story.id === id);
+      const stories = ENABLE_LOCAL_FALLBACK ? getStorageData('amw_stories') : [];
+      return stories.find(story => story.id === id) || null;
     }
     
     try {
@@ -457,16 +468,17 @@ export const API = {
       });
       return result.data.getStory;
     } catch (error) {
-      console.warn('GraphQL getStory failed, using fallback:', error);
-      const stories = getStorageData('amw_stories');
-      return stories.find(story => story.id === id);
+      console.warn('GraphQL getStory failed:', error);
+      return null;
     }
   },
 
   createStory: async (storyData) => {
     if (shouldUseFallback()) {
       await new Promise(resolve => setTimeout(resolve, 800));
-      
+      if (!ENABLE_LOCAL_FALLBACK) {
+        throw new Error('AWS unavailable: createStory requires AppSync');
+      }
       const newStory = {
         id: uuidv4(),
         ...storyData,
@@ -474,11 +486,9 @@ export const API = {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-      
       const stories = getStorageData('amw_stories');
       stories.unshift(newStory);
       saveStorageData('amw_stories', stories);
-      
       return newStory;
     }
     
@@ -489,42 +499,25 @@ export const API = {
       });
       return result.data.createStory;
     } catch (error) {
-      console.warn('GraphQL createStory failed, using fallback:', error);
-      // Fallback implementation
-      const newStory = {
-        id: uuidv4(),
-        ...storyData,
-        inviteCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      
-      const stories = getStorageData('amw_stories');
-      stories.unshift(newStory);
-      saveStorageData('amw_stories', stories);
-      
-      return newStory;
+      console.warn('GraphQL createStory failed:', error);
+      throw error;
     }
   },
 
   updateStory: async (id, storyData) => {
     if (shouldUseFallback()) {
       await new Promise(resolve => setTimeout(resolve, 800));
-      
+      if (!ENABLE_LOCAL_FALLBACK) throw new Error('AWS unavailable: updateStory requires AppSync');
       const stories = getStorageData('amw_stories');
       const index = stories.findIndex(story => story.id === id);
-      
       if (index === -1) throw new Error('Story not found');
-      
       const updatedStory = {
         ...stories[index],
         ...storyData,
         updatedAt: new Date().toISOString()
       };
-      
       stories[index] = updatedStory;
       saveStorageData('amw_stories', stories);
-      
       return updatedStory;
     }
     
@@ -535,37 +528,20 @@ export const API = {
       });
       return result.data.updateStory;
     } catch (error) {
-      console.warn('GraphQL updateStory failed, using fallback:', error);
-      // Fallback implementation
-      const stories = getStorageData('amw_stories');
-      const index = stories.findIndex(story => story.id === id);
-      
-      if (index === -1) throw new Error('Story not found');
-      
-      const updatedStory = {
-        ...stories[index],
-        ...storyData,
-        updatedAt: new Date().toISOString()
-      };
-      
-      stories[index] = updatedStory;
-      saveStorageData('amw_stories', stories);
-      
-      return updatedStory;
+      console.warn('GraphQL updateStory failed:', error);
+      throw error;
     }
   },
 
   deleteStory: async (id) => {
     if (shouldUseFallback()) {
       await new Promise(resolve => setTimeout(resolve, 600));
-      
+      if (!ENABLE_LOCAL_FALLBACK) throw new Error('AWS unavailable: deleteStory requires AppSync');
       const stories = getStorageData('amw_stories');
       const filteredStories = stories.filter(story => story.id !== id);
-      
       if (filteredStories.length === stories.length) {
         throw new Error('Story not found');
       }
-      
       saveStorageData('amw_stories', filteredStories);
       return { success: true, id };
     }
@@ -577,17 +553,8 @@ export const API = {
       });
       return { success: true, id, data: result.data.deleteStory };
     } catch (error) {
-      console.warn('GraphQL deleteStory failed, using fallback:', error);
-      // Fallback implementation
-      const stories = getStorageData('amw_stories');
-      const filteredStories = stories.filter(story => story.id !== id);
-      
-      if (filteredStories.length === stories.length) {
-        throw new Error('Story not found');
-      }
-      
-      saveStorageData('amw_stories', filteredStories);
-      return { success: true, id };
+      console.warn('GraphQL deleteStory failed:', error);
+      throw error;
     }
   },
 
@@ -595,23 +562,23 @@ export const API = {
   listChapters: async () => {
     if (shouldUseFallback()) {
       await new Promise(resolve => setTimeout(resolve, 500));
-      return getStorageData('amw_chapters');
+      return ENABLE_LOCAL_FALLBACK ? getStorageData('amw_chapters') : [];
     }
     
     try {
       const result = await client.graphql({ query: queries.listChapters });
       return result.data.listChapters.items;
     } catch (error) {
-      console.warn('GraphQL listChapters failed, using fallback:', error);
-      return getStorageData('amw_chapters');
+      console.warn('GraphQL listChapters failed:', error);
+      return [];
     }
   },
 
   getChapter: async (id) => {
     if (shouldUseFallback()) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      const chapters = getStorageData('amw_chapters');
-      return chapters.find(chapter => chapter.id === id);
+      const chapters = ENABLE_LOCAL_FALLBACK ? getStorageData('amw_chapters') : [];
+      return chapters.find(chapter => chapter.id === id) || null;
     }
     
     try {
@@ -621,27 +588,26 @@ export const API = {
       });
       return result.data.getChapter;
     } catch (error) {
-      console.warn('GraphQL getChapter failed, using fallback:', error);
-      const chapters = getStorageData('amw_chapters');
-      return chapters.find(chapter => chapter.id === id);
+      console.warn('GraphQL getChapter failed:', error);
+      return null;
     }
   },
 
   createChapter: async (chapterData) => {
     if (shouldUseFallback()) {
       await new Promise(resolve => setTimeout(resolve, 800));
-      
+      if (!ENABLE_LOCAL_FALLBACK) {
+        throw new Error('AWS unavailable: createChapter requires AppSync');
+      }
       const newChapter = {
         id: uuidv4(),
         ...chapterData,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-      
       const chapters = getStorageData('amw_chapters');
       chapters.unshift(newChapter);
       saveStorageData('amw_chapters', chapters);
-      
       return newChapter;
     }
     
@@ -652,20 +618,8 @@ export const API = {
       });
       return result.data.createChapter;
     } catch (error) {
-      console.warn('GraphQL createChapter failed, using fallback:', error);
-      // Fallback implementation
-      const newChapter = {
-        id: uuidv4(),
-        ...chapterData,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      
-      const chapters = getStorageData('amw_chapters');
-      chapters.unshift(newChapter);
-      saveStorageData('amw_chapters', chapters);
-      
-      return newChapter;
+      console.warn('GraphQL createChapter failed:', error);
+      throw error;
     }
   },
 

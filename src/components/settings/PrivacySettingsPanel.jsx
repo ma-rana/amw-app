@@ -2,15 +2,50 @@ import React, { useState, useEffect } from 'react';
 import { usePrivacy } from '../../contexts/PrivacyContext';
 import { Lock, Shield, Eye, EyeOff, Users, Mail, MessageSquare, MapPin, Database, Bell, AlertCircle, Clock, Key } from 'lucide-react';
 
+// Provide robust defaults for user-level privacy preferences
+const DEFAULT_PRIVACY_SETTINGS = {
+  profileVisibility: 'friends',
+  showEmail: false,
+  showPhone: false,
+  allowFriendRequests: true,
+  allowMessages: true,
+  showOnlineStatus: true,
+  allowTagging: true,
+  allowLocationSharing: false,
+  dataCollection: false,
+  analyticsOptIn: false,
+  marketingEmails: false,
+  pushNotifications: true,
+  emailNotifications: true,
+  smsNotifications: false,
+  twoFactorAuth: false,
+  loginAlerts: true,
+  sessionTimeout: 30,
+  autoLogout: true
+};
+
 const PrivacySettingsPanel = () => {
+  // These may be undefined in current context; guard usage below
   const { privacySettings, updatePrivacySettings } = usePrivacy();
-  const [localSettings, setLocalSettings] = useState(privacySettings);
+
+  // Initialize from localStorage or context, falling back to safe defaults
+  const [localSettings, setLocalSettings] = useState(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('amw_user_privacy_settings') || 'null');
+      return stored || privacySettings || DEFAULT_PRIVACY_SETTINGS;
+    } catch (e) {
+      return privacySettings || DEFAULT_PRIVACY_SETTINGS;
+    }
+  });
   const [hasChanges, setHasChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setLocalSettings(privacySettings);
-    setHasChanges(false);
+    // If context provides settings, sync them; otherwise keep current/localStorage
+    if (privacySettings && typeof privacySettings === 'object') {
+      setLocalSettings(privacySettings);
+      setHasChanges(false);
+    }
   }, [privacySettings]);
 
   const handleSettingChange = (key, value) => {
@@ -22,7 +57,12 @@ const PrivacySettingsPanel = () => {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      await updatePrivacySettings(localSettings);
+      // If a context-level updater exists, use it; else persist locally
+      if (typeof updatePrivacySettings === 'function') {
+        await updatePrivacySettings(localSettings);
+      } else {
+        localStorage.setItem('amw_user_privacy_settings', JSON.stringify(localSettings));
+      }
       setHasChanges(false);
     } catch (error) {
       console.error('Failed to save privacy settings:', error);
@@ -37,27 +77,7 @@ const PrivacySettingsPanel = () => {
   };
 
   const resetToDefaults = () => {
-    const defaultSettings = {
-      profileVisibility: 'friends',
-      showEmail: false,
-      showPhone: false,
-      allowFriendRequests: true,
-      allowMessages: true,
-      showOnlineStatus: true,
-      allowTagging: true,
-      allowLocationSharing: false,
-      dataCollection: false,
-      analyticsOptIn: false,
-      marketingEmails: false,
-      pushNotifications: true,
-      emailNotifications: true,
-      smsNotifications: false,
-      twoFactorAuth: false,
-      loginAlerts: true,
-      sessionTimeout: 30,
-      autoLogout: true
-    };
-    setLocalSettings(defaultSettings);
+    setLocalSettings(DEFAULT_PRIVACY_SETTINGS);
     setHasChanges(true);
   };
 

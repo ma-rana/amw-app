@@ -24,13 +24,13 @@ class RealtimeService {
           callbacks.onCreate(data.onCreateMoment);
         },
         error: (error) => {
-          // Only log errors that aren't authentication-related
+          // Only log and surface non-authentication errors
           if (!this.isAuthenticationError(error)) {
             console.error('❌ Moment creation subscription error:', error);
+            if (callbacks.onError) callbacks.onError(error);
           } else {
             console.log('ℹ️ Moment subscription requires authentication');
           }
-          if (callbacks.onError) callbacks.onError(error);
         }
       });
       subscriptions.push(createSub);
@@ -44,13 +44,13 @@ class RealtimeService {
           callbacks.onUpdate(data.onUpdateMoment);
         },
         error: (error) => {
-          // Only log errors that aren't authentication-related
+          // Only log and surface non-authentication errors
           if (!this.isAuthenticationError(error)) {
             console.error('❌ Moment update subscription error:', error);
+            if (callbacks.onError) callbacks.onError(error);
           } else {
             console.log('ℹ️ Moment update subscription requires authentication');
           }
-          if (callbacks.onError) callbacks.onError(error);
         }
       });
       subscriptions.push(updateSub);
@@ -64,8 +64,13 @@ class RealtimeService {
           callbacks.onDelete(data.onDeleteMoment);
         },
         error: (error) => {
-          console.error('❌ Moment deletion subscription error:', error);
-          if (callbacks.onError) callbacks.onError(error);
+          // Only log and surface non-authentication errors
+          if (!this.isAuthenticationError(error)) {
+            console.error('❌ Moment deletion subscription error:', error);
+            if (callbacks.onError) callbacks.onError(error);
+          } else {
+            console.log('ℹ️ Moment deletion subscription requires authentication');
+          }
         }
       });
       subscriptions.push(deleteSub);
@@ -137,8 +142,13 @@ class RealtimeService {
           callbacks.onCreate(data.onCreateStory);
         },
         error: (error) => {
-          console.error('❌ Story creation subscription error:', error);
-          if (callbacks.onError) callbacks.onError(error);
+          // Only log and surface non-authentication errors
+          if (!this.isAuthenticationError(error)) {
+            console.error('❌ Story creation subscription error:', error);
+            if (callbacks.onError) callbacks.onError(error);
+          } else {
+            console.log('ℹ️ Story subscription requires authentication');
+          }
         }
       });
       subscriptions.push(createSub);
@@ -152,8 +162,13 @@ class RealtimeService {
           callbacks.onUpdate(data.onUpdateStory);
         },
         error: (error) => {
-          console.error('❌ Story update subscription error:', error);
-          if (callbacks.onError) callbacks.onError(error);
+          // Only log and surface non-authentication errors
+          if (!this.isAuthenticationError(error)) {
+            console.error('❌ Story update subscription error:', error);
+            if (callbacks.onError) callbacks.onError(error);
+          } else {
+            console.log('ℹ️ Story update subscription requires authentication');
+          }
         }
       });
       subscriptions.push(updateSub);

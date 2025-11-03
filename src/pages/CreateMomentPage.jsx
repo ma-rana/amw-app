@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import mediaService from "../services/mediaService";
 import MultiMediaUpload from "../components/MultiMediaUpload";
 import RichTextEditor from "../components/RichTextEditor";
 import { useNotifications } from "../contexts/NotificationContext";
@@ -58,23 +59,22 @@ const CreateMomentPage = ({ onSave, onCancel }) => {
     cameraInputRef.current?.click();
   };
 
-  const handleCameraFileSelect = (e) => {
+  const handleCameraFileSelect = async (e) => {
     const files = e.target.files;
     if (files.length > 0) {
       const newFiles = Array.from(files);
       const currentFiles = formData.mediaFiles || [];
 
-      const processedFiles = newFiles.map((file) => ({
-        id: Math.random().toString(36).substring(2, 15),
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        url: URL.createObjectURL(file),
-        file: file,
-      }));
-
-      const updatedFiles = [...currentFiles, ...processedFiles];
-      handleMediaChange(updatedFiles);
+      // Upload captured files to persistent storage and use returned URLs/keys
+      try {
+        const uploadPromises = newFiles.map((file) => mediaService.uploadFile(file, "moments"));
+        const uploadResults = await Promise.all(uploadPromises);
+        const updatedFiles = [...currentFiles, ...uploadResults];
+        handleMediaChange(updatedFiles);
+      } catch (uploadErr) {
+        console.error("Camera upload failed:", uploadErr);
+        setError(uploadErr.message || "Failed to upload captured media");
+      }
     }
     e.target.value = "";
   };
@@ -101,10 +101,10 @@ const CreateMomentPage = ({ onSave, onCancel }) => {
         .map((tag) => tag.trim())
         .filter((tag) => tag.length > 0);
 
-      const mediaUrls = formData.mediaFiles.map((file) => file.url);
+      // Prefer S3 object keys when available to avoid expired signed URLs
+      const mediaUrls = formData.mediaFiles.map((file) => file.key || file.url);
 
       const newMoment = {
-        id: Date.now().toString(),
         title: formData.title,
         description: formData.description,
         location: formData.location,
@@ -118,13 +118,16 @@ const CreateMomentPage = ({ onSave, onCancel }) => {
 
       if (onSave) {
         await onSave(newMoment);
-
-        const message = formData.quickShare
-          ? "Moment shared instantly! 🚀"
-          : "Moment created successfully! ✨";
+        
+        // Show success notification
+        const message = formData.quickShare 
+          ? 'Moment shared instantly! 🚀' 
+          : 'Moment created successfully! ✨';
         showSuccess(message);
-
-        sendMomentNotification(newMoment, "new");
+        
+        // Send moment notification to other users
+        const authorName = user?.name || user?.username || user?.email || 'Someone';
+        sendMomentNotification({ ...newMoment, author: authorName }, 'new');
       }
     } catch (error) {
       console.error("Error creating moment:", error);

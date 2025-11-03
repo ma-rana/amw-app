@@ -94,7 +94,7 @@ const RichTextEditor = ({
         commands={customCommands}
       />
       
-      <style jsx>{`
+      <style>{`
         .rich-text-editor {
           border-radius: 8px;
           overflow: hidden;

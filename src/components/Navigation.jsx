@@ -12,11 +12,13 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileMenuRef = useRef(null);
 
+  // Top navigation items order: Home, Moments, Search, Stories, Relations
   const navItems = [
-    { path: '/', label: 'Home', icon: '🏠' },
+    { path: '/home', label: 'Home', icon: '🏠' },
+    { path: '/moments', label: 'Moments', icon: '📸' },
+    { path: '/search', label: 'Search', icon: '🔍' },
     { path: '/stories', label: 'Stories', icon: '📖' },
-    { path: '/moments', label: 'Moments', icon: '✨' },
-    { path: '/family', label: 'Family', icon: '👥' }
+    { path: '/family', label: 'Relations', icon: '👥' }
   ];
 
   const isActive = (path) => {
@@ -50,6 +52,8 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
     };
   }, [showProfileMenu]);
 
+  // Single Search button that routes to Search page
+
   return (
     <>
       {/* Desktop Navigation - Hidden on mobile */}
@@ -61,18 +65,18 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
           boxShadow: '0 2px 8px rgba(40, 10, 50, 0.08)',
           position: 'sticky',
           top: 0,
-          zIndex: 50,
+          zIndex: 20000,
+          isolation: 'isolate',
+          pointerEvents: 'auto',
           fontFamily: "'ITC Avant Garde Gothic Pro', sans-serif"
         }}
       >
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem', position: 'relative' }}>
-          <div style={{ display: 'flex', alignItems: 'center', height: '70px', justifyContent: 'space-between' }}>
-            {/* Left Side: Logo + Left Nav Items */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
-              {/* Brand Logo */}
-              <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-                <Link 
-                  to="/" 
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '70px' }}>
+            {/* Brand Logo */}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Link 
+                to="/"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -104,140 +108,55 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                 </Link>
               </div>
 
-              {/* Desktop Navigation Links - Left Side */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {navItems.slice(0, 2).map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => onNavigate && onNavigate(item.path)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      fontSize: '16px',
-                      fontWeight: '500',
-                      textDecoration: 'none',
-                      transition: 'all 0.2s ease',
-                      backgroundColor: isActive(item.path) ? '#C37CDE' : 'transparent',
-                      color: isActive(item.path) ? '#FFFFFF' : '#280A32',
-                      border: isActive(item.path) ? '1px solid #C37CDE' : '1px solid transparent'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive(item.path)) {
-                        e.target.style.backgroundColor = '#E7E7E7';
-                        e.target.style.color = '#280A32';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive(item.path)) {
-                        e.target.style.backgroundColor = 'transparent';
-                        e.target.style.color = '#280A32';
-                      }
-                    }}
-                  >
-                    <span style={{ fontSize: '18px' }}>{item.icon}</span>
-                    <span>{item.label}</span>
-                  </Link>
-                ))}
-              </div>
+            {/* Desktop Navigation Links - centered */}
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => onNavigate && onNavigate(item.path)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease',
+                    backgroundColor: isActive(item.path) ? '#C37CDE' : 'transparent',
+                    color: isActive(item.path) ? '#FFFFFF' : '#280A32',
+                    border: isActive(item.path) ? '1px solid #C37CDE' : '1px solid transparent'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive(item.path)) {
+                      e.target.style.backgroundColor = '#E7E7E7';
+                      e.target.style.color = '#280A32';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive(item.path)) {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#280A32';
+                    }
+                  }}
+                >
+                  <span style={{ fontSize: '18px' }}>{item.icon}</span>
+                  <span>{item.label}</span>
+                </Link>
+              ))}
             </div>
-            
-            {/* Search Button - Absolutely Centered */}
-            <div style={{ 
-              position: 'absolute', 
-              left: '50%', 
-              transform: 'translateX(-50%)',
-              display: 'flex',
-              alignItems: 'center'
-            }}>
-              <Link
-                to="/search"
-                onClick={() => onNavigate && onNavigate('/search')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '12px 16px',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  textDecoration: 'none',
-                  transition: 'all 0.2s ease',
-                  backgroundColor: isActive('/search') ? '#C37CDE' : 'transparent',
-                  color: isActive('/search') ? '#FFFFFF' : '#280A32',
-                  border: isActive('/search') ? '1px solid #C37CDE' : '1px solid transparent'
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive('/search')) {
-                    e.target.style.backgroundColor = '#E7E7E7';
-                    e.target.style.color = '#280A32';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive('/search')) {
-                    e.target.style.backgroundColor = 'transparent';
-                    e.target.style.color = '#280A32';
-                  }
-                }}
-              >
-                <span style={{ fontSize: '18px' }}>🔍</span>
-                <span>Search</span>
-              </Link>
-            </div>
-            
-            {/* Right Side: Right Nav Items + Actions */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, justifyContent: 'flex-end' }}>
-              {/* Desktop Navigation Links - Right Side */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {navItems.slice(2).map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => onNavigate && onNavigate(item.path)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      fontSize: '16px',
-                      fontWeight: '500',
-                      textDecoration: 'none',
-                      transition: 'all 0.2s ease',
-                      backgroundColor: isActive(item.path) ? '#C37CDE' : 'transparent',
-                      color: isActive(item.path) ? '#FFFFFF' : '#280A32',
-                      border: isActive(item.path) ? '1px solid #C37CDE' : '1px solid transparent'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive(item.path)) {
-                        e.target.style.backgroundColor = '#E7E7E7';
-                        e.target.style.color = '#280A32';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive(item.path)) {
-                        e.target.style.backgroundColor = 'transparent';
-                        e.target.style.color = '#280A32';
-                      }
-                    }}
-                  >
-                    <span style={{ fontSize: '18px' }}>{item.icon}</span>
-                    <span>{item.label}</span>
-                  </Link>
-                ))}
-              </div>
 
-              {/* Right Side Actions */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ position: 'relative' }}>
-                  <NotificationBell />
-                </div>
-                
-                {/* User Menu */}
-                <div ref={profileMenuRef} style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative' }}>
+            {/* Right Side Actions */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div style={{ position: 'relative' }}>
+                <NotificationBell />
+              </div>
+              {/* Right-side Search button removed as requested */}
+              
+              {/* User Menu */}
+              <div ref={profileMenuRef} style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative' }}>
                 <button
                   onClick={handleProfileClick}
                   style={{
@@ -279,12 +198,24 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                       borderRadius: '8px',
                       boxShadow: '0 4px 12px rgba(40, 10, 50, 0.15)',
                       minWidth: '180px',
-                      zIndex: 100
+                      zIndex: 20001,
+                      pointerEvents: 'auto',
                     }}
                   >
-                    <div
-                      onClick={(e) => {
+                    <button
+                      type="button"
+                      onMouseDown={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
+                        console.log('[Nav] Profile mousedown');
+                        handleProfileMenuClose();
+                        navigate('/profile');
+                        if (onNavigate) {
+                          onNavigate('/profile');
+                        }
+                      }}
+                      onClick={() => {
+                        console.log('[Nav] Profile clicked');
                         handleProfileMenuClose();
                         navigate('/profile');
                         if (onNavigate) {
@@ -297,21 +228,35 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                         gap: '8px',
                         padding: '12px 16px',
                         color: '#280A32',
-                        textDecoration: 'none',
+                        backgroundColor: 'transparent',
+                        border: 'none',
                         fontSize: '16px',
+                        width: '100%',
+                        textAlign: 'left',
+                        cursor: 'pointer',
                         borderBottom: '1px solid #E7E7E7',
-                        transition: 'background-color 0.2s ease',
-                        cursor: 'pointer'
+                        transition: 'background-color 0.2s ease'
                       }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#E7E7E7'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E7E7E7'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                       <span>👤</span>
                       <span>View Profile</span>
-                    </div>
-                    <div
-                      onClick={(e) => {
+                    </button>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
+                        console.log('[Nav] Settings mousedown');
+                        handleProfileMenuClose();
+                        navigate('/settings');
+                        if (onNavigate) {
+                          onNavigate('/settings');
+                        }
+                      }}
+                      onClick={() => {
+                        console.log('[Nav] Settings clicked');
                         handleProfileMenuClose();
                         navigate('/settings');
                         if (onNavigate) {
@@ -324,22 +269,37 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                         gap: '8px',
                         padding: '12px 16px',
                         color: '#280A32',
-                        textDecoration: 'none',
+                        backgroundColor: 'transparent',
+                        border: 'none',
                         fontSize: '16px',
+                        width: '100%',
+                        textAlign: 'left',
+                        cursor: 'pointer',
                         borderBottom: '1px solid #E7E7E7',
-                        transition: 'background-color 0.2s ease',
-                        cursor: 'pointer'
+                        transition: 'background-color 0.2s ease'
                       }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#E7E7E7'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E7E7E7'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                       <span>⚙️</span>
                       <span>Settings</span>
-                    </div>
+                    </button>
                     <button
-                      onClick={() => {
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('[Nav] Signout mousedown');
                         handleProfileMenuClose();
-                        signOut();
+                        if (signOut) {
+                          signOut();
+                        }
+                      }}
+                      onClick={async () => {
+                        console.log('[Nav] Signout clicked');
+                        handleProfileMenuClose();
+                        if (signOut) {
+                          await signOut();
+                        }
                       }}
                       style={{
                         display: 'flex',
@@ -369,7 +329,6 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
               </div>
             </div>
           </div>
-        </div>
       </nav>
 
       {/* Mobile Top Navigation Bar - Only on mobile */}
@@ -412,33 +371,66 @@ const Navigation = ({ signOut, onNavigate, currentPage }) => {
                     <div 
                       className="absolute top-full right-0 mt-2 bg-white rounded-xl border-2 border-gray-200 shadow-2xl z-50 min-w-[180px] overflow-hidden"
                     >
-                      <Link
-                        to="/profile"
-                        onClick={(e) => {
+                      <button
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log('[Nav-mobile] Profile mousedown');
                           handleProfileMenuClose();
+                          navigate('/profile');
                           if (onNavigate) {
                             onNavigate('/profile');
                           }
                         }}
-                        className="flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-200 cursor-pointer"
+                        onClick={() => {
+                          console.log('[Nav-mobile] Profile clicked');
+                          handleProfileMenuClose();
+                          navigate('/profile');
+                          if (onNavigate) {
+                            onNavigate('/profile');
+                          }
+                        }}
+                        className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-200 cursor-pointer text-left"
                       >
                         <span className="text-lg">👤</span>
                         <span className="font-medium text-sm">View Profile</span>
-                      </Link>
-                      <Link
-                        to="/settings"
-                        onClick={(e) => {
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log('[Nav-mobile] Settings mousedown');
                           handleProfileMenuClose();
+                          navigate('/settings');
                           if (onNavigate) {
                             onNavigate('/settings');
                           }
                         }}
-                        className="flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-200 cursor-pointer"
+                        onClick={() => {
+                          console.log('[Nav-mobile] Settings clicked');
+                          handleProfileMenuClose();
+                          navigate('/settings');
+                          if (onNavigate) {
+                            onNavigate('/settings');
+                          }
+                        }}
+                        className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-200 cursor-pointer text-left"
                       >
                         <span className="text-lg">⚙️</span>
                         <span className="font-medium text-sm">Settings</span>
-                      </Link>
+                      </button>
                       <button
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log('[Nav-mobile] Signout mousedown');
+                          handleProfileMenuClose();
+                          if (signOut) {
+                            signOut();
+                          }
+                        }}
                         onClick={() => {
                           handleProfileMenuClose();
                           if (signOut) {

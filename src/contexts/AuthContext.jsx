@@ -147,10 +147,14 @@ export const AuthProvider = ({ children }) => {
       console.log('🔐 Signing out user...');
       await amplifySignOut();
       console.log('✅ User signed out successfully');
+      // Clear local session on successful signout
       setUser(null);
       setIsEmailVerified(true);
     } catch (error) {
       console.error('❌ Error signing out:', error);
+      // Ensure local logout even if Amplify signout fails
+      setUser(null);
+      setIsEmailVerified(true);
     } finally {
       setIsLoading(false);
     }

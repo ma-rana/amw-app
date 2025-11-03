@@ -19,7 +19,7 @@ import {
   Calendar,
 } from "lucide-react";
 
-const StoriesPage = ({ onNavigate }) => {
+const StoriesPage = ({ onNavigate, initialShowCreateForm = false }) => {
   const { user } = useAuth();
   const location = useLocation();
   const [stories, setStories] = useState([]);
@@ -34,6 +34,13 @@ const StoriesPage = ({ onNavigate }) => {
   useEffect(() => {
     loadStories();
   }, []);
+
+  // Open create modal when requested by navigation params
+  useEffect(() => {
+    if (initialShowCreateForm) {
+      setShowCreateForm(true);
+    }
+  }, [initialShowCreateForm]);
 
   const loadStories = async () => {
     try {

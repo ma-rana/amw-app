@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import ToastNotification from '../components/ToastNotification';
 
 const ToastContext = createContext();
@@ -15,7 +16,7 @@ export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
   const addToast = (toast) => {
-    const id = Date.now().toString();
+    const id = uuidv4();
     const newToast = {
       id,
       duration: 4000,

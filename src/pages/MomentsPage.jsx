@@ -21,9 +21,9 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
   // Merge real-time moments with existing moments
   const allMoments = React.useMemo(() => {
     const combined = [...realtimeMoments, ...safeMoments];
-    // Remove duplicates based on ID
-    const uniqueMoments = combined.filter((moment, index, self) => 
-      index === self.findIndex(m => m.id === moment.id)
+    // Remove duplicates based on ID (normalize to string to avoid type mismatches)
+    const uniqueMoments = combined.filter((moment, index, self) =>
+      index === self.findIndex(m => String(m?.id) === String(moment?.id))
     );
     return uniqueMoments;
   }, [realtimeMoments, safeMoments]);
@@ -74,8 +74,14 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
     subscriptionRef.current = realtimeService.subscribeMoments({
       onCreate: (newMoment) => {
         console.log('📱 New moment received:', newMoment);
-        setRealtimeMoments(prev => [newMoment, ...prev]);
-        setNewMomentsCount(prev => prev + 1);
+        setRealtimeMoments(prev => {
+          const alreadyExists = prev.some(m => String(m?.id) === String(newMoment?.id));
+          return alreadyExists ? prev : [newMoment, ...prev];
+        });
+        setNewMomentsCount(prev => {
+          const increment = realtimeMoments.some(m => String(m?.id) === String(newMoment?.id)) ? 0 : 1;
+          return prev + increment;
+        });
         
         // Show notification
         if ('Notification' in window && Notification.permission === 'granted') {
@@ -89,14 +95,14 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
         console.log('📝 Moment updated:', updatedMoment);
         setRealtimeMoments(prev => 
           prev.map(moment => 
-            moment.id === updatedMoment.id ? updatedMoment : moment
+            String(moment?.id) === String(updatedMoment?.id) ? updatedMoment : moment
           )
         );
       },
       onDelete: (deletedMoment) => {
         console.log('🗑️ Moment deleted:', deletedMoment);
         setRealtimeMoments(prev => 
-          prev.filter(moment => moment.id !== deletedMoment.id)
+          prev.filter(moment => String(moment?.id) !== String(deletedMoment?.id))
         );
       },
       onError: (error) => {
@@ -242,7 +248,7 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {visibleMoments.map((moment, index) => (
-              <div key={moment?.id || index} className="group bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:border-blue-500 hover:shadow-xl transition-all duration-300">
+              <div key={String(moment?.id ?? index)} className="group bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:border-blue-500 hover:shadow-xl transition-all duration-300">
                 <MomentCard 
                   title={moment?.title || 'Untitled'}
                   date={moment?.date || 'No date'}

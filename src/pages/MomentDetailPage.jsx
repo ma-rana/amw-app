@@ -43,31 +43,60 @@ const MomentDetailPage = ({ moment: propMoment, onBack, onUpdate, onDelete, onEd
       }
     };
 
-    if (isAuthenticated) {
-      loadMoment();
-    }
-  }, [id, isAuthenticated, propMoment]);
+    // Load regardless of auth; fallback mode supports local retrieval
+    loadMoment();
+  }, [id, propMoment]);
 
   // Load image from storage
   useEffect(() => {
     const loadImage = async () => {
-      if (isAuthenticated && moment?.imageUrl && moment.imageUrl.startsWith('moments/')) {
-        try {
-          const { url } = await getUrl({ key: moment.imageUrl, options: { level: 'public' } });
-          setImageData(url.toString());
-        } catch (err) {
-          console.error('Failed to load image from S3:', err);
-          setImageData(null);
-        }
-      } else {
+      if (!moment) {
         setImageData(null);
+        return;
       }
+
+      const primaryMedia = Array.isArray(moment.mediaUrls) && moment.mediaUrls.length > 0
+        ? moment.mediaUrls[0]
+        : null;
+
+      // Prefer explicit imageUrl when present
+      if (moment.imageUrl) {
+        if (typeof moment.imageUrl === 'string' && moment.imageUrl.startsWith('moments/')) {
+          try {
+            const { url } = await getUrl({ key: moment.imageUrl, options: { level: 'public' } });
+            setImageData(url.toString());
+          } catch (err) {
+            console.error('Failed to load image from S3:', err);
+            setImageData(null);
+          }
+        } else {
+          setImageData(moment.imageUrl);
+        }
+        return;
+      }
+
+      // Fallback to first media url if present
+      if (primaryMedia) {
+        if (typeof primaryMedia === 'string' && primaryMedia.startsWith('moments/')) {
+          try {
+            const { url } = await getUrl({ key: primaryMedia, options: { level: 'public' } });
+            setImageData(url.toString());
+          } catch (err) {
+            console.error('Failed to resolve primary media key:', err);
+            setImageData(null);
+          }
+        } else {
+          setImageData(primaryMedia);
+        }
+        return;
+      }
+
+      // Nothing to display
+      setImageData(null);
     };
     
-    if (moment) {
-      loadImage();
-    }
-  }, [moment?.imageUrl, isAuthenticated, moment]);
+    loadImage();
+  }, [moment?.imageUrl, moment?.mediaUrls, moment]);
 
   const handleEdit = () => {
     if (onEdit) {
@@ -150,7 +179,7 @@ const MomentDetailPage = ({ moment: propMoment, onBack, onUpdate, onDelete, onEd
   }
 
   const isOwner = user?.id === moment?.userId;
-  const displayImage = imageData || moment?.imageUrl || moment?.media?.imageUrl;
+  const displayImage = imageData || moment?.imageUrl || (Array.isArray(moment?.mediaUrls) ? moment.mediaUrls[0] : undefined) || moment?.media?.imageUrl;
   const displayVideo = moment?.videoUrl || moment?.media?.videoUrl;
 
   return (

@@ -21,6 +21,8 @@ import { usePrivacy } from '../../contexts/PrivacyContext';
 const AdvancedSearch = ({ 
   onSearchResults, 
   onSearchError,
+  onSearchStart,
+  onSearchEnd,
   onQueryChange,
   initialQuery = '',
   searchTypes = ['moments', 'stories', 'users'],
@@ -32,7 +34,7 @@ const AdvancedSearch = ({
   const { getUsersForPrivacy } = usePrivacy();
 
   // Search state
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [searchQuery, setSearchQuery] = useState(initialQuery || '');
   const [searchType, setSearchType] = useState('all');
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
@@ -61,6 +63,17 @@ const AdvancedSearch = ({
   useEffect(() => {
     loadFilterOptions();
   }, []);
+
+  // Initialize from initialQuery and optionally auto-search
+  useEffect(() => {
+    if (typeof initialQuery === 'string') {
+      setSearchQuery(initialQuery);
+      if (autoSearch && initialQuery.trim()) {
+        debouncedSearch(initialQuery, searchType, filters);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQuery]);
 
   const loadFilterOptions = async () => {
     try {
@@ -225,7 +238,7 @@ const AdvancedSearch = ({
   // Handle search input change
   const handleSearchChange = (value) => {
     setSearchQuery(value);
-    if (onQueryChange) {
+    if (typeof onQueryChange === 'function') {
       onQueryChange(value);
     }
     if (autoSearch) {

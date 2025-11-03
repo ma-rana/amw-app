@@ -40,7 +40,7 @@ const HomePage = ({ onCreateMoment, onCreateStory, onViewMoment, onNavigate }) =
       fetchPublicMoments();
     }
   }, [isEmailVerified, user?.id]);
-
+  
   const handleNavigateToConfirmation = () => {
     onNavigate('email-confirmation', { email: user?.email });
   };
@@ -110,8 +110,7 @@ const HomePage = ({ onCreateMoment, onCreateStory, onViewMoment, onNavigate }) =
             </div>
           </button>
         </div>
-
-        {/* Public Feed Header */}
+{/* Public Feed Header */}
         <div className="bg-white border-2 border-gray-200 rounded-xl p-4 md:p-6 mb-6">
           <div className="flex items-center space-x-3 mb-2">
             <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-2 rounded-lg">

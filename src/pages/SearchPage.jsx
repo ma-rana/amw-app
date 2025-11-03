@@ -20,7 +20,7 @@ const SearchPage = ({
   onViewUser,
   onNavigate,
   initialSearchQuery = "",
-  initialSearchType: _initialSearchType = "all",
+  initialSearchType = "all",
 }) => {
   const { user: _user } = useAuth();
   const { isMobile } = useResponsive();
@@ -178,57 +178,23 @@ const SearchPage = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 lg:pb-6">
-      {/* Desktop: Search Bar at Top */}
-      <div className="hidden lg:block">
-        <div className="bg-white border-b-2 border-gray-200 shadow-sm sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="bg-white rounded-xl border-2 border-gray-200 p-4">
-              <AdvancedSearch
-                onSearchResults={handleSearchResults}
-                onSearchError={handleSearchError}
-                initialQuery={searchQuery}
-                onQueryChange={setSearchQuery}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile: Search Bar Above Bottom Nav - Stuck to bottom nav with no gap */}
-      <div
-        className="lg:hidden fixed left-0 right-0 bg-white z-40 px-4 py-3"
-        style={{
-          bottom: "calc(env(safe-area-inset-bottom, 0) + 4.5rem)",
-          margin: 0,
-          marginBottom: "-4px",
-          borderBottom: "none",
-        }}
-      >
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-            <Search className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            type="text"
-            placeholder="Search moments, stories, and family..."
-            value={searchQuery}
-            onChange={(e) => handleMobileSearchChange(e.target.value)}
-            onKeyDown={handleMobileSearchKeyDown}
-            className="block w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base"
-            style={{ margin: 0 }}
+    <View className="min-h-screen bg-gray-50 py-6">
+      <View className="amw-container">
+        {/* Search Component at top */}
+        <div className="amw-card p-6 mb-8">
+          <AdvancedSearch
+            onSearchResults={handleSearchResults}
+            onSearchError={handleSearchError}
+            onSearchStart={() => setIsSearching(true)}
+            onSearchEnd={() => setIsSearching(false)}
+            initialQuery={searchQuery}
+            onQueryChange={setSearchQuery}
           />
         </div>
-      </div>
 
-      {/* Main Content */}
-      <View className="amw-container pt-6 lg:pt-8">
-        {/* Header - Only show on desktop */}
-        <div className="hidden lg:block text-center mb-8">
-          <Heading
-            level={1}
-            className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4"
-          >
+        {/* Header below search */}
+        <div className="text-center mb-8">
+          <Heading level={1} className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
             Search & Discover
           </Heading>
           <Text className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -355,7 +321,7 @@ const SearchPage = ({
           </div>
         )}
       </View>
-    </div>
+    </View>
   );
 };
 

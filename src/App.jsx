@@ -11,8 +11,9 @@ import MomentDetailPage from './pages/MomentDetailPage'
 import CreateMomentPage from './pages/CreateMomentPage'
 import EditMomentPage from './pages/EditMomentPage'
 import StoriesPage from './pages/StoriesPage'
-import SharedStories from './pages/SharedStories'
 import SharedMomentPage from './pages/SharedMomentPage'
+import AWSLinksPage from './pages/AWSLinksPage'
+import APIDebug from './pages/APIDebug'
 import ChaptersPage from './pages/ChaptersPage'
 import QuestionsPage from './pages/QuestionsPage'
 import FamilyPage from './pages/FamilyPage'
@@ -89,15 +90,21 @@ function AppContent() {
     }
   }, [isAuthenticated, location.pathname, navigate]);
   
-  const handleSignOut = () => {
-    signOut();
-    navigate('/'); // Navigate to landing page after logout
+  const handleSignOut = async () => {
+    try {
+      console.log('[App] handleSignOut invoked');
+      await signOut();
+    } finally {
+      console.log('[App] Navigating to landing after signout');
+      navigate('/'); // Navigate to landing page after logout
+    }
   }
   
   const handleNavigation = (page, params = {}) => {
     const targetPath = typeof page === 'string'
       ? (page.startsWith('/') ? page : `/${page}`)
       : '/';
+    console.log('[App] handleNavigation to', targetPath, params);
     navigate(targetPath);
     setPageParams(params);
     setSelectedMoment(null); // Clear selected moment when navigating
@@ -225,6 +232,7 @@ function AppContent() {
             } />
             
             {/* Protected user routes - require user authentication */}
+            {/* Home: personalized feed with quick creation */}
             <Route path="/home" element={
               isAuthenticated ? (
                 <HomePage onCreateMoment={handleCreateMoment} onCreateStory={handleCreateStory} onViewMoment={handleViewMoment} onEditMoment={handleEditMoment} onNavigate={handleNavigation} />
@@ -241,18 +249,12 @@ function AppContent() {
             } />
             <Route path="/stories" element={
               isAuthenticated ? (
-                <StoriesPage onNavigate={handleNavigation} />
+                <StoriesPage onNavigate={handleNavigation} initialShowCreateForm={pageParams.autoCreateStory === true} />
               ) : (
                 <Navigate to="/login" replace />
               )
             } />
-            <Route path="/shared-stories" element={
-              isAuthenticated ? (
-                <SharedStories onNavigate={handleNavigation} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            } />
+            {/* Shared stories route removed per request */}
             <Route path="/chapters" element={
               isAuthenticated ? (
                 <ChaptersPage storyId={pageParams.storyId} onNavigate={handleNavigation} />
@@ -276,7 +278,13 @@ function AppContent() {
             } />
             <Route path="/search" element={
               isAuthenticated ? (
-                <SearchPage onViewMoment={handleViewMoment} onViewStory={(_story) => handleNavigation('stories')} onViewUser={(_user) => handleNavigation('family')} onNavigate={handleNavigation} />
+                <SearchPage 
+                  onViewMoment={handleViewMoment} 
+                  onViewStory={(_story) => handleNavigation('stories')} 
+                  onViewUser={(_user) => handleNavigation('family')} 
+                  onNavigate={handleNavigation}
+                  initialSearchQuery={pageParams.searchQuery || ''}
+                />
               ) : (
                 <Navigate to="/login" replace />
               )
@@ -292,6 +300,20 @@ function AppContent() {
             <Route path="/settings" element={
               isAuthenticated ? (
                 <SettingsPage onNavigate={handleNavigation} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            } />
+            <Route path="/aws" element={
+              isAuthenticated ? (
+                <AWSLinksPage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            } />
+            <Route path="/api-debug" element={
+              isAuthenticated ? (
+                <APIDebug />
               ) : (
                 <Navigate to="/login" replace />
               )

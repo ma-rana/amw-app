@@ -20,6 +20,7 @@ const MomentDetailView = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const shareButtonRef = useRef(null);
   const { isAuthenticated } = useAuth();
+  const [resolvedMediaUrls, setResolvedMediaUrls] = useState([]);
 
   useEffect(() => {
     const loadImage = async () => {
@@ -37,6 +38,39 @@ const MomentDetailView = ({
     };
     loadImage();
   }, [moment?.imageUrl, isAuthenticated]);
+
+  // Resolve media gallery URLs when keys are stored (e.g., 'moments/...')
+  useEffect(() => {
+    const resolveUrls = async () => {
+      const urls = moment?.mediaUrls || [];
+      if (!urls || urls.length === 0) {
+        setResolvedMediaUrls([]);
+        return;
+      }
+
+      try {
+        const resolved = await Promise.all(
+          urls.map(async (u) => {
+            if (typeof u === 'string' && u.startsWith('moments/')) {
+              try {
+                const { url } = await getUrl({ key: u, options: { level: 'public' } });
+                return url.toString();
+              } catch (err) {
+                console.error('Failed to resolve media url for key:', u, err);
+                return u; // fallback
+              }
+            }
+            return u;
+          })
+        );
+        setResolvedMediaUrls(resolved);
+      } catch (err) {
+        console.error('Error resolving media URLs:', err);
+        setResolvedMediaUrls(urls);
+      }
+    };
+    resolveUrls();
+  }, [moment?.mediaUrls]);
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this moment? This action cannot be undone.')) {
@@ -165,13 +199,13 @@ const MomentDetailView = ({
           )}
 
           {/* Media gallery */}
-          {moment.mediaUrls && moment.mediaUrls.length > 0 && (
+          {resolvedMediaUrls && resolvedMediaUrls.length > 0 && (
             <View marginBottom="large">
               <Text fontSize="medium" fontWeight="semibold" marginBottom="small">
-                Media Attachments ({moment.mediaUrls.length})
+                Media Attachments ({resolvedMediaUrls.length})
               </Text>
               <Flex direction="column" gap="medium">
-                {moment.mediaUrls.map((url, index) => {
+                {resolvedMediaUrls.map((url, index) => {
                   const fileName = url.split('/').pop() || `media-${index + 1}`;
                   const fileExtension = fileName.split('.').pop()?.toLowerCase();
                   
@@ -338,7 +372,18 @@ const MomentDetailView = ({
       {/* Comments Section */}
       <CommentSection momentId={moment.id} />
 
-      <style jsx>{`
+      {/* Share Modal */}
+      {showShareModal && (
+        <ShareModal
+          story={story}
+          moment={moment}
+          onClose={() => setShowShareModal(false)}
+          shareType="moment"
+          momentTitle={moment.title}
+        />
+      )}
+
+      <style>{`
         .moment-detail-view {
           max-width: 800px;
           margin: 0 auto;

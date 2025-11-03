@@ -1,4 +1,5 @@
 import { realtimeService } from './realtimeService';
+import { v4 as uuidv4 } from 'uuid';
 
 class NotificationService {
   constructor() {
@@ -109,7 +110,7 @@ class NotificationService {
    */
   addNotification(notification) {
     const newNotification = {
-      id: Date.now().toString(),
+      id: uuidv4(),
       timestamp: new Date().toISOString(),
       read: false,
       ...notification
@@ -217,25 +218,35 @@ class NotificationService {
    * Send notification types
    */
   sendMomentNotification(moment, type = 'new') {
+    // Gracefully handle missing author or title
+    const authorName = (
+      moment?.author ||
+      moment?.username ||
+      (moment?.user && (moment.user.name || moment.user.username)) ||
+      'Someone'
+    );
+    const hasTitle = typeof moment?.title === 'string' && moment.title.trim().length > 0;
+    const titleSuffix = hasTitle ? `: "${moment.title}"` : '';
+
     const notifications = {
       new: {
         type: 'moment',
         title: 'New Moment Shared',
-        message: `${moment.author} shared a new moment: "${moment.title}"`,
+        message: `${authorName} shared a new moment${titleSuffix}`,
         icon: '📸',
         data: { momentId: moment.id, type: 'moment' }
       },
       comment: {
         type: 'comment',
         title: 'New Comment',
-        message: `${moment.author} commented on your moment`,
+        message: `${authorName} commented on your moment`,
         icon: '💬',
         data: { momentId: moment.id, type: 'comment' }
       },
       like: {
         type: 'like',
         title: 'Moment Liked',
-        message: `${moment.author} liked your moment`,
+        message: `${authorName} liked your moment`,
         icon: '❤️',
         data: { momentId: moment.id, type: 'like' }
       }
@@ -452,7 +463,12 @@ class NotificationService {
         }
       },
       onError: (error) => {
-        console.error('❌ Story notification subscription error:', error);
+        // Only log non-authentication errors
+        if (this.isAuthenticationError(error)) {
+          console.log('ℹ️ Story notifications require authentication');
+        } else {
+          console.error('❌ Story notification subscription error:', error);
+        }
       }
     });
 
