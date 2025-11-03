@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import { ArrowLeft, Home, Loader2 } from 'lucide-react';
+import { getUrl } from 'aws-amplify/storage';
 
 const SharedMomentPage = () => {
   const { id } = useParams();
@@ -9,6 +10,7 @@ const SharedMomentPage = () => {
   const [moment, setMoment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [imageData, setImageData] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -20,9 +22,13 @@ const SharedMomentPage = () => {
           setError('Moment not found');
         }
         // Enforce public visibility for shared links
-        if (m && (m.visibility === 'PUBLIC' || m.isPublic === true)) {
+        // Be tolerant when privacy fields are missing (fallback/local data).
+        const isExplicitlyPublic = m && (m.visibility === 'PUBLIC' || m.isPublic === true);
+        const sharingAllowed = m && (m.allowSharing !== false);
+        const privacyUnknown = m && (typeof m.visibility === 'undefined' && typeof m.isPublic === 'undefined');
+        if (m && (isExplicitlyPublic || (privacyUnknown && sharingAllowed))) {
           setMoment(m);
-        } else {
+        } else if (m) {
           setMoment(null);
           setError('This moment is not publicly viewable.');
         }
@@ -71,6 +77,27 @@ const SharedMomentPage = () => {
   const imageUrl = moment?.media?.imageUrl || moment?.imageUrl;
   const videoUrl = moment?.media?.videoUrl || moment?.videoUrl;
 
+  // Resolve S3 keys and fallback to mediaUrls for shared viewing
+  useEffect(() => {
+    const resolveImage = async () => {
+      setImageData(null);
+      if (!moment) return;
+
+      const fallbackMedia = Array.isArray(moment.mediaUrls) && moment.mediaUrls.length > 0 ? moment.mediaUrls[0] : null;
+      const preferred = imageUrl || fallbackMedia;
+      if (typeof preferred === 'string' && preferred.startsWith('moments/')) {
+        try {
+          const { url } = await getUrl({ key: preferred, options: { level: 'public' } });
+          setImageData(url.toString());
+        } catch (err) {
+          console.error('Failed to resolve shared image key:', err);
+          setImageData(null);
+        }
+      }
+    };
+    resolveImage();
+  }, [moment, imageUrl]);
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
@@ -101,10 +128,10 @@ const SharedMomentPage = () => {
             </div>
 
             {/* Media */}
-            {imageUrl && (
+            {(imageData || imageUrl) && (
               <div className="rounded-xl overflow-hidden border-2 border-gray-200">
                 <img 
-                  src={imageUrl} 
+                  src={imageData || imageUrl} 
                   alt={moment.title} 
                   className="w-full h-auto object-contain"
                 />

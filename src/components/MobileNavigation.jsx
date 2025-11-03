@@ -9,10 +9,11 @@ const MobileNavigation = ({
   const location = useLocation();
   const currentPath = location.pathname;
 
-  // Keep just four main items in bottom nav
+  // Mobile bottom navigation (includes Search in responsive mode)
   const navigationItems = [
     { key: 'home', path: '/', label: '🏠 Home', icon: '🏠' },
     { key: 'moments', path: '/moments', label: '📸 Moments', icon: '📸' },
+    { key: 'search', path: '/search', label: '🔍 Search', icon: '🔍' },
     { key: 'stories', path: '/stories', label: '📖 Stories', icon: '📖' },
     { key: 'family', path: '/family', label: '👥 Relations', icon: '👥' }
   ];
@@ -24,7 +25,7 @@ const MobileNavigation = ({
         className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0)" }}
       >
-        <div className="flex items-center justify-around px-1 py-2 max-w-md mx-auto">
+        <div className="flex items-center justify-around px-1 py-2 max-w-lg mx-auto">
           {navigationItems.map((item) => {
             const isActive =
               currentPath === item.path ||

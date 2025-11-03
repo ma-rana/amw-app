@@ -18,7 +18,10 @@ export const testCognitoConnection = async () => {
       console.log('✅ AWS Cognito connection successful - No user authenticated (expected)');
       return true;
     } else {
-      console.error('❌ AWS Cognito connection failed:', error);
+      // In offline/dev environments, network errors are expected. Keep logs quiet.
+      const isNetworkError = /NetworkError|network error|fetch failed|ERR_FAILED/i.test(error?.message || '')
+      const msg = isNetworkError ? '⚠️ Cognito not reachable (dev/offline). Skipping.' : '❌ AWS Cognito connection failed:'
+      console[isNetworkError ? 'warn' : 'error'](msg, error);
       return false;
     }
   }
@@ -53,6 +56,13 @@ export const runQuickTests = async () => {
     return false;
   }
   
+  // Skip Cognito test if user pool is clearly not configured
+  const userPoolConfigured = !!config.aws_user_pools_id && !String(config.aws_user_pools_id).includes('xxxxxxxx');
+  if (!userPoolConfigured) {
+    console.log('ℹ️ Skipping Cognito connection test: User Pool not configured.');
+    return true;
+  }
+  
   const connectionTest = await testCognitoConnection();
   
   if (connectionTest) {
@@ -73,9 +83,5 @@ if (typeof window !== 'undefined') {
     testAWSConfig,
     runQuickTests
   };
-  
-  // Auto-run quick tests
-  setTimeout(() => {
-    runQuickTests();
-  }, 1000);
+  // Do not auto-run in dev to avoid noisy logs when offline
 }

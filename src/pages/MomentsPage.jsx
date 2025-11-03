@@ -253,6 +253,7 @@ const MomentsPage = ({ moments = [], onCreateMoment, onViewMoment }) => {
                   title={moment?.title || 'Untitled'}
                   date={moment?.date || 'No date'}
                   imageUrl={moment?.imageUrl}
+                  moment={moment}
                   onClick={() => onViewMoment && onViewMoment(moment)}
                   className="bg-transparent border-none shadow-none"
                 />
